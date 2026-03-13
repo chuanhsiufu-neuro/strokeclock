@@ -9,68 +9,98 @@
             font-family: "Microsoft JhengHei", Arial, sans-serif;
             background-color: #f4f4f9;
             color: #333;
-            padding: 20px;
+            padding: 30px;
+            text-align: center; /* 讓畫面置中更像一個操作面板 */
         }
         
         h1 {
             color: #d32f2f;
+            margin-bottom: 5px;
         }
 
-        .input-group {
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 20px;
+        .system-time {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
             font-weight: bold;
         }
 
-        input[type="datetime-local"] {
-            font-size: 18px;
-            padding: 5px;
-            margin-left: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
+        .input-group {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
         }
 
-        button {
-            font-size: 20px;
-            padding: 10px 30px;
-            background-color: #0056b3;
+        label {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 確保時間下拉選單有足夠的大小讓滑鼠或手指點擊 */
+        input[type="datetime-local"] {
+            font-size: 22px;
+            padding: 8px;
+            margin-left: 10px;
+            margin-right: 10px;
+            border: 2px solid #aaa;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-now {
+            font-size: 16px;
+            padding: 8px 15px;
+            background-color: #6c757d;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .btn-now:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-start {
+            font-size: 28px;
+            font-weight: bold;
+            padding: 15px 50px;
+            background-color: #d32f2f; /* 改為更醒目的紅色啟動鈕 */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: background-color 0.2s;
         }
 
-        button:hover {
-            background-color: #004494;
+        .btn-start:hover {
+            background-color: #b71c1c;
         }
 
-        /* 隱藏一開始不需要顯示的區塊 */
         #dtn-container {
             display: none; 
-            margin-top: 30px;
+            margin-top: 40px;
         }
 
         h2 {
-            font-size: 24px;
+            font-size: 32px;
             color: #333;
+            margin-bottom: 10px;
         }
 
-        /* 電子時鐘的樣式設定 */
+        /* 電子時鐘樣式：黑底螢光字，72級字體 */
         #digital-clock {
-            font-size: 72px; /* 72字體大小 */
-            font-family: 'Courier New', Courier, monospace; /* 類似電子鐘的等寬字體 */
-            background-color: #000; /* 黑色底 */
-            color: #00ff00; /* 螢光綠數字 */
-            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; /* 螢光發光效果 */
+            font-size: 72px; 
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: #000; 
+            color: #00ff00; 
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; 
             display: inline-block;
-            padding: 10px 30px;
-            border-radius: 10px;
-            border: 3px solid #333;
+            padding: 15px 40px;
+            border-radius: 12px;
+            border: 4px solid #444;
             letter-spacing: 5px;
         }
     </style>
@@ -78,53 +108,78 @@
 <body>
 
     <h1>Stroke Clock</h1>
+    <div class="system-time">目前系統時間：<span id="current-sys-time">載入中...</span></div>
 
     <div class="input-group">
         <label for="triage-time">檢傷時間：</label>
         <input type="datetime-local" id="triage-time" step="1">
+        <button id="set-now-btn" class="btn-now">設為現在</button>
     </div>
 
     <div>
-        <button id="start-btn">Start!</button>
+        <button id="start-btn" class="btn-start">Start!</button>
     </div>
 
     <div id="dtn-container">
-        <h2>Door to needle time (DTN)=</h2>
+        <h2>Door to needle time (DTN) =</h2>
         <div id="digital-clock">00:00:00</div>
     </div>
 
     <script>
-        const startBtn = document.getElementById('start-btn');
+        const sysTimeDisplay = document.getElementById('current-sys-time');
         const triageTimeInput = document.getElementById('triage-time');
+        const setNowBtn = document.getElementById('set-now-btn');
+        const startBtn = document.getElementById('start-btn');
         const dtnContainer = document.getElementById('dtn-container');
         const digitalClock = document.getElementById('digital-clock');
         
         let timerInterval;
 
-        function updateClock(triageTimestamp) {
-            const now = new Date().getTime(); // 取得現在時間的毫秒數
-            let diff = now - triageTimestamp; // 計算時間差
+        // 格式化時間，轉為 datetime-local 接受的格式 (YYYY-MM-DDThh:mm:ss)
+        function getLocalIsoString(date) {
+            const offset = date.getTimezoneOffset() * 60000;
+            return (new Date(date - offset)).toISOString().slice(0, 19);
+        }
 
-            // 如果檢傷時間設定在未來，則顯示為0或提示錯誤
+        // 持續更新系統時間顯示
+        function updateSystemTime() {
+            const now = new Date();
+            // 顯示 24 小時制的現在時間
+            sysTimeDisplay.textContent = now.toLocaleString('zh-TW', { hour12: false });
+        }
+        setInterval(updateSystemTime, 1000);
+        updateSystemTime();
+
+        // 網頁載入時，自動將檢傷時間帶入「現在時間」
+        triageTimeInput.value = getLocalIsoString(new Date());
+
+        // 點擊「設為現在」按鈕的動作
+        setNowBtn.addEventListener('click', function() {
+            triageTimeInput.value = getLocalIsoString(new Date());
+        });
+
+        // 計算 DTN 的主邏輯
+        function updateClock(triageTimestamp) {
+            const now = new Date().getTime(); 
+            let diff = now - triageTimestamp; 
+
             if (diff < 0) {
                 digitalClock.textContent = "時間無效";
                 return;
             }
 
-            // 將時間差轉換為時、分、秒
             const hours = Math.floor(diff / (1000 * 60 * 60));
             const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
             const seconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            // 確保數字為兩位數（例如 5 秒會顯示為 05）
             const formattedHours = String(hours).padStart(2, '0');
             const formattedMinutes = String(minutes).padStart(2, '0');
             const formattedSeconds = String(seconds).padStart(2, '0');
 
-            // 組合輸出並顯示
             digitalClock.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
         }
 
+        // 按下 Start 的動作
         startBtn.addEventListener('click', function() {
             const triageValue = triageTimeInput.value;
             
@@ -133,21 +188,14 @@
                 return;
             }
 
-            // 將輸入的字串轉換為時間戳記
             const triageTimestamp = new Date(triageValue).getTime();
-
-            // 顯示 DTN 區塊
             dtnContainer.style.display = 'block';
 
-            // 清除之前的計時器（避免重複點擊 Start 造成多個計時器疊加）
             if (timerInterval) {
                 clearInterval(timerInterval);
             }
 
-            // 點下按鈕的瞬間先執行一次，避免有一秒鐘的空白延遲
             updateClock(triageTimestamp);
-
-            // 設定每 1000 毫秒 (1 秒) 執行一次更新
             timerInterval = setInterval(function() {
                 updateClock(triageTimestamp);
             }, 1000);
