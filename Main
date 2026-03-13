@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Clock</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 20px;
+        }
+        
+        h1 {
+            color: #d32f2f;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        input[type="datetime-local"] {
+            font-size: 18px;
+            padding: 5px;
+            margin-left: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        button {
+            font-size: 20px;
+            padding: 10px 30px;
+            background-color: #0056b3;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: background-color 0.2s;
+        }
+
+        button:hover {
+            background-color: #004494;
+        }
+
+        /* 隱藏一開始不需要顯示的區塊 */
+        #dtn-container {
+            display: none; 
+            margin-top: 30px;
+        }
+
+        h2 {
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* 電子時鐘的樣式設定 */
+        #digital-clock {
+            font-size: 72px; /* 72字體大小 */
+            font-family: 'Courier New', Courier, monospace; /* 類似電子鐘的等寬字體 */
+            background-color: #000; /* 黑色底 */
+            color: #00ff00; /* 螢光綠數字 */
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; /* 螢光發光效果 */
+            display: inline-block;
+            padding: 10px 30px;
+            border-radius: 10px;
+            border: 3px solid #333;
+            letter-spacing: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stroke Clock</h1>
+
+    <div class="input-group">
+        <label for="triage-time">檢傷時間：</label>
+        <input type="datetime-local" id="triage-time" step="1">
+    </div>
+
+    <div>
+        <button id="start-btn">Start!</button>
+    </div>
+
+    <div id="dtn-container">
+        <h2>Door to needle time (DTN)=</h2>
+        <div id="digital-clock">00:00:00</div>
+    </div>
+
+    <script>
+        const startBtn = document.getElementById('start-btn');
+        const triageTimeInput = document.getElementById('triage-time');
+        const dtnContainer = document.getElementById('dtn-container');
+        const digitalClock = document.getElementById('digital-clock');
+        
+        let timerInterval;
+
+        function updateClock(triageTimestamp) {
+            const now = new Date().getTime(); // 取得現在時間的毫秒數
+            let diff = now - triageTimestamp; // 計算時間差
+
+            // 如果檢傷時間設定在未來，則顯示為0或提示錯誤
+            if (diff < 0) {
+                digitalClock.textContent = "時間無效";
+                return;
+            }
+
+            // 將時間差轉換為時、分、秒
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            // 確保數字為兩位數（例如 5 秒會顯示為 05）
+            const formattedHours = String(hours).padStart(2, '0');
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(seconds).padStart(2, '0');
+
+            // 組合輸出並顯示
+            digitalClock.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+        }
+
+        startBtn.addEventListener('click', function() {
+            const triageValue = triageTimeInput.value;
+            
+            if (!triageValue) {
+                alert("請先輸入檢傷時間！");
+                return;
+            }
+
+            // 將輸入的字串轉換為時間戳記
+            const triageTimestamp = new Date(triageValue).getTime();
+
+            // 顯示 DTN 區塊
+            dtnContainer.style.display = 'block';
+
+            // 清除之前的計時器（避免重複點擊 Start 造成多個計時器疊加）
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            // 點下按鈕的瞬間先執行一次，避免有一秒鐘的空白延遲
+            updateClock(triageTimestamp);
+
+            // 設定每 1000 毫秒 (1 秒) 執行一次更新
+            timerInterval = setInterval(function() {
+                updateClock(triageTimestamp);
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
