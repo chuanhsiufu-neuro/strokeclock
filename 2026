@@ -1,1 +1,206 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Clock</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            padding: 30px;
+            text-align: center; /* 讓畫面置中更像一個操作面板 */
+        }
+        
+        h1 {
+            color: #d32f2f;
+            margin-bottom: 5px;
+        }
 
+        .system-time {
+            color: #666;
+            font-size: 18px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        .input-group {
+            margin-bottom: 25px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        label {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* 確保時間下拉選單有足夠的大小讓滑鼠或手指點擊 */
+        input[type="datetime-local"] {
+            font-size: 22px;
+            padding: 8px;
+            margin-left: 10px;
+            margin-right: 10px;
+            border: 2px solid #aaa;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-now {
+            font-size: 16px;
+            padding: 8px 15px;
+            background-color: #6c757d;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-now:hover {
+            background-color: #5a6268;
+        }
+
+        .btn-start {
+            font-size: 28px;
+            font-weight: bold;
+            padding: 15px 50px;
+            background-color: #d32f2f; /* 改為更醒目的紅色啟動鈕 */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+            transition: background-color 0.2s;
+        }
+
+        .btn-start:hover {
+            background-color: #b71c1c;
+        }
+
+        #dtn-container {
+            display: none; 
+            margin-top: 40px;
+        }
+
+        h2 {
+            font-size: 32px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        /* 電子時鐘樣式：黑底螢光字，72級字體 */
+        #digital-clock {
+            font-size: 72px; 
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: #000; 
+            color: #00ff00; 
+            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; 
+            display: inline-block;
+            padding: 15px 40px;
+            border-radius: 12px;
+            border: 4px solid #444;
+            letter-spacing: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Stroke Clock</h1>
+    <div class="system-time">目前系統時間：<span id="current-sys-time">載入中...</span></div>
+
+    <div class="input-group">
+        <label for="triage-time">檢傷時間：</label>
+        <input type="datetime-local" id="triage-time" step="1">
+        <button id="set-now-btn" class="btn-now">設為現在</button>
+    </div>
+
+    <div>
+        <button id="start-btn" class="btn-start">Start!</button>
+    </div>
+
+    <div id="dtn-container">
+        <h2>Door to needle time (DTN) =</h2>
+        <div id="digital-clock">00:00:00</div>
+    </div>
+
+    <script>
+        const sysTimeDisplay = document.getElementById('current-sys-time');
+        const triageTimeInput = document.getElementById('triage-time');
+        const setNowBtn = document.getElementById('set-now-btn');
+        const startBtn = document.getElementById('start-btn');
+        const dtnContainer = document.getElementById('dtn-container');
+        const digitalClock = document.getElementById('digital-clock');
+        
+        let timerInterval;
+
+        // 格式化時間，轉為 datetime-local 接受的格式 (YYYY-MM-DDThh:mm:ss)
+        function getLocalIsoString(date) {
+            const offset = date.getTimezoneOffset() * 60000;
+            return (new Date(date - offset)).toISOString().slice(0, 19);
+        }
+
+        // 持續更新系統時間顯示
+        function updateSystemTime() {
+            const now = new Date();
+            // 顯示 24 小時制的現在時間
+            sysTimeDisplay.textContent = now.toLocaleString('zh-TW', { hour12: false });
+        }
+        setInterval(updateSystemTime, 1000);
+        updateSystemTime();
+
+        // 網頁載入時，自動將檢傷時間帶入「現在時間」
+        triageTimeInput.value = getLocalIsoString(new Date());
+
+        // 點擊「設為現在」按鈕的動作
+        setNowBtn.addEventListener('click', function() {
+            triageTimeInput.value = getLocalIsoString(new Date());
+        });
+
+        // 計算 DTN 的主邏輯
+        function updateClock(triageTimestamp) {
+            const now = new Date().getTime(); 
+            let diff = now - triageTimestamp; 
+
+            if (diff < 0) {
+                digitalClock.textContent = "時間無效";
+                return;
+            }
+
+            const hours = Math.floor(diff / (1000 * 60 * 60));
+            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            const formattedHours = String(hours).padStart(2, '0');
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(seconds).padStart(2, '0');
+
+            digitalClock.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+        }
+
+        // 按下 Start 的動作
+        startBtn.addEventListener('click', function() {
+            const triageValue = triageTimeInput.value;
+            
+            if (!triageValue) {
+                alert("請先輸入檢傷時間！");
+                return;
+            }
+
+            const triageTimestamp = new Date(triageValue).getTime();
+            dtnContainer.style.display = 'block';
+
+            if (timerInterval) {
+                clearInterval(timerInterval);
+            }
+
+            updateClock(triageTimestamp);
+            timerInterval = setInterval(function() {
+                updateClock(triageTimestamp);
+            }, 1000);
+        });
+    </script>
+
+</body>
+</html>
