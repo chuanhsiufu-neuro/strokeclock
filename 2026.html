@@ -5,57 +5,65 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stroke Clock</title>
     <style>
+        /* 手機優先設計 (流動版佈局) */
         body {
             font-family: "Microsoft JhengHei", Arial, sans-serif;
             background-color: #f4f4f9;
             color: #333;
-            padding: 30px;
-            text-align: center; /* 讓畫面置中更像一個操作面板 */
+            padding: 15px; /* 手機上較小的內邊距 */
+            text-align: center; 
+            margin: 0;
         }
         
         h1 {
             color: #d32f2f;
+            margin-top: 10px;
             margin-bottom: 5px;
+            font-size: 28px;
         }
 
         .system-time {
             color: #666;
-            font-size: 18px;
-            margin-bottom: 30px;
+            font-size: 16px;
+            margin-bottom: 25px;
             font-weight: bold;
         }
 
+        /* 調整輸入組在手機上的垂直堆疊佈局 */
         .input-group {
             margin-bottom: 25px;
             display: flex;
-            justify-content: center;
+            flex-direction: column; /* 手機上垂直堆疊 */
             align-items: center;
+            gap: 10px; /* 元素之間的間距 */
         }
 
         label {
-            font-size: 24px;
+            font-size: 20px;
             font-weight: bold;
         }
 
-        /* 確保時間下拉選單有足夠的大小讓滑鼠或手指點擊 */
+        /* 確保時間下拉選單有足夠的大小讓手指點擊，並全寬顯示 */
         input[type="datetime-local"] {
-            font-size: 22px;
-            padding: 8px;
-            margin-left: 10px;
-            margin-right: 10px;
+            font-size: 20px;
+            padding: 10px;
             border: 2px solid #aaa;
             border-radius: 5px;
             cursor: pointer;
+            width: 90%; /* 佔滿大約寬度 */
+            max-width: 350px; /* 防止在寬屏幕上過寬 */
         }
 
         .btn-now {
-            font-size: 16px;
-            padding: 8px 15px;
+            font-size: 18px;
+            padding: 10px 20px;
             background-color: #6c757d;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
+            width: 90%; /* 全寬按鈕，方便點擊 */
+            max-width: 350px;
         }
 
         .btn-now:hover {
@@ -63,16 +71,18 @@
         }
 
         .btn-start {
-            font-size: 28px;
+            font-size: 26px;
             font-weight: bold;
             padding: 15px 50px;
-            background-color: #d32f2f; /* 改為更醒目的紅色啟動鈕 */
+            background-color: #d32f2f; 
             color: white;
             border: none;
             border-radius: 8px;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: background-color 0.2s;
+            width: 90%; /* 全寬啟動鈕 */
+            max-width: 350px;
         }
 
         .btn-start:hover {
@@ -85,23 +95,45 @@
         }
 
         h2 {
-            font-size: 32px;
+            font-size: 28px;
             color: #333;
             margin-bottom: 10px;
         }
 
-        /* 電子時鐘樣式：黑底螢光字，72級字體 */
+        /* 電子時鐘樣式：黑底螢光字，字體大小修改為 96px */
         #digital-clock {
-            font-size: 72px; 
+            font-size: 96px; /* 96字體大小 */
             font-family: 'Courier New', Courier, monospace; 
             background-color: #000; 
             color: #00ff00; 
-            text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00; 
+            text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; 
             display: inline-block;
-            padding: 15px 40px;
-            border-radius: 12px;
-            border: 4px solid #444;
+            padding: 20px 30px;
+            border-radius: 15px;
+            border: 5px solid #444;
             letter-spacing: 5px;
+            width: 90%; /* 時鐘也佔滿寬度 */
+            max-width: 400px;
+            box-sizing: border-box; /* 確保 padding 不增加寬度 */
+        }
+
+        /* 桌面屏幕的佈局微調 */
+        @media (min-width: 600px) {
+            .input-group {
+                flex-direction: row; /* 寬屏幕回歸水平排列 */
+                justify-content: center;
+                gap: 15px;
+            }
+
+            input[type="datetime-local"] {
+                width: auto;
+                max-width: none;
+            }
+
+            .btn-now, .btn-start, #digital-clock {
+                width: auto;
+                max-width: none;
+            }
         }
     </style>
 </head>
@@ -122,7 +154,7 @@
 
     <div id="dtn-container">
         <h2>Door to needle time (DTN) =</h2>
-        <div id="digital-clock">00:00:00</div>
+        <div id="digital-clock">00:00</div>
     </div>
 
     <script>
@@ -141,10 +173,9 @@
             return (new Date(date - offset)).toISOString().slice(0, 19);
         }
 
-        // 持續更新系統時間顯示
+        // 持續更新系統時間顯示 (24 小時制)
         function updateSystemTime() {
             const now = new Date();
-            // 顯示 24 小時制的現在時間
             sysTimeDisplay.textContent = now.toLocaleString('zh-TW', { hour12: false });
         }
         setInterval(updateSystemTime, 1000);
@@ -168,15 +199,18 @@
                 return;
             }
 
-            const hours = Math.floor(diff / (1000 * 60 * 60));
-            const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+            // 修改計算邏輯：不要小時，只顯示分跟秒
+            // 計算總分鐘數（包含小時）
+            const totalMinutes = Math.floor(diff / (1000 * 60));
+            // 計算賸餘秒數
+            const remainingSeconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            const formattedHours = String(hours).padStart(2, '0');
-            const formattedMinutes = String(minutes).padStart(2, '0');
-            const formattedSeconds = String(seconds).padStart(2, '0');
+            // 格式化為兩位數 (分鐘可以超過兩位數，例如 120 分鐘顯示為 120)
+            const formattedMinutes = String(totalMinutes).padStart(2, '0');
+            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
 
-            digitalClock.textContent = `${formattedHours}:${formattedMinutes}:${formattedSeconds}`;
+            // 組合輸出並顯示（分:秒）
+            digitalClock.textContent = `${formattedMinutes}:${formattedSeconds}`;
         }
 
         // 按下 Start 的動作
