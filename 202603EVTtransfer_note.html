@@ -1,0 +1,484 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>轉診資訊生成器 v9.1</title>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; max-width: 800px; margin: 10px auto; padding: 10px; background-color: #f4f4f9; font-size: 15px; }
+        .container { background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
+        h2 { text-align: center; color: #333; margin: 0 0 15px 0; font-size: 1.3em; }
+        
+        .section-title { background-color: #eef; padding: 6px 10px; margin: 15px 0 8px 0; border-radius: 4px; font-weight: bold; color: #004085; border-left: 4px solid #0056b3; font-size: 0.95em; }
+        .row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 8px; }
+        .form-group { display: flex; align-items: center; gap: 5px; flex: 1; min-width: 120px; }
+        .form-group-full { width: 100%; display: flex; align-items: flex-start; gap: 5px; flex-direction: column; margin-bottom: 8px; }
+        
+        label { font-weight: bold; color: #444; white-space: nowrap; font-size: 0.95em; }
+        
+        /* 時間專用行內樣式 */
+        .time-row { display: flex; align-items: center; gap: 10px; width: 100%; margin-bottom: 8px; justify-content: flex-start; }
+        .time-label { flex: 0 0 80px; font-weight: bold; color: #444; }
+        .w-time { width: 230px !important; flex: none; } 
+
+        input[type="text"], input[type="number"], select, input[type="datetime-local"], textarea { 
+            padding: 6px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; box-sizing: border-box; width: 100%;
+        }
+        
+        /* 複選框與勾選區塊 */
+        .cb-group { display: flex; flex-wrap: wrap; gap: 8px; padding: 6px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 4px; width: 100%; box-sizing: border-box; }
+        .cb-label { display: flex; align-items: center; gap: 3px; cursor: pointer; font-size: 0.9em; font-weight: normal; margin: 0; }
+        .cb-label input { margin: 0; width: 16px; height: 16px; cursor: pointer; }
+
+        /* 動態顯示區塊的外框 */
+        .eval-block { border: 1px solid #cce5ff; background-color: #f8fbff; padding: 10px; border-radius: 4px; margin-bottom: 8px; width: 100%; box-sizing: border-box; }
+        
+        /* 值班顯示專用 */
+        .duty-block { background-color: #fff3cd; border: 1px solid #ffeeba; padding: 10px; border-radius: 4px; margin-bottom: 15px; }
+        .duty-text { font-weight: bold; font-size: 1.05em; padding: 4px 8px; background: white; border-radius: 4px; border: 1px solid #ddd; min-width: 90px; text-align: center; }
+        .sheet-link { text-decoration: none; background: #e2e3e5; padding: 3px 8px; border-radius: 4px; font-size: 0.85em; color: #333; margin-left: 5px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); transition: 0.2s; }
+        .sheet-link:hover { background: #d6d8db; }
+
+        .w-sm { width: 70px !important; flex: none; }
+        .w-md { width: 110px !important; flex: none; }
+        .flex-1 { flex: 1; }
+        
+        .score-display { font-weight: bold; color: #d9534f; }
+        .risk-warning { background-color: #e8f4f8; border-left: 4px solid #17a2b8; padding: 8px; margin-bottom: 8px; border-radius: 4px; color: #0c5460; font-size: 0.85em; }
+        
+        /* 底部聲明樣式 */
+        .disclaimer { margin-top: 15px; padding: 12px; background-color: #fff3cd; border: 1px solid #ffeeba; color: #856404; border-radius: 6px; font-size: 0.9em; line-height: 1.5; text-align: center; }
+
+        .btn-area { margin-top: 15px; display: flex; gap: 10px; justify-content: center; }
+        button { flex: 1; max-width: 150px; padding: 10px; border: none; border-radius: 4px; font-size: 15px; cursor: pointer; color: white; }
+        .btn-gen { background-color: #0056b3; }
+        .btn-copy { background-color: #28a745; }
+        .btn-clear { background-color: #6c757d; }
+        
+        #output { margin-top: 15px; padding: 12px; background: #e9ecef; border-left: 4px solid #0056b3; white-space: pre-wrap; font-family: monospace; font-size: 1.05em; line-height: 1.4; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>🏥 轉診資訊生成器</h2>
+    
+    <div class="duty-block">
+        <div style="font-weight: bold; color: #856404; margin-bottom: 8px; display: flex; align-items: center; flex-wrap: wrap; gap: 5px;">
+            📍 當前時段取栓排班
+            <a href="https://docs.google.com/spreadsheets/d/1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130/edit?gid=1484666256#gid=1484666256" target="_blank" class="sheet-link" title="開啟完整班表">📊 班表</a>
+            <span id="duty_status" style="font-size: 0.85em; font-weight: normal; color: #17a2b8;">(連線讀取中...)</span>
+        </div>
+        <div class="row">
+            <label style="color: #d9534f;">第一線</label>
+            <div id="duty_line1" class="duty-text" style="color: #999;">讀取中</div>
+            
+            <label style="color: #f0ad4e;">第二線</label>
+            <div id="duty_line2" class="duty-text" style="color: #999;">讀取中</div>
+        </div>
+    </div>
+
+    <div class="section-title">0. 基本資料</div>
+    <div class="row">
+        <label>轉出醫院</label>
+        <input type="text" id="hosp_out" value="新竹台大" class="w-md" title="僅顯示於開頭問候語">
+        
+        <label>預計轉入醫院</label>
+        <select id="hosp_in" class="w-md">
+            <option value="新竹台大">新竹台大</option>
+            <option value="東元醫院">東元醫院</option>
+            <option value="新竹中國">新竹中國</option>
+            <option value="聯新國際">聯新國際</option>
+            <option value="長庚醫院">長庚醫院</option>
+            <option value="大千醫院">大千醫院</option>
+            <option value="皆可" selected>皆可</option>
+        </select>
+    </div>
+    <div class="row">
+        <label>年齡</label>
+        <input type="number" id="age" class="w-sm" placeholder="歲">
+        <label>性別</label>
+        <select id="gender" class="w-sm">
+            <option value="男">男</option>
+            <option value="女">女</option>
+            <option value=""></option>
+        </select>
+    </div>
+
+    <div class="section-title">1. 時間資訊</div>
+    <div class="time-row">
+        <div class="time-label">症狀發生</div>
+        <input type="datetime-local" id="t_onset" class="w-time">
+    </div>
+    <div class="time-row">
+        <div class="time-label">最後正常</div>
+        <input type="datetime-local" id="t_lkw" class="w-time">
+    </div>
+    <div class="time-row">
+        <div class="time-label">急診檢傷</div>
+        <input type="datetime-local" id="t_ed" class="w-time">
+    </div>
+
+    <div class="section-title">2. 臨床資訊</div>
+    
+    <div class="row">
+        <label>Pre-mRS</label>
+        <select id="mrs" class="flex-1">
+            <option value=""></option>
+            <option value="0">0 (無症狀)</option>
+            <option value="1">1 (無顯著失能)</option>
+            <option value="2">2 (輕度失能, 不用他人協助)</option>
+            <option value="3">3 (中度失能, 日常活動部份協助, 尚能獨立行走)</option>
+            <option value="4">4 (中重度失能, 日常活動/行走皆需協助)</option>
+            <option value="5">5 (重度失能, 日常活動完全依賴, 臥床)</option>
+        </select>
+    </div>
+
+    <div class="form-group-full">
+        <label>簡述症狀與肌力</label>
+        <textarea id="symptoms" rows="2" placeholder="例如: 右側無力 (MP: 2/5)..."></textarea>
+    </div>
+
+    <div class="row" style="background: #e9ecef; padding: 6px; border-radius: 4px;">
+        <label>神經學評估</label>
+        <select id="eval_type" onchange="toggleEvalBlock()" class="flex-1">
+            <option value="NIHSS">NIHSS 評估</option>
+            <option value="GFAST">G-FAST (本院無神內醫師)</option>
+        </select>
+    </div>
+
+    <div id="nihss_block" class="eval-block">
+        <div style="display: flex; gap: 5px; align-items: center;">
+            <label style="color:#004085;">NIHSS <span id="nihss_total_display" class="score-display"></span></label>
+            <input type="text" id="nihss" placeholder="輸入細項(含X自動加總)" oninput="calcNIHSS()" style="flex: 1;">
+        </div>
+    </div>
+
+    <div id="gfast_block" class="eval-block" style="display: none;">
+        <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <label style="color:#004085;">G-FAST = <span id="gfast_display" class="score-display">0</span></label>
+            <div style="display: flex; gap: 8px; flex-wrap: wrap; width: 100%;">
+                <label class="cb-label"><input type="checkbox" class="gfast-cb" onchange="calcGFAST()"> Gaze</label>
+                <label class="cb-label"><input type="checkbox" class="gfast-cb" onchange="calcGFAST()"> Face</label>
+                <label class="cb-label"><input type="checkbox" class="gfast-cb" onchange="calcGFAST()"> Arm (單側/四肢無力)</label>
+                <label class="cb-label"><input type="checkbox" class="gfast-cb" onchange="calcGFAST()"> Speech (口齒不清/失語)</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group-full">
+        <label>過去病史 (可複選)</label>
+        <div class="cb-group">
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="DM"> DM</label>
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="HTN"> HTN</label>
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="Hyperlipidemia"> Hyperlipidemia</label>
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="AF"> AF</label>
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="CAD"> CAD</label>
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="ESRD"> ESRD</label>
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="Active smoker"> Active smoker</label>
+            <label class="cb-label"><input type="checkbox" class="pmh-cb" value="Alcohol"> Alcohol</label>
+            <input type="text" id="pmh_other" placeholder="其他病史..." style="flex: 1; min-width: 100px; padding: 2px 4px;">
+        </div>
+    </div>
+
+    <div class="section-title">3. 檢驗與處置</div>
+    <div class="row" style="gap: 20px;">
+        <div class="form-group" style="flex: 1;">
+            <label>Lab: Cre</label>
+            <input type="text" id="lab_cre" class="w-sm" placeholder="數值">
+        </div>
+        <div class="form-group" style="flex: 2;">
+            <label>其他</label>
+            <input type="text" id="lab_other" placeholder="INR, EKG...">
+        </div>
+    </div>
+    
+    <div class="row">
+        <label>處置: tPA</label>
+        <select id="rtpa_select" class="w-md" onchange="toggleRtpaTime()">
+            <option value="未施打">未施打</option>
+            <option value="0.9 mg/kg">0.9 mg/kg</option>
+            <option value="0.6 mg/kg">0.6 mg/kg</option>
+        </select>
+        <input type="datetime-local" id="rtpa_time" class="w-time" style="display: none;">
+        <input type="text" id="rtpa_text" class="flex-1" placeholder="未打原因或備註">
+    </div>
+
+    <div class="section-title">4. 家屬同意取栓風險及轉院</div>
+    <div class="risk-warning">
+        <strong>說明(參考自聯新國際取栓病解建議)：</strong>取栓可能的風險有麻醉風險、CKD患者腎功能惡化、心肺疾病者拔管困難等。取栓手術可增加神經功能恢復機會，但不保證病人一定能復原，復原不理想者仍可能癱瘓臥床。
+    </div>
+
+    <div class="row">
+        <label>決策家屬</label>
+        <select id="family_select" class="w-sm">
+            <option value="配偶">配偶</option><option value="子女">子女</option>
+            <option value="父母">父母</option><option value="手足">手足</option>
+            <option value="其他">其他</option>
+        </select>
+        <input type="text" id="family_text" class="flex-1" placeholder="備註">
+        
+        <label>同意轉院取栓</label>
+        <select id="consent" class="w-sm">
+            <option value="是">是</option>
+            <option value="考慮中">考慮中</option>
+        </select>
+    </div>
+
+    <div class="disclaimer">
+        此工具為新竹台大為協助桃竹苗地區轉診流程使用AI及免費工具生成的網頁,<br>
+        為了協助資訊傳遞, 請注意避免輸入含病人個資之資訊(如: 姓名/病歷號/電話等), 謝謝合作!
+    </div>
+
+    <div class="btn-area">
+        <button class="btn-gen" onclick="generateText()">生成格式</button>
+        <button class="btn-copy" onclick="copyText()">複製內容</button>
+        <button class="btn-clear" onclick="clearForm()">清除</button>
+    </div>
+
+    <div id="output"></div>
+
+</div>
+
+<script>
+    function getLocalIsoString() {
+        const now = new Date();
+        const tzOffset = now.getTimezoneOffset() * 60000; 
+        const localISOTime = (new Date(now - tzOffset)).toISOString().slice(0, 16);
+        return localISOTime;
+    }
+
+    // --- Google Sheet 班表直接抓取儲存格邏輯 (D3:E4) ---
+    async function fetchDutyHospitals() {
+        const statusText = document.getElementById('duty_status');
+        const line1El = document.getElementById('duty_line1');
+        const line2El = document.getElementById('duty_line2');
+        
+        try {
+            const sheetId = '1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130';
+            const gid = '1484666256';
+            // 直接鎖定範圍 D3 到 E4，一次抓取 08-17 與 17-08 的值
+            const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}&range=D3:E4&headers=0`;
+            
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('Network error');
+            
+            const csvText = await response.text();
+            
+            if (csvText.includes('<html')) throw new Error('Not public');
+            
+            // 解析回傳的 CSV 格式 (去除多餘引號)
+            const rows = csvText.trim().split('\n').map(row => 
+                row.split(',').map(cell => cell.replace(/(^"|"$)/g, '').trim())
+            );
+            
+            // 確認有抓到資料
+            if (rows.length >= 2) {
+                const currentHour = new Date().getHours();
+                
+                // 判斷時段：08:00 到 16:59 為日班，其餘為夜班
+                const isDayShift = (currentHour >= 8 && currentHour < 17);
+                
+                let line1 = '', line2 = '';
+                
+                if (isDayShift) {
+                    // 日班：抓取 D3, E3 (對應陣列第一列)
+                    line1 = rows[0][0] || "無"; 
+                    line2 = rows[0][1] || "無"; 
+                    statusText.innerText = "(載入成功: 08:00-17:00 日班)";
+                } else {
+                    // 夜班：抓取 D4, E4 (對應陣列第二列)
+                    line1 = rows[1][0] || "無"; 
+                    line2 = rows[1][1] || "無"; 
+                    statusText.innerText = "(載入成功: 17:00-08:00 夜班)";
+                }
+                
+                statusText.style.color = "#28a745"; 
+                line1El.innerText = line1;
+                line2El.innerText = line2;
+                line1El.style.color = "#d9534f";
+                line2El.style.color = "#f0ad4e";
+                
+            } else {
+                throw new Error('Format mismatch');
+            }
+        } catch (error) {
+            console.error('Fetch error:', error);
+            statusText.innerText = "(抓取失敗，請手動確認)";
+            statusText.style.color = "red";
+            line1El.innerText = "請查表";
+            line2El.innerText = "請查表";
+            line1El.style.color = "red";
+            line2El.style.color = "red";
+        }
+    }
+
+    window.onload = function() {
+        const defaultTime = getLocalIsoString();
+        document.getElementById('t_onset').value = defaultTime; 
+        document.getElementById('t_ed').value = defaultTime;    
+        document.getElementById('t_lkw').value = '';      
+        
+        fetchDutyHospitals();
+    };
+
+    function toggleEvalBlock() {
+        const evalType = document.getElementById('eval_type').value;
+        document.getElementById('nihss_block').style.display = (evalType === 'NIHSS') ? 'block' : 'none';
+        document.getElementById('gfast_block').style.display = (evalType === 'GFAST') ? 'block' : 'none';
+    }
+
+    function toggleRtpaTime() {
+        const val = document.getElementById('rtpa_select').value;
+        const timeInput = document.getElementById('rtpa_time');
+        const textInput = document.getElementById('rtpa_text');
+        
+        if (val === '0.6 mg/kg' || val === '0.9 mg/kg') {
+            timeInput.style.display = ''; 
+            textInput.placeholder = '備註';
+        } else {
+            timeInput.style.display = 'none'; 
+            timeInput.value = ''; 
+            textInput.placeholder = '未打原因或備註';
+        }
+    }
+
+    function calcGFAST() {
+        const checkboxes = document.querySelectorAll('.gfast-cb');
+        let score = 0;
+        checkboxes.forEach(cb => { if (cb.checked) score++; });
+        document.getElementById('gfast_display').innerText = score;
+        return score;
+    }
+
+    function calcNIHSS() {
+        const input = document.getElementById('nihss').value;
+        let sum = 0, hasX = false;
+        for (let char of input) {
+            if (/[0-9]/.test(char)) sum += parseInt(char);
+            else if (char.toUpperCase() === 'X') hasX = true;
+        }
+        const displayEl = document.getElementById('nihss_total_display');
+        if (input.trim() === "") {
+            displayEl.innerText = ""; return ""; 
+        } else {
+            let resultStr = hasX ? `${sum}+X` : `${sum}`;
+            displayEl.innerText = `(${resultStr}分)`;
+            return ` (${resultStr}分)`;
+        }
+    }
+
+    function formatDT(id) {
+        const val = document.getElementById(id).value;
+        return val ? val.replace('T', ' ') : ""; 
+    }
+
+    function generateText() {
+        const hosp_out = document.getElementById('hosp_out').value || "";
+        const hosp_in = document.getElementById('hosp_in').value || "";
+        const age = document.getElementById('age').value || "";
+        const gender = document.getElementById('gender').value || "";
+
+        const t_onset = formatDT('t_onset');
+        const t_lkw = formatDT('t_lkw');
+        const t_ed = formatDT('t_ed');
+
+        const mrs = document.getElementById('mrs').value || "";
+        const symptoms = document.getElementById('symptoms').value || "";
+        
+        const evalType = document.getElementById('eval_type').value;
+        let evalOutput = "";
+        if (evalType === 'NIHSS') {
+            const nihssRaw = document.getElementById('nihss').value;
+            const nihssScore = calcNIHSS();
+            evalOutput = `   - NIHSS：${nihssRaw}${nihssScore}`;
+        } else if (evalType === 'GFAST') {
+            const gfastScore = calcGFAST();
+            evalOutput = `   - 本院無神內醫師, GFAST= ${gfastScore}`;
+        }
+
+        let pmhArr = [];
+        document.querySelectorAll('.pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
+        const pmhOther = document.getElementById('pmh_other').value;
+        if(pmhOther) pmhArr.push(pmhOther);
+        const historyStr = pmhArr.length > 0 ? pmhArr.join(', ') : "";
+
+        const cre = document.getElementById('lab_cre').value || "";
+        const lab_other = document.getElementById('lab_other').value || "";
+
+        const rtpa_sel = document.getElementById('rtpa_select').value;
+        const rtpa_time_val = formatDT('rtpa_time');
+        const rtpa_txt = document.getElementById('rtpa_text').value;
+        
+        let rtpa_final = rtpa_sel;
+        if (rtpa_time_val) rtpa_final += ` (${rtpa_time_val})`;
+        if (rtpa_txt) rtpa_final += ` ${rtpa_txt}`;
+        rtpa_final = rtpa_final.trim();
+
+        const fam_sel = document.getElementById('family_select').value;
+        const fam_txt = document.getElementById('family_text').value;
+        const fam_final = (fam_sel + " " + fam_txt).trim();
+        const consent = document.getElementById('consent').value || "";
+
+        const intro_text = hosp_out ? `您好，我這邊是${hosp_out}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`;
+
+        const result = `${intro_text}
+預轉入醫院: ${hosp_in}
+0. 基本資料：年齡：${age}，性別：${gender}
+1. 時間資訊：
+   - 症狀發生：${t_onset}
+   - 最後正常：${t_lkw}
+   - 急診檢傷：${t_ed}
+2. 臨床資訊：
+   - Pre-mRS(0~5)：${mrs}
+   - 簡述症狀與肌力：\n     ${symptoms.replace(/\n/g, '\n     ')}
+${evalOutput}
+   - 過去病史：${historyStr}
+3. 檢驗與處置：
+   - Cre: ${cre}，其他: ${lab_other}
+   - 是否施打 tPA：${rtpa_final}
+4. 家屬同意取栓風險及轉院：
+   - 決策家屬：${fam_final}
+   - 是否同意轉院取栓：${consent}`;
+
+        document.getElementById('output').innerText = result;
+    }
+
+    function copyText() {
+        const outputText = document.getElementById('output').innerText;
+        if (!outputText) { alert("請先點擊「生成格式」！"); return; }
+        navigator.clipboard.writeText(outputText).then(() => { alert("已複製到剪貼簿！"); });
+    }
+
+    function clearForm() {
+        document.querySelectorAll('input[type=text], input[type=number], textarea').forEach(el => {
+            if(el.id !== 'hosp_out') el.value = ''; 
+        });
+        document.querySelectorAll('select').forEach(el => {
+            el.selectedIndex = 0;
+        });
+        
+        document.getElementById('hosp_in').value = '皆可';
+
+        document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+        
+        const defaultTime = getLocalIsoString();
+        document.getElementById('t_onset').value = defaultTime;
+        document.getElementById('t_ed').value = defaultTime;
+        document.getElementById('t_lkw').value = '';
+
+        document.getElementById('eval_type').value = 'NIHSS';
+        toggleEvalBlock(); 
+        toggleRtpaTime();
+
+        document.getElementById('gfast_display').innerText = '0';
+        document.getElementById('nihss_total_display').innerText = '';
+        document.getElementById('output').innerText = '';
+        
+        // 清除後重新抓取一次班表狀態
+        fetchDutyHospitals();
+    }
+</script>
+
+</body>
+</html>
