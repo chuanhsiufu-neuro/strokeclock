@@ -81,8 +81,8 @@
         #sidebar {
             position: fixed;
             top: 0;
-            left: -320px; 
-            width: 320px; 
+            left: -330px; 
+            width: 330px; 
             height: 100%;
             background-color: #2c3e50;
             color: white;
@@ -92,6 +92,7 @@
             text-align: left;
             box-sizing: border-box;
             overflow-y: auto;
+            overflow-x: hidden;
         }
 
         #sidebar.open {
@@ -101,6 +102,7 @@
         .sidebar-panel {
             display: none; 
             padding: 20px 0;
+            padding-bottom: 50px; /* 留出底部空間方便滾動 */
         }
 
         .sidebar-panel.active {
@@ -117,206 +119,70 @@
             margin-bottom: 15px;
         }
 
-        .sidebar-item {
-            padding: 10px 20px;
-        }
+        /* 原本時間面板的樣式 */
+        .sidebar-item { padding: 10px 20px; }
+        .sidebar-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
+        .sidebar-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
+        .sidebar-item input[type="datetime-local"] { width: 100%; font-size: 16px; padding: 6px; background-color: #ecf0f1; color: #333; border: none; border-radius: 4px; box-sizing: border-box; }
 
-        .sidebar-item-header {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 8px;
-            font-size: 18px;
-            font-weight: bold;
-            cursor: pointer;
-        }
+        .custom-textarea { width: 100%; height: 200px; border-radius: 5px; padding: 10px; font-size: 16px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; }
 
-        .sidebar-item input[type="checkbox"] {
-            width: 20px;
-            height: 20px;
-            cursor: pointer;
-        }
+        /* ---------------------------------
+           神內面板專用 (轉診資訊生成器)
+        --------------------------------- */
+        .sb-group { padding: 0 15px; margin-bottom: 12px; }
+        .sb-title { background: #34495e; padding: 5px 10px; border-radius: 4px; font-size: 14px; font-weight: bold; color: #3498db; margin-bottom: 8px; border-left: 3px solid #3498db; }
+        .sb-label { display: block; font-size: 13px; color: #bdc3c7; margin-bottom: 4px; }
+        .sb-input, .sb-select, .sb-textarea { width: 100%; padding: 6px; border-radius: 4px; border: none; background: #ecf0f1; color: #333; font-size: 14px; box-sizing: border-box; }
+        .sb-textarea { resize: vertical; }
+        .sb-row { display: flex; gap: 10px; align-items: flex-end; }
+        .sb-row > div { flex: 1; }
+        
+        /* 複選框區塊 */
+        .sb-cb-container { display: flex; flex-wrap: wrap; gap: 6px; background: #1a252f; padding: 8px; border-radius: 4px; }
+        .sb-cb-label { font-size: 13px; display: flex; align-items: center; gap: 4px; color: #ecf0f1; cursor: pointer; margin: 0; }
+        .sb-cb-label input { width: 14px; height: 14px; margin: 0; cursor: pointer; }
+        
+        .score-display { font-weight: bold; color: #e74c3c; margin-left: 5px; }
 
-        .sidebar-item input[type="datetime-local"] {
-            width: 100%;
-            font-size: 16px;
-            padding: 6px;
-            background-color: #ecf0f1;
-            color: #333;
-            border: none;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
+        /* 按鈕區 */
+        .sb-btn-group { display: flex; gap: 8px; padding: 0 15px; margin-top: 15px; }
+        .sb-btn { flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; color: white; transition: 0.2s; }
+        .sb-btn-gen { background-color: #3498db; }
+        .sb-btn-gen:hover { background-color: #2980b9; }
+        .sb-btn-copy { background-color: #2ecc71; }
+        .sb-btn-copy:hover { background-color: #27ae60; }
+        
+        /* 輸出區 */
+        #n-output { margin: 15px 15px 0 15px; padding: 10px; background: #1a252f; border-left: 3px solid #2ecc71; white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #ecf0f1; border-radius: 4px; display: none; }
 
-        .custom-textarea {
-            width: 100%;
-            height: 200px;
-            border-radius: 5px;
-            padding: 10px;
-            font-size: 16px;
-            background-color: #ecf0f1;
-            border: none;
-            box-sizing: border-box;
-            resize: vertical;
-        }
 
         /* ---------------------------------
            主畫面 UI (時鐘與按鈕)
         --------------------------------- */
-        #digital-clock {
-            font-family: 'Courier New', Courier, monospace; 
-            background-color: #000; 
-            color: #00ff00; 
-            text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; 
-            display: none; 
-            padding: 10px 20px 20px 20px;
-            border-radius: 12px;
-            border: 4px solid #444;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            width: 90%; 
-            max-width: 350px;
-            box-sizing: border-box;
-            text-align: center;
-            margin-bottom: 20px;
-        }
+        #digital-clock { font-family: 'Courier New', Courier, monospace; background-color: #000; color: #00ff00; text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; display: none; padding: 10px 20px 20px 20px; border-radius: 12px; border: 4px solid #444; box-shadow: 0 4px 8px rgba(0,0,0,0.3); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; margin-bottom: 20px; }
+        #clock-minutes { font-size: 128px; font-weight: bold; display: block; line-height: 1; }
+        #clock-seconds { font-size: 27px; font-weight: normal; display: block; margin-top: 5px; letter-spacing: 2px; }
+        
+        #controls-container { width: 100%; max-width: 400px; padding-top: 10px; margin-top: auto; }
+        .system-time { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
+        .input-group { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
+        .label-container { display: flex; align-items: center; justify-content: center; gap: 8px; }
+        label { font-size: 20px; font-weight: bold; }
+        
+        .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
+        .icon-btn:active { transform: scale(0.9); }
+        input[type="datetime-local"] { font-size: 20px; padding: 10px; border: 2px solid #aaa; border-radius: 5px; cursor: pointer; width: 90%; box-sizing: border-box; }
+        
+        .btn-start { font-size: 24px; font-weight: bold; padding: 12px; background-color: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; width: 90%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: background-color 0.2s; margin-bottom: 20px; }
+        .btn-start:hover { background-color: #b71c1c; }
 
-        #clock-minutes {
-            font-size: 128px; 
-            font-weight: bold;
-            display: block; 
-            line-height: 1; 
-        }
-
-        #clock-seconds {
-            font-size: 27px; 
-            font-weight: normal;
-            display: block; 
-            margin-top: 5px;
-            letter-spacing: 2px;
-        }
-
-        #controls-container {
-            width: 100%;
-            max-width: 400px;
-            padding-top: 10px;
-            margin-top: auto; 
-        }
-
-        .system-time {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 15px;
-            font-weight: bold;
-        }
-
-        .input-group {
-            margin-bottom: 20px;
-            display: flex;
-            flex-direction: column; 
-            align-items: center;
-            gap: 10px;
-        }
-
-        .label-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-        }
-
-        label {
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .icon-btn {
-            font-size: 24px;
-            cursor: pointer;
-            background: none;
-            border: none;
-            padding: 0;
-            margin: 0;
-            transition: transform 0.1s;
-        }
-
-        .icon-btn:active {
-            transform: scale(0.9);
-        }
-
-        input[type="datetime-local"] {
-            font-size: 20px;
-            padding: 10px;
-            border: 2px solid #aaa;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 90%; 
-            box-sizing: border-box;
-        }
-
-        .btn-start {
-            font-size: 24px;
-            font-weight: bold;
-            padding: 12px;
-            background-color: #d32f2f; 
-            color: white;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            width: 90%; 
-            box-shadow: 0 4px 6px rgba(0,0,0,0.2);
-            transition: background-color 0.2s;
-            margin-bottom: 20px;
-        }
-
-        .btn-start:hover {
-            background-color: #b71c1c;
-        }
-
-        /* ---------------------------------
-           指標計算面板 (Metrics Board)
-        --------------------------------- */
-        #metrics-board {
-            background-color: #fff;
-            border: 2px solid #ddd;
-            border-radius: 8px;
-            padding: 15px;
-            width: 90%;
-            margin: 0 auto;
-            text-align: left;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            display: none; /* 按下 Start 後顯示 */
-        }
-
-        .metric-row {
-            display: flex;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px dashed #eee;
-            font-size: 18px;
-            font-weight: bold;
-        }
-
-        .metric-row:last-child {
-            border-bottom: none;
-        }
-
-        .metric-label {
-            color: #333;
-            margin-left: 10px;
-            flex-grow: 1;
-        }
-
-        .metric-label span.sub-text {
-            font-size: 14px;
-            color: #7f8c8d;
-            font-weight: normal;
-        }
-
-        .metric-value {
-            color: #0056b3;
-            min-width: 60px;
-            text-align: right;
-        }
+        #metrics-board { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 15px; width: 90%; margin: 0 auto; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: none; }
+        .metric-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 18px; font-weight: bold; }
+        .metric-row:last-child { border-bottom: none; }
+        .metric-label { color: #333; margin-left: 10px; flex-grow: 1; }
+        .metric-label span.sub-text { font-size: 14px; color: #7f8c8d; font-weight: normal; }
+        .metric-value { color: #0056b3; min-width: 60px; text-align: right; }
     </style>
 </head>
 <body>
@@ -334,57 +200,170 @@
         <div id="panel-time" class="sidebar-panel">
             <h3 class="sidebar-header">時間微調 / 補登</h3>
             <div class="sidebar-item">
-                <label class="sidebar-item-header">
-                    <input type="checkbox" id="cb-ncct">NCCT time
-                </label>
+                <label class="sidebar-item-header"><input type="checkbox" id="cb-ncct">NCCT time</label>
                 <input type="datetime-local" id="time-ncct" step="1">
             </div>
             <div class="sidebar-item">
-                <label class="sidebar-item-header">
-                    <input type="checkbox" id="cb-tpa">tPA Bolus time
-                </label>
+                <label class="sidebar-item-header"><input type="checkbox" id="cb-tpa">tPA Bolus time</label>
                 <input type="datetime-local" id="time-tpa" step="1">
             </div>
             <div class="sidebar-item">
-                <label class="sidebar-item-header">
-                    <input type="checkbox" id="cb-cta">CTA time
-                </label>
+                <label class="sidebar-item-header"><input type="checkbox" id="cb-cta">CTA time</label>
                 <input type="datetime-local" id="time-cta" step="1">
             </div>
             <div class="sidebar-item">
-                <label class="sidebar-item-header">
-                    <input type="checkbox" id="cb-puncture">Puncture time
-                </label>
+                <label class="sidebar-item-header"><input type="checkbox" id="cb-puncture">Puncture time</label>
                 <input type="datetime-local" id="time-puncture" step="1">
             </div>
         </div>
 
         <div id="panel-neuro" class="sidebar-panel">
-            <h3 class="sidebar-header">神內紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea class="custom-textarea" placeholder="在此輸入神內相關評估或處置..."></textarea>
+            <h3 class="sidebar-header">轉診資訊生成</h3>
+            
+            <div class="sb-group">
+                <div class="sb-title">基本資料</div>
+                <div class="sb-row">
+                    <div>
+                        <span class="sb-label">年齡 (歲)</span>
+                        <input type="number" id="n_age" class="sb-input">
+                    </div>
+                    <div>
+                        <span class="sb-label">性別</span>
+                        <select id="n_gender" class="sb-select">
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
             </div>
+
+            <div class="sb-group">
+                <div class="sb-title">時間資訊</div>
+                <span class="sb-label">症狀發生</span>
+                <input type="datetime-local" id="n_onset" class="sb-input" style="margin-bottom: 8px;">
+                <span class="sb-label">最後正常</span>
+                <input type="datetime-local" id="n_lkw" class="sb-input">
+                <span class="sb-label" style="color:#f39c12; margin-top: 5px;">* 急診檢傷 (Door time) 將自動抓取主畫面設定</span>
+            </div>
+
+            <div class="sb-group">
+                <div class="sb-title">臨床資訊</div>
+                <span class="sb-label">Pre-mRS</span>
+                <select id="n_mrs" class="sb-select" style="margin-bottom: 8px;">
+                    <option value=""></option>
+                    <option value="0">0 (無症狀)</option>
+                    <option value="1">1 (無顯著失能)</option>
+                    <option value="2">2 (輕度失能, 不用他人協助)</option>
+                    <option value="3">3 (中度失能, 日常活動部份協助)</option>
+                    <option value="4">4 (中重度失能, 日常皆需協助)</option>
+                    <option value="5">5 (重度失能, 臥床)</option>
+                </select>
+                
+                <span class="sb-label">簡述症狀與肌力</span>
+                <textarea id="n_symptoms" rows="2" class="sb-textarea" placeholder="例如: 右側無力 (MP: 2/5)..." style="margin-bottom: 8px;"></textarea>
+
+                <span class="sb-label">神經學評估</span>
+                <select id="n_eval_type" class="sb-select" style="margin-bottom: 8px;" onchange="toggleNeuroEval()">
+                    <option value="NIHSS">NIHSS 評估</option>
+                    <option value="GFAST">G-FAST (無神內醫師)</option>
+                </select>
+
+                <div id="n_nihss_block" style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
+                    <span class="sb-label">輸入細項 (含X自動加總)<span id="n_nihss_display" class="score-display"></span></span>
+                    <input type="text" id="n_nihss" class="sb-input" placeholder="例如: 21002..." oninput="calcNeuroNIHSS()">
+                </div>
+
+                <div id="n_gfast_block" style="display:none; background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
+                    <span class="sb-label">G-FAST 分數 = <span id="n_gfast_display" class="score-display">0</span></span>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-gfast-cb" onchange="calcNeuroGFAST()"> Gaze</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-gfast-cb" onchange="calcNeuroGFAST()"> Face</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-gfast-cb" onchange="calcNeuroGFAST()"> Arm (單側/四肢)</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-gfast-cb" onchange="calcNeuroGFAST()"> Speech (口齒/失語)</label>
+                </div>
+
+                <span class="sb-label">過去病史</span>
+                <div class="sb-cb-container">
+                    <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="DM"> DM</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="HTN"> HTN</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="Hyperlipidemia"> Hyperlipidemia</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="AF"> AF</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="CAD"> CAD</label>
+                    <input type="text" id="n_pmh_other" class="sb-input" placeholder="其他..." style="margin-top: 4px;">
+                </div>
+            </div>
+
+            <div class="sb-group">
+                <div class="sb-title">檢驗與處置</div>
+                <div class="sb-row" style="margin-bottom: 8px;">
+                    <div style="flex: 0.8;">
+                        <span class="sb-label">Lab: Cre</span>
+                        <input type="text" id="n_cre" class="sb-input" placeholder="數值">
+                    </div>
+                    <div style="flex: 1.2;">
+                        <span class="sb-label">其他 (INR, EKG...)</span>
+                        <input type="text" id="n_lab_other" class="sb-input">
+                    </div>
+                </div>
+                
+                <span class="sb-label">處置: tPA</span>
+                <select id="n_rtpa_sel" class="sb-select" style="margin-bottom: 4px;" onchange="toggleNeuroRtpa()">
+                    <option value=""></option>
+                    <option value="0.6 mg/kg">0.6 mg/kg</option>
+                    <option value="0.9 mg/kg">0.9 mg/kg</option>
+                    <option value="未施打">未施打</option>
+                </select>
+                <input type="datetime-local" id="n_rtpa_time" class="sb-input" style="display: none; margin-bottom: 4px;">
+                <input type="text" id="n_rtpa_text" class="sb-input" placeholder="備註/原因">
+            </div>
+
+            <div class="sb-group">
+                <div class="sb-title">決策與同意</div>
+                <div class="sb-row" style="margin-bottom: 8px;">
+                    <div>
+                        <span class="sb-label">家屬</span>
+                        <select id="n_fam_sel" class="sb-select">
+                            <option value=""></option>
+                            <option value="配偶">配偶</option><option value="子女">子女</option>
+                            <option value="父母">父母</option><option value="手足">手足</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div>
+                        <span class="sb-label">備註</span>
+                        <input type="text" id="n_fam_text" class="sb-input">
+                    </div>
+                </div>
+                <span class="sb-label">同意轉院取栓</span>
+                <select id="n_consent" class="sb-select">
+                    <option value=""></option>
+                    <option value="是">是</option>
+                    <option value="考慮中">考慮中</option>
+                </select>
+            </div>
+
+            <div class="sb-btn-group">
+                <button class="sb-btn sb-btn-gen" onclick="genNeuroText()">📝 生成</button>
+                <button class="sb-btn sb-btn-copy" onclick="copyNeuroText()">📋 複製</button>
+            </div>
+
+            <div id="n-output"></div>
+
         </div>
 
         <div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea class="custom-textarea" placeholder="在此輸入急診交班或生命徵象..."></textarea>
-            </div>
+            <div style="padding: 0 20px;"><textarea class="custom-textarea" placeholder="在此輸入急診交班或生命徵象..."></textarea></div>
         </div>
 
         <div id="panel-np" class="sidebar-panel">
             <h3 class="sidebar-header">NP紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea>
-            </div>
+            <div style="padding: 0 20px;"><textarea class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea></div>
         </div>
 
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea>
-            </div>
+            <div style="padding: 0 20px;"><textarea class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea></div>
         </div>
 
     </div>
@@ -411,35 +390,36 @@
         <button id="start-btn" class="btn-start">Start!</button>
 
         <div id="metrics-board">
-            
             <div class="metric-row">
                 <button class="icon-btn quick-log-btn" data-target="ncct" title="記錄 NCCT 時間">⏰</button>
                 <div class="metric-label">DTCT <span class="sub-text">(NCCT)</span></div>
                 <div class="metric-value" id="val-dtct">--</div>
             </div>
-            
             <div class="metric-row">
                 <button class="icon-btn quick-log-btn" data-target="tpa" title="記錄 tPA Bolus 時間">⏰</button>
                 <div class="metric-label">DTN <span class="sub-text">(tPA)</span></div>
                 <div class="metric-value" id="val-dtn">--</div>
             </div>
-            
             <div class="metric-row">
                 <button class="icon-btn quick-log-btn" data-target="cta" title="記錄 CTA 時間">⏰</button>
                 <div class="metric-label">DTA <span class="sub-text">(CTA)</span></div>
                 <div class="metric-value" id="val-dta">--</div>
             </div>
-            
             <div class="metric-row">
                 <button class="icon-btn quick-log-btn" data-target="puncture" title="記錄 Puncture 時間">⏰</button>
                 <div class="metric-label">DTP <span class="sub-text">(Puncture)</span></div>
                 <div class="metric-value" id="val-dtp">--</div>
             </div>
-
         </div>
     </div>
 
     <script>
+        // --------------- 共用時間邏輯 ---------------
+        function getLocalIsoString(date) {
+            const offset = date.getTimezoneOffset() * 60000;
+            return (new Date(date - offset)).toISOString().slice(0, 16); // 取到分鐘
+        }
+
         // --------------- 頁籤 (Tabs) 切換邏輯 ---------------
         const tabBtns = document.querySelectorAll('.tab-btn');
         const sidebar = document.getElementById('sidebar');
@@ -464,8 +444,131 @@
             });
         });
 
+        // --------------- 神內轉診生成器 邏輯 ---------------
+        // 預設帶入現在時間
+        document.getElementById('n_onset').value = getLocalIsoString(new Date());
 
-        // --------------- 時鐘與計算邏輯 ---------------
+        function toggleNeuroEval() {
+            const val = document.getElementById('n_eval_type').value;
+            document.getElementById('n_nihss_block').style.display = (val === 'NIHSS') ? 'block' : 'none';
+            document.getElementById('n_gfast_block').style.display = (val === 'GFAST') ? 'block' : 'none';
+        }
+
+        function toggleNeuroRtpa() {
+            const val = document.getElementById('n_rtpa_sel').value;
+            const timeInput = document.getElementById('n_rtpa_time');
+            if (val === '0.6 mg/kg' || val === '0.9 mg/kg') {
+                timeInput.style.display = 'block';
+            } else {
+                timeInput.style.display = 'none';
+                timeInput.value = '';
+            }
+        }
+
+        function calcNeuroGFAST() {
+            const cbs = document.querySelectorAll('.n-gfast-cb');
+            let score = 0;
+            cbs.forEach(cb => { if (cb.checked) score++; });
+            document.getElementById('n_gfast_display').innerText = score;
+            return score;
+        }
+
+        function calcNeuroNIHSS() {
+            const input = document.getElementById('n_nihss').value;
+            let sum = 0, hasX = false;
+            for (let char of input) {
+                if (/[0-9]/.test(char)) sum += parseInt(char);
+                else if (char.toUpperCase() === 'X') hasX = true;
+            }
+            const displayEl = document.getElementById('n_nihss_display');
+            if (input.trim() === "") {
+                displayEl.innerText = ""; return "";
+            } else {
+                let resultStr = hasX ? `${sum}+X` : `${sum}`;
+                displayEl.innerText = `(${resultStr}分)`;
+                return ` (${resultStr}分)`;
+            }
+        }
+
+        function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
+
+        function genNeuroText() {
+            const age = document.getElementById('n_age').value || "";
+            const gender = document.getElementById('n_gender').value || "";
+
+            const t_onset = formatDT(document.getElementById('n_onset').value);
+            const t_lkw = formatDT(document.getElementById('n_lkw').value);
+            // 自動抓取主畫面的 Door time!
+            const t_ed = formatDT(document.getElementById('door-time').value);
+
+            const mrs = document.getElementById('n_mrs').value || "";
+            const symptoms = document.getElementById('n_symptoms').value || "";
+            
+            const evalType = document.getElementById('n_eval_type').value;
+            let evalOutput = "";
+            if (evalType === 'NIHSS') {
+                const nihssRaw = document.getElementById('n_nihss').value;
+                const nihssScore = calcNeuroNIHSS();
+                evalOutput = `   - NIHSS：${nihssRaw}${nihssScore}`;
+            } else {
+                evalOutput = `   - 本院無神內醫師, GFAST= ${calcNeuroGFAST()}`;
+            }
+
+            let pmhArr = [];
+            document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
+            const pmhOther = document.getElementById('n_pmh_other').value;
+            if(pmhOther) pmhArr.push(pmhOther);
+            const historyStr = pmhArr.length > 0 ? pmhArr.join(', ') : "";
+
+            const cre = document.getElementById('n_cre').value || "";
+            const lab_other = document.getElementById('n_lab_other').value || "";
+
+            const rtpa_sel = document.getElementById('n_rtpa_sel').value;
+            const rtpa_time_val = formatDT(document.getElementById('n_rtpa_time').value);
+            const rtpa_txt = document.getElementById('n_rtpa_text').value;
+            let rtpa_final = `${rtpa_sel} ${rtpa_time_val ? '('+rtpa_time_val+')' : ''} ${rtpa_txt}`.trim();
+
+            const fam_sel = document.getElementById('n_fam_sel').value;
+            const fam_txt = document.getElementById('n_fam_text').value;
+            const fam_final = (fam_sel + " " + fam_txt).trim();
+            const consent = document.getElementById('n_consent').value || "";
+
+            const result = `您好，我這邊有懷疑大血管阻塞個案想評估取栓:
+0. 基本資料：年齡：${age}，性別：${gender}
+1. 時間資訊：
+   - 症狀發生：${t_onset}
+   - 最後正常：${t_lkw}
+   - 急診檢傷(Door)：${t_ed}
+2. 臨床資訊：
+   - Pre-mRS(0~5)：${mrs}
+   - 簡述症狀與肌力：\n     ${symptoms.replace(/\n/g, '\n     ')}
+${evalOutput}
+   - 過去病史：${historyStr}
+3. 檢驗與處置：
+   - Cre: ${cre}，其他: ${lab_other}
+   - 是否施打 tPA：${rtpa_final}
+4. 家屬同意取栓風險及轉院：
+   - 決策家屬：${fam_final}
+   - 是否同意轉院取栓：${consent}`;
+
+            const outBox = document.getElementById('n-output');
+            outBox.innerText = result;
+            outBox.style.display = 'block';
+            
+            // 讓側邊欄捲到底部查看結果
+            document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
+        }
+
+        function copyNeuroText() {
+            const txt = document.getElementById('n-output').innerText;
+            if (!txt) { alert("請先點擊「生成」！"); return; }
+            navigator.clipboard.writeText(txt).then(() => { 
+                alert("已複製轉診單內容！"); 
+            });
+        }
+
+
+        // --------------- 主畫面 時鐘與計算邏輯 ---------------
         const sysTimeDisplay = document.getElementById('current-sys-time');
         const doorTimeInput = document.getElementById('door-time');
         const setDoorNowBtn = document.getElementById('set-door-now');
@@ -476,11 +579,6 @@
         const metricsBoard = document.getElementById('metrics-board');
         
         let timerInterval;
-
-        function getLocalIsoString(date) {
-            const offset = date.getTimezoneOffset() * 60000;
-            return (new Date(date - offset)).toISOString().slice(0, 19);
-        }
 
         function updateSystemTime() {
             const now = new Date();
@@ -496,57 +594,40 @@
             calculateAllMetrics(); 
         });
 
-        // ----------------------------------------------------
-        // 主畫面「一鍵打卡」邏輯 (連動 Sidebar 隱藏欄位)
-        // ----------------------------------------------------
+        // 主畫面「一鍵打卡」邏輯
         const quickLogBtns = document.querySelectorAll('.quick-log-btn');
-        
         quickLogBtns.forEach(btn => {
             btn.addEventListener('click', function() {
-                const target = this.getAttribute('data-target'); // 例如: "ncct"
+                const target = this.getAttribute('data-target'); 
                 const timeInput = document.getElementById(`time-${target}`);
                 const checkbox = document.getElementById(`cb-${target}`);
                 
-                // 1. 抓取現在時間並填入 Sidebar 對應的隱藏輸入框
                 timeInput.value = getLocalIsoString(new Date());
-                // 2. 同步將 Sidebar 對應的 Checkbox 打勾
                 checkbox.checked = true;
                 
-                // 3. 重新計算所有時間差
                 calculateAllMetrics();
                 
-                // 給予使用者一個小小的視覺反饋，讓他知道有按成功
                 this.style.transform = "scale(1.3)";
                 setTimeout(() => { this.style.transform = "scale(1)"; }, 150);
             });
         });
 
-
         // 監聽 Sidebar 時間 Checkbox 與手動修改
         const timeEvents = ['ncct', 'tpa', 'cta', 'puncture'];
-
         timeEvents.forEach(target => {
             const checkbox = document.getElementById(`cb-${target}`);
             const timeInput = document.getElementById(`time-${target}`);
 
             checkbox.addEventListener('change', function() {
-                if (this.checked) {
-                    timeInput.value = getLocalIsoString(new Date());
-                } else {
-                    timeInput.value = "";
-                }
+                if (this.checked) { timeInput.value = getLocalIsoString(new Date()); } 
+                else { timeInput.value = ""; }
                 calculateAllMetrics(); 
             });
-
             timeInput.addEventListener('change', calculateAllMetrics);
         });
 
         doorTimeInput.addEventListener('change', calculateAllMetrics);
 
-
-        // ----------------------------------------------------
-        // 指標計算邏輯 (算出相差分鐘)
-        // ----------------------------------------------------
         function calculateDiffInMinutes(endTimeStr, startTimeStr) {
             if (!endTimeStr || !startTimeStr) return '--';
             const end = new Date(endTimeStr).getTime();
@@ -557,16 +638,12 @@
 
         function calculateAllMetrics() {
             const doorStr = doorTimeInput.value;
-            
             document.getElementById('val-dtct').textContent = calculateDiffInMinutes(document.getElementById('time-ncct').value, doorStr);
             document.getElementById('val-dtn').textContent = calculateDiffInMinutes(document.getElementById('time-tpa').value, doorStr);
             document.getElementById('val-dta').textContent = calculateDiffInMinutes(document.getElementById('time-cta').value, doorStr);
             document.getElementById('val-dtp').textContent = calculateDiffInMinutes(document.getElementById('time-puncture').value, doorStr);
         }
 
-        // ----------------------------------------------------
-        // 碼表計時邏輯
-        // ----------------------------------------------------
         function updateClock(doorTimestamp) {
             const now = new Date().getTime(); 
             let diff = now - doorTimestamp; 
@@ -586,30 +663,18 @@
 
         startBtn.addEventListener('click', function() {
             const doorValue = doorTimeInput.value;
-            
-            if (!doorValue) {
-                alert("請先輸入 Door time！");
-                return;
-            }
+            if (!doorValue) { alert("請先輸入 Door time！"); return; }
 
-            // 按下 Start 後顯示時鐘與下方打卡面板
             digitalClock.style.display = 'block';
             metricsBoard.style.display = 'block';
             
             calculateAllMetrics();
-
             const doorTimestamp = new Date(doorValue).getTime();
 
-            if (timerInterval) {
-                clearInterval(timerInterval);
-            }
-
+            if (timerInterval) clearInterval(timerInterval);
             updateClock(doorTimestamp);
-            timerInterval = setInterval(function() {
-                updateClock(doorTimestamp);
-            }, 1000);
+            timerInterval = setInterval(function() { updateClock(doorTimestamp); }, 1000);
         });
     </script>
-
 </body>
 </html>
