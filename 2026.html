@@ -385,20 +385,6 @@
             </div>
 
             <div class="sb-group">
-                <div class="sb-title orange">檢驗數據</div>
-                <div class="sb-row">
-                    <div style="flex: 0.8;">
-                        <span class="sb-label">Lab: Cre</span>
-                        <input type="text" id="t_cre" class="sb-input" placeholder="數值">
-                    </div>
-                    <div style="flex: 1.2;">
-                        <span class="sb-label">其他 (INR, EKG...)</span>
-                        <input type="text" id="t_lab_other" class="sb-input">
-                    </div>
-                </div>
-            </div>
-
-            <div class="sb-group">
                 <div class="sb-title orange">決策與同意</div>
                 <div class="sb-row" style="margin-bottom: 8px;">
                     <div>
@@ -710,8 +696,8 @@
                 enableGfast: document.getElementById('enable_gfast').checked,
                 erGfast: document.getElementById('er_gfast_display').innerText,
                 pmhList: pmhArr.length > 0 ? pmhArr : [],
-                cre: document.getElementById('t_cre').value || document.getElementById('n_cre').value || "",
-                labOther: document.getElementById('t_lab_other').value || document.getElementById('n_lab_other').value || "",
+                cre: document.getElementById('n_cre').value || "",
+                labOther: document.getElementById('n_lab_other').value || "",
                 rtpaSel: document.getElementById('n_rtpa_sel').value,
                 rtpaText: document.getElementById('n_rtpa_text').value,
                 tpaBolusDose: document.getElementById('n_tpa_bolus').value || "",
@@ -747,7 +733,11 @@
             if (d.ncctChecked) imageBlock += `Brain NCCT: ${d.ncctDesc}\n`;
             if (d.ctaChecked) imageBlock += `Brain CTA: ${d.ctaDesc}\n`;
             
-            let gfastAddon = d.enableGfast ? `\nGFAST: ${d.erGfast}` : '';
+            let neuroStr = "";
+            if (d.nihssRaw) neuroStr += `NIHSS: ${d.nihssRaw}${d.nihssScore}\n`;
+            if (d.enableGfast) neuroStr += `GFAST: ${d.erGfast}\n`;
+
+            let evalImageStr = `${neuroStr}${imageBlock}`.trim();
 
             const result = `[Consultation note]
 This is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of
@@ -758,8 +748,7 @@ LNT: ${d.lkw}
 Onset/Found abnormal: ${d.onset}
 Symptoms:
 ${d.symptoms}
-NIHSS: ${d.nihssRaw}${d.nihssScore}${gfastAddon}
-${imageBlock.trim()}
+${evalImageStr}
 
 ${tpaBlock}`;
 
@@ -788,9 +777,15 @@ ${tpaBlock}`;
             if (d.ncctChecked) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
             if (d.ctaChecked) imageLine += `\n   - brain CTA: ${d.ctaDesc}`;
             
-            // 神經學評估條件生成 (有打勾 GFAST 才會秀出來)
-            let neuroEval = `NIHSS=${d.nihssRaw}${d.nihssScore}`;
-            if (d.enableGfast) { neuroEval += ` / GFAST=${d.erGfast}`; }
+            // 神經學評估條件生成 (有填 NIHSS 或是勾選 GFAST 才會秀出來)
+            let neuroEvalParts = [];
+            if (d.nihssRaw) neuroEvalParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore}`);
+            if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast}`);
+            
+            let neuroEvalLine = '';
+            if (neuroEvalParts.length > 0) {
+                neuroEvalLine = `\n   - 神經學評估：${neuroEvalParts.join(' / ')}`;
+            }
 
             let fam_final = (d.famSel + " " + d.famText).trim();
             const intro = d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`;
@@ -804,8 +799,7 @@ ${tpaBlock}`;
    - 急診檢傷(Door)：${d.door}
 2. 臨床資訊：
    - Pre-mRS(0~5)：${d.mrs}
-   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}
-   - 神經學評估：${neuroEval}
+   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}
    - 過去病史：${pmhStr}${imageLine}
 3. 檢驗與處置：
    - Cre: ${d.cre}，其他: ${d.labOther}
