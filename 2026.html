@@ -103,7 +103,7 @@
         #clock-minutes { font-size: 128px; font-weight: bold; display: block; line-height: 1; }
         #clock-seconds { font-size: 27px; font-weight: normal; display: block; margin-top: 5px; letter-spacing: 2px; }
         
-        /* 第二電子鐘 (Onset time till now) */
+        /* 第二電子鐘 (Time from symptoms onset) */
         #onset-clock-container { display: none; flex-direction: column; align-items: center; margin-bottom: 20px; width: 100%; }
         #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; }
         #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 32px; font-weight: bold; padding: 8px 20px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; }
@@ -111,11 +111,23 @@
         #controls-container { width: 100%; max-width: 400px; padding-top: 10px; margin-top: auto; }
         .system-time { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
         
-        /* 主畫面：縮小為16px的時間輸入區塊 */
+        /* 主畫面：縮小為16px的時間輸入區塊 (字體黑色粗體) */
         .main-time-container { width: 90%; max-width: 380px; margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 8px; }
         .main-time-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .main-time-row label { font-size: 16px; font-weight: bold; margin: 0; display: flex; align-items: center; gap: 5px; color: #333; }
-        .main-time-row input[type="datetime-local"] { font-size: 16px; padding: 4px 6px; border: 1px solid #aaa; border-radius: 5px; cursor: pointer; width: 185px; box-sizing: border-box; }
+        .main-time-row input[type="datetime-local"] { 
+            font-size: 16px; 
+            padding: 4px 6px; 
+            border: 1px solid #aaa; 
+            border-radius: 5px; 
+            cursor: pointer; 
+            width: 195px; 
+            box-sizing: border-box; 
+            color: #000;          /* 強制黑色字體 */
+            font-weight: bold;    /* 加粗符合系統時間風格 */
+            font-family: inherit; /* 使用同樣字體 */
+        }
+        
         .icon-btn.small { font-size: 18px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
         .icon-btn.small:active { transform: scale(0.9); }
         .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
@@ -140,6 +152,7 @@
         <button class="tab-btn" data-target="panel-er">急診</button>
         <button class="tab-btn" data-target="panel-np">NP</button>
         <button class="tab-btn" data-target="panel-nurse">護理</button>
+        <button class="tab-btn" data-target="panel-evt">取栓</button>
         <button class="tab-btn" data-target="panel-transfer">轉診</button>
     </div>
 
@@ -280,7 +293,7 @@
                 <select id="n_rtpa_sel" class="sb-select" style="margin-bottom: 4px;" onchange="toggleNeuroRtpa()">
                     <option value=""></option>
                     <option value="0.6 mg/kg">0.6 mg/kg</option>
-                    <option value="0.9 mg/kg">0.9 mg/kg</option>
+                    <option value="0.9 mg/kg" selected>0.9 mg/kg</option>
                     <option value="未施打">未施打</option>
                 </select>
                 <div id="tpa_dose_wrap" style="display:none; gap: 6px; margin-bottom: 4px;" class="sb-row">
@@ -324,6 +337,11 @@
             <div style="padding: 0 20px;"><textarea class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea></div>
         </div>
 
+        <div id="panel-evt" class="sidebar-panel">
+            <h3 class="sidebar-header">取栓紀錄</h3>
+            <div style="padding: 0 20px;"><textarea class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea></div>
+        </div>
+
         <div id="panel-transfer" class="sidebar-panel">
             <h3 class="sidebar-header">轉診資訊生成</h3>
             
@@ -364,6 +382,20 @@
                             <option value="長庚醫院">長庚醫院</option>
                             <option value="皆可" selected>皆可</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sb-group">
+                <div class="sb-title orange">檢驗數據</div>
+                <div class="sb-row">
+                    <div style="flex: 0.8;">
+                        <span class="sb-label">Lab: Cre</span>
+                        <input type="text" id="t_cre" class="sb-input" placeholder="數值">
+                    </div>
+                    <div style="flex: 1.2;">
+                        <span class="sb-label">其他 (INR, EKG...)</span>
+                        <input type="text" id="t_lab_other" class="sb-input">
                     </div>
                 </div>
             </div>
@@ -412,7 +444,7 @@
     </div>
 
     <div id="onset-clock-container">
-        <div id="onset-clock-title">Onset time till now</div>
+        <div id="onset-clock-title">Time from symptoms onset</div>
         <div id="onset-clock">
             <span id="onset-clock-display">00:00:00</span>
         </div>
@@ -598,6 +630,9 @@
             }
         }
 
+        // 初始化執行一次，確保預設的 0.9 mg/kg 會展開對應欄位
+        toggleNeuroRtpa();
+
         function toggleImageDesc() {
             const ncctChecked = document.getElementById('cb-ncct').checked;
             const ctaChecked = document.getElementById('cb-cta').checked;
@@ -651,8 +686,8 @@
                 nihssScore: document.getElementById('n_nihss_display').innerText,
                 erGfast: document.getElementById('er_gfast_display').innerText,
                 pmhList: pmhArr.length > 0 ? pmhArr : [],
-                cre: document.getElementById('n_cre').value || "",
-                labOther: document.getElementById('n_lab_other').value || "",
+                cre: document.getElementById('t_cre').value || "",
+                labOther: document.getElementById('t_lab_other').value || "",
                 rtpaSel: document.getElementById('n_rtpa_sel').value,
                 rtpaText: document.getElementById('n_rtpa_text').value,
                 tpaBolusDose: document.getElementById('n_tpa_bolus').value || "",
