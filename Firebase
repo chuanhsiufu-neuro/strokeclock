@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stroke Clock 共同編輯區</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; text-align: center; }
+        textarea { width: 90%; max-width: 500px; height: 200px; font-size: 18px; padding: 10px; }
+    </style>
+</head>
+<body>
+
+    <h2>📝 多人即時同步記事本</h2>
+    <p>任何人在此輸入的內容，都會立刻同步到所有人的畫面上</p>
+    
+    <textarea id="sharedText" placeholder="請開始輸入文字..."></textarea>
+
+    <script type="module">
+        // 1. 引入 Firebase 的核心與資料庫功能
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-database.js";
+
+        // ==========================================
+        // ⚠️ 請將下面這區塊，替換成你畫面上看到的 firebaseConfig ⚠️
+        // ==========================================
+        const firebaseConfig = {
+            apiKey: "AIzaSyAONpteh2AGI6UiseINBOAM...", // 請去 Firebase 複製完整的貼過來
+            authDomain: "strokeclock.firebaseapp.com",
+            projectId: "strokeclock",
+            storageBucket: "strokeclock.appspot.com",
+            messagingSenderId: "976968907961",
+            appId: "你畫面上的 appId"
+        };
+        // ==========================================
+
+        // 3. 啟動 Firebase 與資料庫
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // 4. 設定我們要存取的資料夾路徑 (我們取名為 strokeClockData)
+        const textRef = ref(db, 'strokeClockData/sharedContent');
+        const textArea = document.getElementById('sharedText');
+
+        // 5. 【讀取】當雲端資料有變動時，立刻更新到網頁畫面上
+        onValue(textRef, (snapshot) => {
+            const data = snapshot.val();
+            // 為了避免自己打字打到一半被自己的更新覆蓋，稍微做個判斷
+            if (data !== null && data !== textArea.value) {
+                textArea.value = data;
+            }
+        });
+
+        // 6. 【寫入】當你在文字框打字時，立刻上傳到雲端
+        textArea.addEventListener('input', function() {
+            set(textRef, textArea.value);
+        });
+
+    </script>
+</body>
+</html>
