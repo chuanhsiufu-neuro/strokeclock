@@ -21,51 +21,24 @@
             overflow-x: hidden; 
         }
         
-        h1 {
-            color: #d32f2f;
-            margin-top: 0;
-            margin-bottom: 20px;
-            font-size: 32px;
-        }
+        h1 { color: #d32f2f; margin-top: 0; margin-bottom: 20px; font-size: 32px; }
 
         /* ---------------------------------
            左側固定垂直標籤列 (Tab Bar)
         --------------------------------- */
         #tab-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 45px; 
-            height: 100%;
-            background-color: #1a252f;
-            z-index: 102; 
-            display: flex;
-            flex-direction: column;
-            padding-top: 10px;
-            box-shadow: 2px 0 5px rgba(0,0,0,0.3);
-            overflow-y: auto; /* 若標籤太多可滾動 */
+            position: fixed; top: 0; left: 0; width: 45px; height: 100%;
+            background-color: #1a252f; z-index: 102; display: flex;
+            flex-direction: column; padding-top: 10px; box-shadow: 2px 0 5px rgba(0,0,0,0.3);
+            overflow-y: auto;
         }
-
         .tab-btn {
-            writing-mode: vertical-rl;
-            text-orientation: upright;
-            color: #bdc3c7;
-            background: none;
-            border: none;
-            padding: 20px 0;
-            font-size: 17px;
-            font-weight: bold;
-            cursor: pointer;
-            width: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            letter-spacing: 2px;
-            border-left: 4px solid transparent; 
-            transition: all 0.2s;
-            flex-shrink: 0;
+            writing-mode: vertical-rl; text-orientation: upright; color: #bdc3c7;
+            background: none; border: none; padding: 20px 0; font-size: 17px;
+            font-weight: bold; cursor: pointer; width: 100%; display: flex;
+            align-items: center; justify-content: center; letter-spacing: 2px;
+            border-left: 4px solid transparent; transition: all 0.2s; flex-shrink: 0;
         }
-
         .tab-btn:hover { color: white; background-color: #2c3e50; }
         .tab-btn.active { color: white; background-color: #2c3e50; border-left: 4px solid #d32f2f; }
 
@@ -73,30 +46,16 @@
            側邊隱藏式分頁 (Sidebar) 設計
         --------------------------------- */
         #sidebar {
-            position: fixed;
-            top: 0;
-            left: -330px; 
-            width: 330px; 
-            height: 100%;
-            background-color: #2c3e50;
-            color: white;
-            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
-            transition: left 0.3s ease-in-out;
-            z-index: 101; 
-            text-align: left;
-            box-sizing: border-box;
-            overflow-y: auto;
-            overflow-x: hidden;
+            position: fixed; top: 0; left: -330px; width: 330px; height: 100%;
+            background-color: #2c3e50; color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            transition: left 0.3s ease-in-out; z-index: 101; text-align: left;
+            box-sizing: border-box; overflow-y: auto; overflow-x: hidden;
         }
-
         #sidebar.open { left: 45px; }
-
         .sidebar-panel { display: none; padding: 20px 0; padding-bottom: 50px; }
         .sidebar-panel.active { display: block; }
-
         .sidebar-header { padding: 0 20px; margin-top: 0; color: #ecf0f1; font-size: 22px; border-bottom: 1px solid #34495e; padding-bottom: 10px; margin-bottom: 15px; }
 
-        /* 一般時間面板與輸入框 */
         .sidebar-item { padding: 10px 20px; }
         .sidebar-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .sidebar-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
@@ -115,11 +74,9 @@
         .sb-row { display: flex; gap: 10px; align-items: flex-end; }
         .sb-row > div { flex: 1; }
         
-        /* 複選框區塊 */
         .sb-cb-container { display: flex; flex-wrap: wrap; gap: 6px; background: #1a252f; padding: 8px; border-radius: 4px; }
         .sb-cb-label { font-size: 13px; display: flex; align-items: center; gap: 4px; color: #ecf0f1; cursor: pointer; margin: 0; }
         .sb-cb-label input { width: 14px; height: 14px; margin: 0; cursor: pointer; }
-        
         .score-display { font-weight: bold; color: #e74c3c; margin-left: 5px; }
 
         /* 班表區塊專用 */
@@ -127,25 +84,32 @@
         .duty-text { font-weight: bold; font-size: 14px; padding: 4px 8px; background: #ecf0f1; color: #333; border-radius: 4px; text-align: center; }
         .sheet-link { text-decoration: none; background: #7f8c8d; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: white; margin-left: 5px; }
 
-        /* 按鈕區 */
+        /* 神內排班表格 */
+        .neuro-duty-table { width: 100%; text-align: center; color: #ecf0f1; font-size: 13px; margin-bottom: 10px; border-collapse: collapse; }
+        .neuro-duty-table th { border-bottom: 1px solid #34495e; padding: 4px; font-weight: normal; color: #bdc3c7; }
+        .neuro-duty-table td { padding: 6px 4px; font-weight: bold; }
+
         .sb-btn-group { display: flex; gap: 8px; padding: 0 15px; margin-top: 15px; }
         .sb-btn { flex: 1; padding: 10px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 14px; color: white; transition: 0.2s; }
         .sb-btn-gen { background-color: #3498db; }
         .sb-btn-gen:hover { background-color: #2980b9; }
         .sb-btn-copy { background-color: #2ecc71; }
         .sb-btn-copy:hover { background-color: #27ae60; }
-        
-        /* 輸出區 */
         .output-box { margin: 15px 15px 0 15px; padding: 10px; background: #1a252f; border-left: 3px solid #2ecc71; white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #ecf0f1; border-radius: 4px; display: none; line-height: 1.4; }
-
 
         /* ---------------------------------
            主畫面 UI (時鐘與按鈕)
         --------------------------------- */
-        #digital-clock { font-family: 'Courier New', Courier, monospace; background-color: #000; color: #00ff00; text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; display: none; padding: 10px 20px 20px 20px; border-radius: 12px; border: 4px solid #444; box-shadow: 0 4px 8px rgba(0,0,0,0.3); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; margin-bottom: 20px; }
+        /* 主電子鐘 (Door to Needle) */
+        #digital-clock { font-family: 'Courier New', Courier, monospace; background-color: #000; color: #00ff00; text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; display: none; padding: 10px 20px 20px 20px; border-radius: 12px; border: 4px solid #444; box-shadow: 0 4px 8px rgba(0,0,0,0.3); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; margin-bottom: 15px; }
         #clock-minutes { font-size: 128px; font-weight: bold; display: block; line-height: 1; }
         #clock-seconds { font-size: 27px; font-weight: normal; display: block; margin-top: 5px; letter-spacing: 2px; }
         
+        /* 第二電子鐘 (Onset time till now) */
+        #onset-clock-container { display: none; flex-direction: column; align-items: center; margin-bottom: 25px; width: 100%; }
+        #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; }
+        #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 32px; font-weight: bold; padding: 10px 20px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; }
+
         #controls-container { width: 100%; max-width: 400px; padding-top: 10px; margin-top: auto; }
         .system-time { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
         .input-group { margin-bottom: 20px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
@@ -204,6 +168,36 @@
             <h3 class="sidebar-header">照會資訊</h3>
             
             <div class="sb-group">
+                <div class="duty-block">
+                    <div style="font-weight: bold; color: #3498db; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>📍 本院取栓班表</span>
+                        <a href="https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/edit?usp=drivesdk" target="_blank" class="sheet-link">📊 班表</a>
+                    </div>
+                    <div id="neuro_duty_status" style="font-size: 12px; color: #bdc3c7; margin-bottom: 8px;">(連線讀取中...)</div>
+                    
+                    <table class="neuro-duty-table">
+                        <tr>
+                            <th>時間</th>
+                            <th>8-12</th>
+                            <th>12-17</th>
+                            <th>夜間</th>
+                        </tr>
+                        <tr>
+                            <td style="color: #ecf0f1; font-weight:normal;">取栓醫師</td>
+                            <td id="neuro_dr_m" style="color: #f1c40f;">-</td>
+                            <td id="neuro_dr_a" style="color: #f1c40f;">-</td>
+                            <td id="neuro_dr_n" style="color: #f1c40f;">-</td>
+                        </tr>
+                    </table>
+                    
+                    <div style="font-size:13px; display:flex; justify-content:space-around; background: #2c3e50; padding: 6px; border-radius: 4px;">
+                        <span>放射師: <span id="neuro_rad" style="font-weight:bold; color:#2ecc71;">-</span></span>
+                        <span>護理師: <span id="neuro_nur" style="font-weight:bold; color:#e74c3c;">-</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sb-group">
                 <div class="sb-title">基本資料</div>
                 <div class="sb-row">
                     <div>
@@ -223,15 +217,13 @@
 
             <div class="sb-group">
                 <div class="sb-title">時間資訊</div>
-                <div class="sb-row">
-                    <div>
-                        <span class="sb-label">症狀發生/發現異常</span>
-                        <input type="datetime-local" id="n_onset" class="sb-input">
-                    </div>
-                    <div>
-                        <span class="sb-label">最後正常 (LNT)</span>
-                        <input type="datetime-local" id="n_lkw" class="sb-input">
-                    </div>
+                <div style="margin-bottom: 12px;">
+                    <span class="sb-label" style="font-size: 14px; color:#ecf0f1;">症狀發生/發現異常</span>
+                    <input type="datetime-local" id="n_onset" class="sb-input">
+                </div>
+                <div style="margin-bottom: 8px;">
+                    <span class="sb-label" style="font-size: 20px; font-weight: bold; color:#f1c40f;">最後正常 (LNT)</span>
+                    <input type="datetime-local" id="n_lkw" class="sb-input">
                 </div>
             </div>
 
@@ -257,30 +249,30 @@
                 </div>
 
                 <span class="sb-label">過去病史 (Past history)</span>
-                <div class="sb-cb-container">
+                <div class="sb-cb-container" style="margin-bottom: 8px;">
                     <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="DM"> DM</label>
                     <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="HTN"> HTN</label>
                     <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="Hyperlipidemia"> Hyperlipidemia</label>
                     <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="AF"> AF</label>
                     <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="CAD"> CAD</label>
-                    <label class="sb-cb-label" style="color:#e74c3c;"><input type="checkbox" class="n-pmh-cb" value="ESRD"> ESRD</label>
+                    <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="ESRD"> ESRD</label>
                     <input type="text" id="n_pmh_other" class="sb-input" placeholder="其他..." style="margin-top: 4px;">
+                </div>
+
+                <div id="n_image_block" style="display:none; background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
+                    <div id="n_ncct_wrap" style="display:none; margin-bottom: 6px;">
+                        <span class="sb-label" style="color:#2ecc71;">Brain NCCT 影像描述</span>
+                        <input type="text" id="n_ncct_desc" class="sb-input" value="no ICH">
+                    </div>
+                    <div id="n_cta_wrap" style="display:none;">
+                        <span class="sb-label" style="color:#e67e22;">Brain CTA 影像描述</span>
+                        <input type="text" id="n_cta_desc" class="sb-input" placeholder="例如: L't MCA occlusion">
+                    </div>
                 </div>
             </div>
 
             <div class="sb-group">
-                <div class="sb-title">檢驗與處置</div>
-                <div class="sb-row" style="margin-bottom: 8px;">
-                    <div style="flex: 0.8;">
-                        <span class="sb-label">Lab: Cre</span>
-                        <input type="text" id="n_cre" class="sb-input" placeholder="數值">
-                    </div>
-                    <div style="flex: 1.2;">
-                        <span class="sb-label">其他 (INR, EKG...)</span>
-                        <input type="text" id="n_lab_other" class="sb-input">
-                    </div>
-                </div>
-                
+                <div class="sb-title">處置</div>
                 <span class="sb-label">處置: tPA (時間抓取主頁面)</span>
                 <select id="n_rtpa_sel" class="sb-select" style="margin-bottom: 4px;">
                     <option value=""></option>
@@ -300,7 +292,6 @@
 
         <div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
-            
             <div class="sb-group">
                 <div class="sb-title">G-FAST 評估 (無神內醫師)</div>
                 <div style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
@@ -311,7 +302,6 @@
                     <label class="sb-cb-label"><input type="checkbox" class="er-gfast-cb" onchange="calcErGFAST()"> Speech (口齒/失語)</label>
                 </div>
             </div>
-
             <div style="padding: 0 20px;">
                 <textarea class="custom-textarea" placeholder="在此輸入急診交班或生命徵象..."></textarea>
             </div>
@@ -333,7 +323,7 @@
             <div class="sb-group">
                 <div class="duty-block">
                     <div style="font-weight: bold; color: #f39c12; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                        <span>📍 取栓排班</span>
+                        <span>📍 取栓排班 (轉院參考)</span>
                         <a href="https://docs.google.com/spreadsheets/d/1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130/edit?gid=1484666256#gid=1484666256" target="_blank" class="sheet-link">📊 班表</a>
                     </div>
                     <div id="duty_status" style="font-size: 12px; color: #3498db; margin-bottom: 8px;">(連線讀取中...)</div>
@@ -367,6 +357,20 @@
                             <option value="長庚醫院">長庚醫院</option>
                             <option value="皆可" selected>皆可</option>
                         </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sb-group">
+                <div class="sb-title orange">檢驗數據</div>
+                <div class="sb-row">
+                    <div style="flex: 0.8;">
+                        <span class="sb-label">Lab: Cre</span>
+                        <input type="text" id="t_cre" class="sb-input" placeholder="數值">
+                    </div>
+                    <div style="flex: 1.2;">
+                        <span class="sb-label">其他 (INR, EKG...)</span>
+                        <input type="text" id="t_lab_other" class="sb-input">
                     </div>
                 </div>
             </div>
@@ -412,6 +416,13 @@
     <div id="digital-clock">
         <span id="clock-minutes">00</span>
         <span id="clock-seconds">00</span>
+    </div>
+
+    <div id="onset-clock-container">
+        <div id="onset-clock-title">Onset time till now</div>
+        <div id="onset-clock">
+            <span id="onset-clock-display">00:00:00</span>
+        </div>
     </div>
 
     <div id="controls-container">
@@ -481,8 +492,56 @@
             });
         });
 
-        // --------------- Google Sheet 班表抓取 ---------------
-        async function fetchDutyHospitals() {
+        // --------------- 本院取栓班表 (神內) ---------------
+        async function fetchNeuroSchedule() {
+            const statusText = document.getElementById('neuro_duty_status');
+            try {
+                const sheetId = '1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc';
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&range=A:H&headers=0`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const csvText = await response.text();
+                
+                const rows = csvText.trim().split('\n').map(row => 
+                    row.split(',').map(cell => cell.replace(/(^"|"$)/g, '').trim())
+                );
+                
+                const today = new Date();
+                const y = today.getFullYear();
+                const m = today.getMonth() + 1;
+                const d = today.getDate();
+                const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
+                
+                let foundRow = null;
+                for (let r of rows) {
+                    if (r[0] && possibleDates.some(pd => r[0].includes(pd))) {
+                        foundRow = r;
+                        break;
+                    }
+                }
+                
+                if (foundRow) {
+                    document.getElementById('neuro_dr_m').innerText = foundRow[3] || "-"; // D: 8-12
+                    document.getElementById('neuro_dr_a').innerText = foundRow[4] || "-"; // E: 12-17
+                    document.getElementById('neuro_dr_n').innerText = foundRow[5] || "-"; // F: 夜間
+                    document.getElementById('neuro_rad').innerText = foundRow[6] || "-"; // G: 放射師
+                    document.getElementById('neuro_nur').innerText = foundRow[7] || "-"; // H: 護理師
+                    statusText.innerText = `(載入成功: ${y}/${m}/${d})`;
+                    statusText.style.color = "#2ecc71";
+                } else {
+                    statusText.innerText = `(找不到 ${y}/${m}/${d} 的排班)`;
+                    statusText.style.color = "#e74c3c";
+                }
+            } catch (error) {
+                console.error('Fetch neuro schedule error:', error);
+                statusText.innerText = "(抓取失敗)";
+                statusText.style.color = "#e74c3c";
+            }
+        }
+        fetchNeuroSchedule();
+
+        // --------------- Google Sheet 轉診班表抓取 ---------------
+        async function fetchTransferSchedule() {
             const statusText = document.getElementById('duty_status');
             const line1El = document.getElementById('duty_line1');
             const line2El = document.getElementById('duty_line2');
@@ -503,30 +562,33 @@
                 if (rows.length >= 2) {
                     const currentHour = new Date().getHours();
                     const isDayShift = (currentHour >= 8 && currentHour < 17);
-                    
                     if (isDayShift) {
-                        line1El.innerText = rows[0][0] || "無"; 
-                        line2El.innerText = rows[0][1] || "無"; 
+                        line1El.innerText = rows[0][0] || "無"; line2El.innerText = rows[0][1] || "無"; 
                         statusText.innerText = "(載入成功: 日班)";
                     } else {
-                        line1El.innerText = rows[1][0] || "無"; 
-                        line2El.innerText = rows[1][1] || "無"; 
+                        line1El.innerText = rows[1][0] || "無"; line2El.innerText = rows[1][1] || "無"; 
                         statusText.innerText = "(載入成功: 夜班)";
                     }
                     statusText.style.color = "#2ecc71"; 
                 } else { throw new Error('Format mismatch'); }
             } catch (error) {
                 console.error('Fetch error:', error);
-                statusText.innerText = "(抓取失敗)";
-                statusText.style.color = "#e74c3c";
+                statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c";
                 line1El.innerText = "請查表"; line2El.innerText = "請查表";
             }
         }
-        fetchDutyHospitals();
+        fetchTransferSchedule();
 
+        // --------------- 影像欄位連動顯示邏輯 ---------------
+        function toggleImageDesc() {
+            const ncctChecked = document.getElementById('cb-ncct').checked;
+            const ctaChecked = document.getElementById('cb-cta').checked;
+            document.getElementById('n_ncct_wrap').style.display = ncctChecked ? 'block' : 'none';
+            document.getElementById('n_cta_wrap').style.display = ctaChecked ? 'block' : 'none';
+            document.getElementById('n_image_block').style.display = (ncctChecked || ctaChecked) ? 'block' : 'none';
+        }
 
         // --------------- 計算分數與資料邏輯 ---------------
-        // 預設帶入現在時間
         document.getElementById('n_onset').value = getLocalIsoString(new Date());
 
         function calcNeuroNIHSS() {
@@ -553,7 +615,6 @@
             return score;
         }
 
-        // 收集所有表單共用資料的函數
         function getFormData() {
             let pmhArr = [];
             document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
@@ -562,7 +623,7 @@
             
             return {
                 age: document.getElementById('n_age').value || "",
-                gender: document.getElementById('n_gender').value, // 男 / 女
+                gender: document.getElementById('n_gender').value,
                 onset: formatDT(document.getElementById('n_onset').value),
                 lkw: formatDT(document.getElementById('n_lkw').value),
                 door: formatDT(document.getElementById('door-time').value),
@@ -572,11 +633,15 @@
                 nihssScore: document.getElementById('n_nihss_display').innerText,
                 erGfast: document.getElementById('er_gfast_display').innerText,
                 pmhList: pmhArr.length > 0 ? pmhArr : [],
-                cre: document.getElementById('n_cre').value || "",
-                labOther: document.getElementById('n_lab_other').value || "",
+                cre: document.getElementById('t_cre').value || "",
+                labOther: document.getElementById('t_lab_other').value || "",
                 rtpaSel: document.getElementById('n_rtpa_sel').value,
                 rtpaText: document.getElementById('n_rtpa_text').value,
                 tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
+                ncctChecked: document.getElementById('cb-ncct').checked,
+                ncctDesc: document.getElementById('n_ncct_desc').value,
+                ctaChecked: document.getElementById('cb-cta').checked,
+                ctaDesc: document.getElementById('n_cta_desc').value,
                 famSel: document.getElementById('t_fam_sel').value,
                 famText: document.getElementById('t_fam_text').value,
                 consent: document.getElementById('t_consent').value || "",
@@ -599,6 +664,10 @@
                 tpaBlock = `tPA not given due to ${d.rtpaText}`;
             }
 
+            let imageBlock = '';
+            if (d.ncctChecked) imageBlock += `Brain NCCT: ${d.ncctDesc}\n`;
+            if (d.ctaChecked) imageBlock += `Brain CTA: ${d.ctaDesc}\n`;
+
             const result = `[Consultation note]
 This is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of
 ${pmhStr}
@@ -609,13 +678,12 @@ Onset/Found abnormal: ${d.onset}
 Symptoms:
 ${d.symptoms}
 NIHSS: ${d.nihssRaw}${d.nihssScore}
-Brain NCCT: no ICH
-Brain CTA: 
+${imageBlock.trim()}
 
 ${tpaBlock}`;
 
             const outBox = document.getElementById('c-output');
-            outBox.innerText = result;
+            outBox.innerText = result.trim();
             outBox.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
@@ -626,7 +694,6 @@ ${tpaBlock}`;
             
             let pmhStr = d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
             
-            // 處理 tPA 字串
             let rtpa_final = d.rtpaSel;
             if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') {
                 if (d.tpaBolusTime) rtpa_final += ` (${d.tpaBolusTime})`;
@@ -636,12 +703,16 @@ ${tpaBlock}`;
             }
             rtpa_final = rtpa_final.trim();
 
+            let imageLine = '';
+            if (d.ncctChecked) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
+            if (d.ctaChecked) imageLine += `\n   - brain CTA: ${d.ctaDesc}`;
+
             let fam_final = (d.famSel + " " + d.famText).trim();
             const intro = d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`;
 
             const result = `${intro}
 預轉入醫院: ${d.hospIn}
-0. 基本資料：年齡：${d.age}，性別：${d.gender}
+0. 基本基本資料：年齡：${d.age}，性別：${d.gender}
 1. 時間資訊：
    - 症狀發生/發現異常：${d.onset}
    - 最後正常(LNT)：${d.lkw}
@@ -650,7 +721,7 @@ ${tpaBlock}`;
    - Pre-mRS(0~5)：${d.mrs}
    - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}
    - 神經學評估：NIHSS=${d.nihssRaw}${d.nihssScore} / GFAST=${d.erGfast}
-   - 過去病史：${pmhStr}
+   - 過去病史：${pmhStr}${imageLine}
 3. 檢驗與處置：
    - Cre: ${d.cre}，其他: ${d.labOther}
    - 是否施打 tPA：${rtpa_final}
@@ -664,22 +735,25 @@ ${tpaBlock}`;
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
 
-        // --------------- 複製功能 ---------------
         function copyBoxText(elementId) {
             const txt = document.getElementById(elementId).innerText;
             if (!txt) { alert("請先點擊「生成」！"); return; }
             navigator.clipboard.writeText(txt).then(() => { alert("已複製內容！"); });
         }
 
-
         // --------------- 主畫面 時鐘與計算邏輯 ---------------
         const sysTimeDisplay = document.getElementById('current-sys-time');
         const doorTimeInput = document.getElementById('door-time');
         const setDoorNowBtn = document.getElementById('set-door-now');
         const startBtn = document.getElementById('start-btn');
+        
         const digitalClock = document.getElementById('digital-clock');
         const clockMinutes = document.getElementById('clock-minutes');
         const clockSeconds = document.getElementById('clock-seconds');
+        
+        const onsetClockContainer = document.getElementById('onset-clock-container');
+        const onsetClockDisplay = document.getElementById('onset-clock-display');
+        
         const metricsBoard = document.getElementById('metrics-board');
         let timerInterval;
 
@@ -705,6 +779,9 @@ ${tpaBlock}`;
                 const checkbox = document.getElementById(`cb-${target}`);
                 timeInput.value = getLocalIsoString(new Date());
                 checkbox.checked = true;
+                
+                if(target === 'ncct' || target === 'cta') toggleImageDesc();
+
                 calculateAllMetrics();
                 this.style.transform = "scale(1.3)";
                 setTimeout(() => { this.style.transform = "scale(1)"; }, 150);
@@ -718,6 +795,9 @@ ${tpaBlock}`;
             checkbox.addEventListener('change', function() {
                 if (this.checked) { timeInput.value = getLocalIsoString(new Date()); } 
                 else { timeInput.value = ""; }
+                
+                if(target === 'ncct' || target === 'cta') toggleImageDesc();
+
                 calculateAllMetrics(); 
             });
             timeInput.addEventListener('change', calculateAllMetrics);
@@ -741,7 +821,8 @@ ${tpaBlock}`;
             document.getElementById('val-dtp').textContent = calculateDiffInMinutes(document.getElementById('time-puncture').value, doorStr);
         }
 
-        function updateClock(doorTimestamp) {
+        // 主時鐘邏輯 (Door to Needle)
+        function updateMainClock(doorTimestamp) {
             const now = new Date().getTime(); 
             let diff = now - doorTimestamp; 
             if (diff < 0) {
@@ -753,16 +834,62 @@ ${tpaBlock}`;
             clockSeconds.textContent = String(remainingSeconds).padStart(2, '0');
         }
 
+        // 第二時鐘邏輯 (Onset till now)
+        function updateOnsetClock() {
+            let lntVal = document.getElementById('n_lkw').value;
+            let onsetVal = document.getElementById('n_onset').value;
+            
+            // 優先抓 LNT，沒有就抓 Onset
+            let targetTimeVal = lntVal ? lntVal : onsetVal;
+
+            if (!targetTimeVal) {
+                onsetClockDisplay.textContent = "未設定時間";
+                return;
+            }
+
+            let targetTime = new Date(targetTimeVal).getTime();
+            let now = new Date().getTime();
+            let diff = now - targetTime;
+
+            if (diff < 0) {
+                onsetClockDisplay.textContent = "時間設定在未來";
+                return;
+            }
+
+            let hours = Math.floor(diff / (1000 * 60 * 60));
+            let minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+            let seconds = Math.floor((diff % (1000 * 60)) / 1000);
+
+            let hh = String(hours).padStart(2, '0');
+            let mm = String(minutes).padStart(2, '0');
+            let ss = String(seconds).padStart(2, '0');
+
+            onsetClockDisplay.textContent = `${hh}:${mm}:${ss}`;
+        }
+
         startBtn.addEventListener('click', function() {
             const doorValue = doorTimeInput.value;
             if (!doorValue) { alert("請先輸入 Door time！"); return; }
+            
+            // 顯示兩個時鐘與指標面板
             digitalClock.style.display = 'block';
+            onsetClockContainer.style.display = 'flex';
             metricsBoard.style.display = 'block';
+            
             calculateAllMetrics();
+            
             const doorTimestamp = new Date(doorValue).getTime();
+
             if (timerInterval) clearInterval(timerInterval);
-            updateClock(doorTimestamp);
-            timerInterval = setInterval(function() { updateClock(doorTimestamp); }, 1000);
+            
+            // 立即執行一次避免延遲
+            updateMainClock(doorTimestamp);
+            updateOnsetClock();
+            
+            timerInterval = setInterval(function() { 
+                updateMainClock(doorTimestamp); 
+                updateOnsetClock();
+            }, 1000);
         });
     </script>
 </body>
