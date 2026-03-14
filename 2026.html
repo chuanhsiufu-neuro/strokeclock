@@ -18,32 +18,17 @@
             align-items: center;
             min-height: 100vh;
             box-sizing: border-box;
+            overflow-x: hidden; /* 防止側邊欄造成畫面左右滑動 */
         }
         
         h1 {
             color: #d32f2f;
             margin-top: 0;
-            margin-bottom: 5px;
+            margin-bottom: 20px;
             font-size: 32px;
         }
 
-        /* DTN 結果區域 (最上方) */
-        #dtn-container {
-            width: 100%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        h2 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 10px;
-            font-weight: bold;
-        }
-
-        /* 電子時鐘樣式：黑底螢光字 */
+        /* 時鐘區域 */
         #digital-clock {
             font-family: 'Courier New', Courier, monospace; 
             background-color: #000; 
@@ -58,32 +43,33 @@
             max-width: 350px;
             box-sizing: border-box;
             text-align: center;
+            margin-bottom: 20px;
+            position: relative;
+            z-index: 1; /* 確保在底層 */
         }
 
-        /* 分鐘樣式：96pt (大約 128px) */
         #clock-minutes {
             font-size: 128px; 
             font-weight: bold;
-            display: block; /* 換行 */
-            line-height: 1; /* 縮小行距讓畫面緊湊 */
+            display: block; 
+            line-height: 1; 
         }
 
-        /* 秒鐘樣式：20pt (大約 27px) */
         #clock-seconds {
             font-size: 27px; 
             font-weight: normal;
-            display: block; /* 換行 */
+            display: block; 
             margin-top: 5px;
             letter-spacing: 2px;
         }
 
-        /* 操作介面區域 (最下方) */
+        /* 操作介面區域 */
         #controls-container {
             width: 100%;
             max-width: 400px;
-            border-top: 2px solid #ccc;
-            padding-top: 20px;
-            margin-top: auto; /* 將控制區塊推到畫面最下方 */
+            padding-top: 10px;
+            margin-top: auto; 
+            z-index: 1;
         }
 
         .system-time {
@@ -93,7 +79,7 @@
             font-weight: bold;
         }
 
-        /* 輸入組 */
+        /* Door time 輸入組 */
         .input-group {
             margin-bottom: 20px;
             display: flex;
@@ -102,12 +88,33 @@
             gap: 10px;
         }
 
+        .label-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
         label {
-            font-size: 18px;
+            font-size: 20px;
             font-weight: bold;
         }
 
-        /* 輸入框樣式 */
+        /* 小時鐘圖示按鈕 */
+        .icon-btn {
+            font-size: 24px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            transition: transform 0.2s;
+        }
+
+        .icon-btn:hover {
+            transform: scale(1.2);
+        }
+
         input[type="datetime-local"] {
             font-size: 20px;
             padding: 10px;
@@ -118,23 +125,11 @@
             box-sizing: border-box;
         }
 
-        /* 設為現在按鈕 */
-        .btn-now {
-            font-size: 16px;
-            padding: 10px 15px;
-            background-color: #6c757d;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            width: 90%; 
-        }
-
-        /* 啟動鈕樣式 */
+        /* 啟動鈕 */
         .btn-start {
             font-size: 24px;
             font-weight: bold;
-            padding: 15px;
+            padding: 12px;
             background-color: #d32f2f; 
             color: white;
             border: none;
@@ -143,51 +138,197 @@
             width: 90%; 
             box-shadow: 0 4px 6px rgba(0,0,0,0.2);
             transition: background-color 0.2s;
+            margin-bottom: 20px;
         }
 
         .btn-start:hover {
             background-color: #b71c1c;
         }
+
+        /* 指標顯示區塊 (DTCT, DTN, DTA, DTP) */
+        #metrics-board {
+            background-color: #fff;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            padding: 15px;
+            width: 90%;
+            margin: 0 auto;
+            text-align: left;
+            font-size: 18px;
+            font-weight: bold;
+            line-height: 1.8;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            display: none; /* 按下 Start 或有數據時顯示 */
+        }
+        
+        .metric-item {
+            color: #0056b3;
+        }
+
+        /* ---------------------------------
+           側邊隱藏式分頁 (Sidebar) 設計
+        --------------------------------- */
+        #sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px; /* 預設隱藏在畫面左外側 */
+            width: 320px; /* 寬度足以蓋住時鐘 */
+            height: 100%;
+            background-color: #2c3e50;
+            color: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.5);
+            transition: left 0.3s ease-in-out;
+            z-index: 100; /* 確保蓋在所有元素之上 */
+            text-align: left;
+            padding-top: 50px;
+            box-sizing: border-box;
+        }
+
+        #sidebar.open {
+            left: 0; /* 展開時移入畫面 */
+        }
+
+        /* 側邊欄開關按鈕 (貼在左側邊緣) */
+        #sidebar-toggle {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            background-color: #2c3e50;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 0 8px 8px 0;
+            cursor: pointer;
+            z-index: 101;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+            font-weight: bold;
+            transition: left 0.3s ease-in-out;
+        }
+
+        #sidebar.open ~ #sidebar-toggle {
+            left: 320px; /* 按鈕跟著側邊欄一起推出來 */
+        }
+
+        /* 側邊欄內部項目 */
+        .sidebar-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid #34495e;
+        }
+
+        .sidebar-item-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        /* 隱藏原生 checkbox，自訂點擊區域 */
+        .sidebar-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .sidebar-item input[type="datetime-local"] {
+            width: 100%;
+            font-size: 16px;
+            padding: 6px;
+            background-color: #ecf0f1;
+            color: #333;
+            border: none;
+            border-radius: 4px;
+        }
+
     </style>
 </head>
 <body>
 
+    <div id="sidebar">
+        <h3 style="padding: 0 20px; margin-top: 0; color: #ecf0f1;">時間標記</h3>
+        
+        <div class="sidebar-item">
+            <label class="sidebar-item-header">
+                <input type="checkbox" id="cb-ncct">
+                NCCT time
+            </label>
+            <input type="datetime-local" id="time-ncct" step="1">
+        </div>
+        
+        <div class="sidebar-item">
+            <label class="sidebar-item-header">
+                <input type="checkbox" id="cb-tpa">
+                tPA Bolus time
+            </label>
+            <input type="datetime-local" id="time-tpa" step="1">
+        </div>
+        
+        <div class="sidebar-item">
+            <label class="sidebar-item-header">
+                <input type="checkbox" id="cb-cta">
+                CTA time
+            </label>
+            <input type="datetime-local" id="time-cta" step="1">
+        </div>
+        
+        <div class="sidebar-item">
+            <label class="sidebar-item-header">
+                <input type="checkbox" id="cb-puncture">
+                Puncture time
+            </label>
+            <input type="datetime-local" id="time-puncture" step="1">
+        </div>
+    </div>
+    
+    <div id="sidebar-toggle">☰ 紀錄</div>
+
     <h1>Stroke Clock</h1>
 
-    <div id="dtn-container">
-        <h2>Door to needle time (DTN)</h2>
-        <div id="digital-clock">
-            <span id="clock-minutes">00</span>
-            <span id="clock-seconds">00</span>
-        </div>
+    <div id="digital-clock">
+        <span id="clock-minutes">00</span>
+        <span id="clock-seconds">00</span>
     </div>
 
     <div id="controls-container">
         <div class="system-time">目前系統時間：<span id="current-sys-time">載入中...</span></div>
 
         <div class="input-group">
-            <label for="triage-time">檢傷時間：</label>
-            <input type="datetime-local" id="triage-time" step="1">
-            <button id="set-now-btn" class="btn-now">現在</button>
+            <div class="label-container">
+                <button id="set-now-icon" class="icon-btn" title="設為現在時間">⏰</button>
+                <label for="door-time">Door time：</label>
+            </div>
+            <input type="datetime-local" id="door-time" step="1">
         </div>
 
-        <div>
-            <button id="start-btn" class="btn-start">Start!</button>
+        <button id="start-btn" class="btn-start">Start!</button>
+
+        <div id="metrics-board">
+            <div class="metric-item">DTCT : <span id="val-dtct">--</span></div>
+            <div class="metric-item">DTN : <span id="val-dtn">--</span></div>
+            <div class="metric-item">DTA : <span id="val-dta">--</span></div>
+            <div class="metric-item">DTP : <span id="val-dtp">--</span></div>
         </div>
     </div>
 
     <script>
+        // 取得主要元素
         const sysTimeDisplay = document.getElementById('current-sys-time');
-        const triageTimeInput = document.getElementById('triage-time');
-        const setNowBtn = document.getElementById('set-now-btn');
+        const doorTimeInput = document.getElementById('door-time');
+        const setNowIcon = document.getElementById('set-now-icon');
         const startBtn = document.getElementById('start-btn');
         const digitalClock = document.getElementById('digital-clock');
         const clockMinutes = document.getElementById('clock-minutes');
         const clockSeconds = document.getElementById('clock-seconds');
+        const metricsBoard = document.getElementById('metrics-board');
+        
+        // 側邊欄元素
+        const sidebar = document.getElementById('sidebar');
+        const sidebarToggle = document.getElementById('sidebar-toggle');
         
         let timerInterval;
 
-        // 格式化時間，轉為 datetime-local 接受的格式
+        // 格式化時間 (供 datetime-local 使用)
         function getLocalIsoString(date) {
             const offset = date.getTimezoneOffset() * 60000;
             return (new Date(date - offset)).toISOString().slice(0, 19);
@@ -201,60 +342,128 @@
         setInterval(updateSystemTime, 1000);
         updateSystemTime();
 
-        // 網頁載入時預設帶入現在時間
-        triageTimeInput.value = getLocalIsoString(new Date());
+        // 預設帶入 Door time
+        doorTimeInput.value = getLocalIsoString(new Date());
 
-        setNowBtn.addEventListener('click', function() {
-            triageTimeInput.value = getLocalIsoString(new Date());
+        // 點擊「時鐘圖示⏰」更新 Door time 為現在
+        setNowIcon.addEventListener('click', function() {
+            doorTimeInput.value = getLocalIsoString(new Date());
+            calculateAllMetrics(); // 更新時間後重新計算指標
         });
 
-        // 計算正向讀秒的核心邏輯
-        function updateClock(triageTimestamp) {
-            const now = new Date().getTime(); 
-            let diff = now - triageTimestamp; // 現在時間 減去 檢傷時間
+        // -------------------------
+        // 側邊欄展開/收縮邏輯
+        // -------------------------
+        sidebarToggle.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            // 切換按鈕圖示
+            if (sidebar.classList.contains('open')) {
+                sidebarToggle.innerHTML = "✖ 關閉";
+            } else {
+                sidebarToggle.innerHTML = "☰ 紀錄";
+            }
+        });
 
-            // 如果檢傷時間設在未來，顯示無效
+        // -------------------------
+        // 側邊欄 Checkbox 連動邏輯
+        // -------------------------
+        const timeEvents = [
+            { cb: 'cb-ncct', time: 'time-ncct' },
+            { cb: 'cb-tpa', time: 'time-tpa' },
+            { cb: 'cb-cta', time: 'time-cta' },
+            { cb: 'cb-puncture', time: 'time-puncture' }
+        ];
+
+        timeEvents.forEach(item => {
+            const checkbox = document.getElementById(item.cb);
+            const timeInput = document.getElementById(item.time);
+
+            // 當勾選框改變時
+            checkbox.addEventListener('change', function() {
+                if (this.checked) {
+                    // 勾選時，自動填入當下時間
+                    timeInput.value = getLocalIsoString(new Date());
+                } else {
+                    // 取消勾選時，清空時間
+                    timeInput.value = "";
+                }
+                calculateAllMetrics(); // 即時重算指標
+            });
+
+            // 手動修改時間時，也即時重算指標
+            timeInput.addEventListener('change', calculateAllMetrics);
+        });
+
+        // 監聽 Door time 改變時，重算所有指標
+        doorTimeInput.addEventListener('change', calculateAllMetrics);
+
+        // -------------------------
+        // 指標計算邏輯 (算出相差分鐘)
+        // -------------------------
+        function calculateDiffInMinutes(endTimeStr, startTimeStr) {
+            if (!endTimeStr || !startTimeStr) return '--';
+            const end = new Date(endTimeStr).getTime();
+            const start = new Date(startTimeStr).getTime();
+            const diffMs = end - start;
+            // 回傳分鐘數 (無條件捨去小數點)，並加上單位
+            return Math.floor(diffMs / 60000) + ' 分鐘';
+        }
+
+        function calculateAllMetrics() {
+            const doorStr = doorTimeInput.value;
+            
+            // 計算各項指標
+            document.getElementById('val-dtct').textContent = calculateDiffInMinutes(document.getElementById('time-ncct').value, doorStr);
+            document.getElementById('val-dtn').textContent = calculateDiffInMinutes(document.getElementById('time-tpa').value, doorStr);
+            document.getElementById('val-dta').textContent = calculateDiffInMinutes(document.getElementById('time-cta').value, doorStr);
+            document.getElementById('val-dtp').textContent = calculateDiffInMinutes(document.getElementById('time-puncture').value, doorStr);
+        }
+
+
+        // -------------------------
+        // 碼表計時邏輯 (Start 按鈕)
+        // -------------------------
+        function updateClock(doorTimestamp) {
+            const now = new Date().getTime(); 
+            let diff = now - doorTimestamp; 
+
             if (diff < 0) {
                 clockMinutes.textContent = "00";
                 clockSeconds.textContent = "時間無效";
                 return;
             }
 
-            // 計算經過的總分鐘數與秒數
             const totalMinutes = Math.floor(diff / (1000 * 60));
             const remainingSeconds = Math.floor((diff % (1000 * 60)) / 1000);
 
-            // 確保數字為兩位數（例如 5 顯示為 05）
-            const formattedMinutes = String(totalMinutes).padStart(2, '0');
-            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
-
-            // 顯示在畫面上
-            clockMinutes.textContent = formattedMinutes;
-            clockSeconds.textContent = formattedSeconds;
+            clockMinutes.textContent = String(totalMinutes).padStart(2, '0');
+            clockSeconds.textContent = String(remainingSeconds).padStart(2, '0');
         }
 
-        // 按下 Start 的動作
         startBtn.addEventListener('click', function() {
-            const triageValue = triageTimeInput.value;
+            const doorValue = doorTimeInput.value;
             
-            if (!triageValue) {
-                alert("請先輸入檢傷時間！");
+            if (!doorValue) {
+                alert("請先輸入 Door time！");
                 return;
             }
 
-            const triageTimestamp = new Date(triageValue).getTime();
-            
-            // 顯示時鐘
+            // 顯示時鐘與指標板
             digitalClock.style.display = 'block';
+            metricsBoard.style.display = 'block';
+            
+            // 執行一次指標計算
+            calculateAllMetrics();
+
+            const doorTimestamp = new Date(doorValue).getTime();
 
             if (timerInterval) {
                 clearInterval(timerInterval);
             }
 
-            // 立刻更新一次，並開始每秒讀秒
-            updateClock(triageTimestamp);
+            updateClock(doorTimestamp);
             timerInterval = setInterval(function() {
-                updateClock(triageTimestamp);
+                updateClock(doorTimestamp);
             }, 1000);
         });
     </script>
