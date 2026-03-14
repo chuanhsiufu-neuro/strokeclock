@@ -111,22 +111,15 @@
         #controls-container { width: 100%; max-width: 400px; padding-top: 10px; margin-top: auto; }
         .system-time { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
         
-        /* 主畫面：縮小為16px的時間輸入區塊 (字體黑色粗體) */
+        /* 主畫面：縮小為16px的時間輸入區塊 (客製化時間顯示格式) */
         .main-time-container { width: 90%; max-width: 380px; margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 8px; }
         .main-time-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .main-time-row label { font-size: 16px; font-weight: bold; margin: 0; display: flex; align-items: center; gap: 5px; color: #333; }
-        .main-time-row input[type="datetime-local"] { 
-            font-size: 16px; 
-            padding: 4px 6px; 
-            border: 1px solid #aaa; 
-            border-radius: 5px; 
-            cursor: pointer; 
-            width: 195px; 
-            box-sizing: border-box; 
-            color: #000;          /* 強制黑色字體 */
-            font-weight: bold;    /* 加粗符合系統時間風格 */
-            font-family: inherit; /* 使用同樣字體 */
-        }
+        
+        /* 隱藏原生輸入框，透過疊層顯示自訂格式 */
+        .custom-datetime-wrapper { position: relative; width: 160px; height: 32px; background: #fff; border: 1px solid #aaa; border-radius: 5px; overflow: hidden; }
+        .custom-datetime-display { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #000; pointer-events: none; }
+        .custom-datetime-wrapper input[type="datetime-local"] { width: 100%; height: 100%; opacity: 0; cursor: pointer; box-sizing: border-box; }
         
         .icon-btn.small { font-size: 18px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
         .icon-btn.small:active { transform: scale(0.9); }
@@ -313,8 +306,13 @@
         <div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
             <div class="sb-group">
-                <div class="sb-title">G-FAST 評估 (無神內醫師)</div>
-                <div style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
+                <div class="sb-title">
+                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: #ecf0f1;">
+                        <input type="checkbox" id="enable_gfast" onchange="toggleGfastDetails()" style="width:16px; height:16px;">
+                        G-FAST 評估 (無神內醫師)
+                    </label>
+                </div>
+                <div id="gfast_details" style="display:none; background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
                     <span class="sb-label">分數 = <span id="er_gfast_display" class="score-display">0</span></span>
                     <label class="sb-cb-label"><input type="checkbox" class="er-gfast-cb" onchange="calcErGFAST()"> Gaze</label>
                     <label class="sb-cb-label"><input type="checkbox" class="er-gfast-cb" onchange="calcErGFAST()"> Face</label>
@@ -456,15 +454,24 @@
         <div class="main-time-container">
             <div class="main-time-row">
                 <label>異常發生</label>
-                <input type="datetime-local" id="n_onset" step="1">
+                <div class="custom-datetime-wrapper">
+                    <input type="datetime-local" id="n_onset" step="1">
+                    <div class="custom-datetime-display" id="display_n_onset">--</div>
+                </div>
             </div>
             <div class="main-time-row">
                 <label>最後正常</label>
-                <input type="datetime-local" id="n_lkw" step="1">
+                <div class="custom-datetime-wrapper">
+                    <input type="datetime-local" id="n_lkw" step="1">
+                    <div class="custom-datetime-display" id="display_n_lkw">--</div>
+                </div>
             </div>
             <div class="main-time-row">
                 <label><button id="set-door-now" class="icon-btn small" title="設為現在時間">⏰</button> 檢傷</label>
-                <input type="datetime-local" id="door-time" step="1">
+                <div class="custom-datetime-wrapper">
+                    <input type="datetime-local" id="door-time" step="1">
+                    <div class="custom-datetime-display" id="display_door_time">--</div>
+                </div>
             </div>
         </div>
 
@@ -501,6 +508,19 @@
             return (new Date(date - offset)).toISOString().slice(0, 16); 
         }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
+
+        // 自訂主畫面時間的顯示格式 (YYYY/M/D HH:mm)
+        function updateCustomDateDisplays() {
+            const formatStr = (val) => {
+                if(!val) return "請選擇時間";
+                const d = new Date(val);
+                if(isNaN(d)) return "請選擇時間";
+                return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+            };
+            document.getElementById('display_n_onset').innerText = formatStr(document.getElementById('n_onset').value);
+            document.getElementById('display_n_lkw').innerText = formatStr(document.getElementById('n_lkw').value);
+            document.getElementById('display_door_time').innerText = formatStr(document.getElementById('door-time').value);
+        }
 
         // --------------- 頁籤 (Tabs) 切換邏輯 ---------------
         const tabBtns = document.querySelectorAll('.tab-btn');
@@ -611,7 +631,7 @@
         }
         fetchTransferSchedule();
 
-        // --------------- tPA 與影像連動邏輯 ---------------
+        // --------------- tPA、GFAST 與影像連動邏輯 ---------------
         function toggleNeuroRtpa() {
             const val = document.getElementById('n_rtpa_sel').value;
             const textInput = document.getElementById('n_rtpa_text');
@@ -629,9 +649,12 @@
                 textInput.style.display = 'none';
             }
         }
-
-        // 初始化執行一次，確保預設的 0.9 mg/kg 會展開對應欄位
-        toggleNeuroRtpa();
+        
+        // 觸發 GFAST 細項隱藏或顯示
+        function toggleGfastDetails() {
+            const isChecked = document.getElementById('enable_gfast').checked;
+            document.getElementById('gfast_details').style.display = isChecked ? 'block' : 'none';
+        }
 
         function toggleImageDesc() {
             const ncctChecked = document.getElementById('cb-ncct').checked;
@@ -684,10 +707,11 @@
                 symptoms: document.getElementById('n_symptoms').value || "",
                 nihssRaw: document.getElementById('n_nihss').value,
                 nihssScore: document.getElementById('n_nihss_display').innerText,
+                enableGfast: document.getElementById('enable_gfast').checked,
                 erGfast: document.getElementById('er_gfast_display').innerText,
                 pmhList: pmhArr.length > 0 ? pmhArr : [],
-                cre: document.getElementById('t_cre').value || "",
-                labOther: document.getElementById('t_lab_other').value || "",
+                cre: document.getElementById('t_cre').value || document.getElementById('n_cre').value || "",
+                labOther: document.getElementById('t_lab_other').value || document.getElementById('n_lab_other').value || "",
                 rtpaSel: document.getElementById('n_rtpa_sel').value,
                 rtpaText: document.getElementById('n_rtpa_text').value,
                 tpaBolusDose: document.getElementById('n_tpa_bolus').value || "",
@@ -722,6 +746,8 @@
             let imageBlock = '';
             if (d.ncctChecked) imageBlock += `Brain NCCT: ${d.ncctDesc}\n`;
             if (d.ctaChecked) imageBlock += `Brain CTA: ${d.ctaDesc}\n`;
+            
+            let gfastAddon = d.enableGfast ? `\nGFAST: ${d.erGfast}` : '';
 
             const result = `[Consultation note]
 This is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of
@@ -732,7 +758,7 @@ LNT: ${d.lkw}
 Onset/Found abnormal: ${d.onset}
 Symptoms:
 ${d.symptoms}
-NIHSS: ${d.nihssRaw}${d.nihssScore}
+NIHSS: ${d.nihssRaw}${d.nihssScore}${gfastAddon}
 ${imageBlock.trim()}
 
 ${tpaBlock}`;
@@ -761,6 +787,10 @@ ${tpaBlock}`;
             let imageLine = '';
             if (d.ncctChecked) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
             if (d.ctaChecked) imageLine += `\n   - brain CTA: ${d.ctaDesc}`;
+            
+            // 神經學評估條件生成 (有打勾 GFAST 才會秀出來)
+            let neuroEval = `NIHSS=${d.nihssRaw}${d.nihssScore}`;
+            if (d.enableGfast) { neuroEval += ` / GFAST=${d.erGfast}`; }
 
             let fam_final = (d.famSel + " " + d.famText).trim();
             const intro = d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`;
@@ -775,7 +805,7 @@ ${tpaBlock}`;
 2. 臨床資訊：
    - Pre-mRS(0~5)：${d.mrs}
    - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}
-   - 神經學評估：NIHSS=${d.nihssRaw}${d.nihssScore} / GFAST=${d.erGfast}
+   - 神經學評估：${neuroEval}
    - 過去病史：${pmhStr}${imageLine}
 3. 檢驗與處置：
    - Cre: ${d.cre}，其他: ${d.labOther}
@@ -812,6 +842,11 @@ ${tpaBlock}`;
         const metricsBoard = document.getElementById('metrics-board');
         let timerInterval;
 
+        // 初始化
+        toggleNeuroRtpa();
+        doorTimeInput.value = getLocalIsoString(new Date());
+        updateCustomDateDisplays(); 
+        
         function updateSystemTime() {
             const now = new Date();
             sysTimeDisplay.textContent = now.toLocaleString('zh-TW', { hour12: false });
@@ -819,11 +854,18 @@ ${tpaBlock}`;
         setInterval(updateSystemTime, 1000);
         updateSystemTime();
 
-        doorTimeInput.value = getLocalIsoString(new Date());
-
         setDoorNowBtn.addEventListener('click', function() {
             doorTimeInput.value = getLocalIsoString(new Date());
+            updateCustomDateDisplays();
             calculateAllMetrics(); 
+        });
+
+        // 監聽所有主畫面時間欄位的變更，以更新客製化顯示的字串
+        document.getElementById('n_onset').addEventListener('change', updateCustomDateDisplays);
+        document.getElementById('n_lkw').addEventListener('change', updateCustomDateDisplays);
+        document.getElementById('door-time').addEventListener('change', function() {
+            updateCustomDateDisplays();
+            calculateAllMetrics();
         });
 
         const quickLogBtns = document.querySelectorAll('.quick-log-btn');
@@ -857,8 +899,6 @@ ${tpaBlock}`;
             });
             timeInput.addEventListener('change', calculateAllMetrics);
         });
-
-        doorTimeInput.addEventListener('change', calculateAllMetrics);
 
         function calculateDiffInMinutes(endTimeStr, startTimeStr) {
             if (!endTimeStr || !startTimeStr) return '--';
