@@ -169,10 +169,6 @@
                 </div>
             </div>
             <div class="sb-group">
-                <div class="sb-title">檢驗數據</div>
-                <div class="sb-row"><div style="flex: 0.8;"><span class="sb-label">Lab: Cre</span><input type="text" id="n_cre" class="sb-input" placeholder="數值"></div><div style="flex: 1.2;"><span class="sb-label">其他 (INR, EKG...)</span><input type="text" id="n_lab_other" class="sb-input"></div></div>
-            </div>
-            <div class="sb-group">
                 <div class="sb-title">影像與處置</div>
                 <div id="n_image_block" style="display:none; background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
                     <div id="n_ncct_wrap" style="display:none; margin-bottom: 6px;"><span class="sb-label" style="color:#2ecc71;">Brain NCCT 影像描述</span><input type="text" id="n_ncct_desc" class="sb-input" value="no ICH"></div>
@@ -321,8 +317,90 @@
             });
         });
 
-        async function fetchNeuroSchedule() { /* 同前 */ }
-        async function fetchTransferSchedule() { /* 同前 */ }
+        // 本院班表抓取邏輯 (維持不變)
+        async function fetchNeuroSchedule() {
+            const statusText = document.getElementById('neuro_duty_status');
+            try {
+                const sheetId = '1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc';
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&range=A:H&headers=0`;
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const csvText = await response.text();
+                
+                const rows = csvText.trim().split('\n').map(row => 
+                    row.split(',').map(cell => cell.replace(/(^"|"$)/g, '').trim())
+                );
+                
+                const today = new Date();
+                const y = today.getFullYear();
+                const m = today.getMonth() + 1;
+                const d = today.getDate();
+                const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
+                
+                let foundRow = null;
+                for (let r of rows) {
+                    if (r[0] && possibleDates.some(pd => r[0].includes(pd))) {
+                        foundRow = r;
+                        break;
+                    }
+                }
+                
+                if (foundRow) {
+                    document.getElementById('neuro_dr_m').innerText = foundRow[3] || "-"; 
+                    document.getElementById('neuro_dr_a').innerText = foundRow[4] || "-"; 
+                    document.getElementById('neuro_dr_n').innerText = foundRow[5] || "-"; 
+                    document.getElementById('neuro_rad').innerText = foundRow[6] || "-"; 
+                    document.getElementById('neuro_nur').innerText = foundRow[7] || "-"; 
+                    statusText.innerText = `(載入成功: ${y}/${m}/${d})`;
+                    statusText.style.color = "#2ecc71";
+                } else {
+                    statusText.innerText = `(找不到 ${y}/${m}/${d} 的排班)`;
+                    statusText.style.color = "#e74c3c";
+                }
+            } catch (error) {
+                console.error('Fetch neuro schedule error:', error);
+                statusText.innerText = "(抓取失敗)";
+                statusText.style.color = "#e74c3c";
+            }
+        }
+        
+        // 轉診班表抓取邏輯 (維持不變)
+        async function fetchTransferSchedule() {
+            const statusText = document.getElementById('duty_status');
+            const line1El = document.getElementById('duty_line1');
+            const line2El = document.getElementById('duty_line2');
+            try {
+                const sheetId = '1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130';
+                const gid = '1484666256';
+                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}&range=D3:E4&headers=0`;
+                
+                const response = await fetch(url);
+                if (!response.ok) throw new Error('Network error');
+                const csvText = await response.text();
+                if (csvText.includes('<html')) throw new Error('Not public');
+                
+                const rows = csvText.trim().split('\n').map(row => 
+                    row.split(',').map(cell => cell.replace(/(^"|"$)/g, '').trim())
+                );
+                
+                if (rows.length >= 2) {
+                    const currentHour = new Date().getHours();
+                    const isDayShift = (currentHour >= 8 && currentHour < 17);
+                    if (isDayShift) {
+                        line1El.innerText = rows[0][0] || "無"; line2El.innerText = rows[0][1] || "無"; 
+                        statusText.innerText = "(載入成功: 日班)";
+                    } else {
+                        line1El.innerText = rows[1][0] || "無"; line2El.innerText = rows[1][1] || "無"; 
+                        statusText.innerText = "(載入成功: 夜班)";
+                    }
+                    statusText.style.color = "#2ecc71"; 
+                } else { throw new Error('Format mismatch'); }
+            } catch (error) {
+                console.error('Fetch error:', error);
+                statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c";
+                line1El.innerText = "請查表"; line2El.innerText = "請查表";
+            }
+        }
         fetchNeuroSchedule(); fetchTransferSchedule();
 
         // --------------- 表單互動邏輯 ---------------
@@ -608,8 +686,10 @@
         function updateMainClock(doorTs) {
             let diff = new Date().getTime() - doorTs; 
             if (diff < 0) { document.getElementById('clock-minutes').textContent = "00"; document.getElementById('clock-seconds').textContent = "無效"; return; }
-            document.getElementById('clock-minutes').textContent = String(Math.floor(diff / 60000)).padStart(2, '0');
-            document.getElementById('clock-seconds').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+            const totalMinutes = Math.floor(diff / (1000 * 60));
+            const remainingSeconds = Math.floor((diff % (1000 * 60)) / 1000);
+            clockMinutes.textContent = String(totalMinutes).padStart(2, '0');
+            clockSeconds.textContent = String(remainingSeconds).padStart(2, '0');
         }
 
         function updateOnsetClock() {
