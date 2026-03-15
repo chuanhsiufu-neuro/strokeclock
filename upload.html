@@ -9,13 +9,13 @@
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f4f4f9; color: #333; padding: 20px 10px 20px 55px; text-align: center; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; overflow-x: hidden; }
         h1 { color: #d32f2f; margin-top: 0; margin-bottom: 20px; font-size: 32px; }
 
-        /* 左側固定垂直標籤列 (Tab Bar) */
+        /* 左側固定垂直標籤列 */
         #tab-bar { position: fixed; top: 0; left: 0; width: 45px; height: 100%; background-color: #1a252f; z-index: 102; display: flex; flex-direction: column; padding-top: 10px; box-shadow: 2px 0 5px rgba(0,0,0,0.3); overflow-y: auto; }
         .tab-btn { writing-mode: vertical-rl; text-orientation: upright; color: #bdc3c7; background: none; border: none; padding: 20px 0; font-size: 17px; font-weight: bold; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; border-left: 4px solid transparent; transition: all 0.2s; flex-shrink: 0; }
         .tab-btn:hover { color: white; background-color: #2c3e50; }
         .tab-btn.active { color: white; background-color: #2c3e50; border-left: 4px solid #d32f2f; }
 
-        /* 側邊隱藏式分頁 (Sidebar) 設計 */
+        /* 側邊隱藏式分頁 */
         #sidebar { position: fixed; top: 0; left: -330px; width: 330px; height: 100%; background-color: #2c3e50; color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.5); transition: left 0.3s ease-in-out; z-index: 101; text-align: left; box-sizing: border-box; overflow-y: auto; overflow-x: hidden; }
         #sidebar.open { left: 45px; }
         .sidebar-panel { display: none; padding: 20px 0; padding-bottom: 50px; }
@@ -28,7 +28,7 @@
         .sidebar-item input[type="datetime-local"] { width: 100%; font-size: 16px; padding: 6px; background-color: #ecf0f1; color: #333; border: none; border-radius: 4px; box-sizing: border-box; }
         .custom-textarea { width: 100%; height: 200px; border-radius: 5px; padding: 10px; font-size: 16px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 10px; }
 
-        /* 側邊表單專用共用樣式 (sb-group) */
+        /* 側邊表單共用樣式 */
         .sb-group { padding: 0 15px; margin-bottom: 12px; }
         .sb-title { background: #34495e; padding: 5px 10px; border-radius: 4px; font-size: 14px; font-weight: bold; color: #3498db; margin-bottom: 8px; border-left: 3px solid #3498db; }
         .sb-title.orange { color: #e67e22; border-left-color: #e67e22; }
@@ -37,7 +37,6 @@
         .sb-textarea { resize: vertical; }
         .sb-row { display: flex; gap: 10px; align-items: flex-end; }
         .sb-row > div { flex: 1; }
-        
         .sb-cb-container { display: flex; flex-wrap: wrap; gap: 6px; background: #1a252f; padding: 8px; border-radius: 4px; margin-bottom: 8px; }
         .sb-cb-label { font-size: 13px; display: flex; align-items: center; gap: 4px; color: #ecf0f1; cursor: pointer; margin: 0; }
         .sb-cb-label input { width: 14px; height: 14px; margin: 0; cursor: pointer; }
@@ -46,7 +45,6 @@
         .duty-block { background: #1a252f; border: 1px solid #34495e; border-radius: 4px; padding: 10px; margin-bottom: 12px; }
         .duty-text { font-weight: bold; font-size: 14px; padding: 4px 8px; background: #ecf0f1; color: #333; border-radius: 4px; text-align: center; }
         .sheet-link { text-decoration: none; background: #7f8c8d; padding: 2px 6px; border-radius: 4px; font-size: 12px; color: white; margin-left: 5px; }
-
         .neuro-duty-table { width: 100%; text-align: center; color: #ecf0f1; font-size: 13px; margin-bottom: 10px; border-collapse: collapse; }
         .neuro-duty-table th { border-bottom: 1px solid #34495e; padding: 4px; font-weight: normal; color: #bdc3c7; }
         .neuro-duty-table td { padding: 6px 4px; font-weight: bold; }
@@ -74,7 +72,6 @@
         .main-time-container { width: 90%; max-width: 380px; margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 8px; }
         .main-time-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .main-time-row label { font-size: 16px; font-weight: bold; margin: 0; display: flex; align-items: center; gap: 5px; color: #333; }
-        
         .custom-datetime-wrapper { position: relative; width: 160px; height: 32px; background: #fff; border: 1px solid #aaa; border-radius: 5px; overflow: hidden; }
         .custom-datetime-display { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #000; pointer-events: none; }
         .custom-datetime-wrapper input[type="datetime-local"] { width: 100%; height: 100%; opacity: 0; cursor: pointer; box-sizing: border-box; }
@@ -84,11 +81,9 @@
         .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
         .icon-btn:active { transform: scale(0.9); }
 
-        /* UI 切換群組 */
         #init-group { width: 90%; max-width: 380px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;}
         .btn-start { font-size: 24px; font-weight: bold; padding: 12px; background-color: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-start:hover { background-color: #b71c1c; }
-        
         .download-row { display: flex; gap: 8px; width: 100%; }
         .id-input { flex: 1; font-size: 16px; padding: 8px; border: 1px solid #aaa; border-radius: 8px; text-align: center; font-weight: bold; }
         .btn-download { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
@@ -122,7 +117,6 @@
     </div>
 
     <div id="sidebar">
-        
         <div id="panel-time" class="sidebar-panel">
             <h3 class="sidebar-header">時間微調 / 補登</h3>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ncct">NCCT time</label><input type="datetime-local" id="time-ncct" step="1"></div>
@@ -167,6 +161,10 @@
                     <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="ESRD"> ESRD</label>
                     <input type="text" id="n_pmh_other" class="sb-input" placeholder="其他..." style="margin-top: 4px;">
                 </div>
+            </div>
+            <div class="sb-group">
+                <div class="sb-title">檢驗數據</div>
+                <div class="sb-row"><div style="flex: 0.8;"><span class="sb-label">Lab: Cre</span><input type="text" id="n_cre" class="sb-input" placeholder="數值"></div><div style="flex: 1.2;"><span class="sb-label">其他 (INR, EKG...)</span><input type="text" id="n_lab_other" class="sb-input"></div></div>
             </div>
             <div class="sb-group">
                 <div class="sb-title">影像與處置</div>
@@ -244,7 +242,6 @@
     <h1>Stroke Clock</h1>
 
     <div id="digital-clock"><span id="clock-minutes">00</span><span id="clock-seconds">00</span></div>
-
     <div id="onset-clock-container"><div id="onset-clock-title">Time from symptoms onset</div><div id="onset-clock"><span id="onset-clock-display">00:00:00</span></div></div>
 
     <div id="controls-container">
@@ -258,10 +255,7 @@
 
         <div id="init-group">
             <button id="start-btn" class="btn-start">Start!</button>
-            <div class="download-row">
-                <input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料">
-                <button id="btn-download" class="btn-download" title="下載資料">⬇️</button>
-            </div>
+            <div class="download-row"><input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料"><button id="btn-download" class="btn-download" title="下載資料">⬇️</button></div>
         </div>
 
         <div id="active-group">
@@ -269,7 +263,7 @@
             <button id="btn-upload" class="btn-upload-icon" title="上傳更新至目前編號">⬆️</button>
         </div>
 
-        <span id="sync-status">歡迎使用雲端同步系統</span>
+        <span id="sync-status">歡迎使用雲端系統</span>
 
         <div id="metrics-board">
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="ncct" title="記錄 NCCT 時間">⏰</button><div class="metric-label">DTCT <span class="sub-text">(NCCT)</span></div><div class="metric-value" id="val-dtct">--</div></div>
@@ -280,20 +274,19 @@
     </div>
 
     <script>
-        // 【重要】請把上面部署得到的「全新網址」貼在這裡的引號裡面
+        // 【重要】請把部署得到的「全新網址」貼在這裡
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwmGET2wwD5xHq676tjK9hF7HLeys2H8IMiQwpd19de3SSCsbSlZuEqyUvuUX32AuKM/exec"; 
         
         let currentRecordId = null; 
 
-        // --------------- 共用時間邏輯 與 下載時間剖析 (重要修復) ---------------
+        // --------------- 時間邏輯與格式化 ---------------
         function getLocalIsoString(date) { const offset = date.getTimezoneOffset() * 60000; return (new Date(date - offset)).toISOString().slice(0, 16); }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
 
         function updateCustomDateDisplays() {
             const formatStr = (val) => {
                 if(!val) return "請選擇時間";
-                const d = new Date(val);
-                if(isNaN(d)) return "請選擇時間";
+                const d = new Date(val); if(isNaN(d)) return "請選擇時間";
                 return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
             };
             document.getElementById('display_n_onset').innerText = formatStr(document.getElementById('n_onset').value);
@@ -301,295 +294,168 @@
             document.getElementById('display_door_time').innerText = formatStr(document.getElementById('door-time').value);
         }
 
-        // --------------- 頁籤與班表 (維持原樣) ---------------
+        // --------------- 頁籤與排班 ---------------
         const tabBtns = document.querySelectorAll('.tab-btn');
         const sidebar = document.getElementById('sidebar');
         const panels = document.querySelectorAll('.sidebar-panel');
         tabBtns.forEach(btn => {
             btn.addEventListener('click', () => {
                 const targetPanelId = btn.getAttribute('data-target');
-                if (btn.classList.contains('active') && sidebar.classList.contains('open')) {
-                    sidebar.classList.remove('open'); btn.classList.remove('active'); return;
-                }
-                sidebar.classList.add('open');
-                tabBtns.forEach(b => b.classList.remove('active')); panels.forEach(p => p.classList.remove('active'));
+                if (btn.classList.contains('active') && sidebar.classList.contains('open')) { sidebar.classList.remove('open'); btn.classList.remove('active'); return; }
+                sidebar.classList.add('open'); tabBtns.forEach(b => b.classList.remove('active')); panels.forEach(p => p.classList.remove('active'));
                 btn.classList.add('active'); document.getElementById(targetPanelId).classList.add('active');
             });
         });
 
-        // 本院班表抓取邏輯 (維持不變)
         async function fetchNeuroSchedule() {
             const statusText = document.getElementById('neuro_duty_status');
             try {
-                const sheetId = '1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc';
-                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&range=A:H&headers=0`;
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network error');
-                const csvText = await response.text();
-                
-                const rows = csvText.trim().split('\n').map(row => 
-                    row.split(',').map(cell => cell.replace(/(^"|"$)/g, '').trim())
-                );
-                
-                const today = new Date();
-                const y = today.getFullYear();
-                const m = today.getMonth() + 1;
-                const d = today.getDate();
+                const url = `https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/gviz/tq?tqx=out:csv&range=A:H&headers=0`;
+                const res = await fetch(url); if (!res.ok) throw new Error();
+                const csv = await res.text();
+                const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
+                const td = new Date(); const y = td.getFullYear(); const m = td.getMonth() + 1; const d = td.getDate();
                 const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
-                
-                let foundRow = null;
-                for (let r of rows) {
-                    if (r[0] && possibleDates.some(pd => r[0].includes(pd))) {
-                        foundRow = r;
-                        break;
-                    }
-                }
-                
-                if (foundRow) {
-                    document.getElementById('neuro_dr_m').innerText = foundRow[3] || "-"; 
-                    document.getElementById('neuro_dr_a').innerText = foundRow[4] || "-"; 
-                    document.getElementById('neuro_dr_n').innerText = foundRow[5] || "-"; 
-                    document.getElementById('neuro_rad').innerText = foundRow[6] || "-"; 
-                    document.getElementById('neuro_nur').innerText = foundRow[7] || "-"; 
-                    statusText.innerText = `(載入成功: ${y}/${m}/${d})`;
-                    statusText.style.color = "#2ecc71";
-                } else {
-                    statusText.innerText = `(找不到 ${y}/${m}/${d} 的排班)`;
-                    statusText.style.color = "#e74c3c";
-                }
-            } catch (error) {
-                console.error('Fetch neuro schedule error:', error);
-                statusText.innerText = "(抓取失敗)";
-                statusText.style.color = "#e74c3c";
-            }
+                let fr = rows.find(r => r[0] && possibleDates.some(pd => r[0].includes(pd)));
+                if (fr) {
+                    document.getElementById('neuro_dr_m').innerText = fr[3] || "-"; document.getElementById('neuro_dr_a').innerText = fr[4] || "-"; 
+                    document.getElementById('neuro_dr_n').innerText = fr[5] || "-"; document.getElementById('neuro_rad').innerText = fr[6] || "-"; 
+                    document.getElementById('neuro_nur').innerText = fr[7] || "-";
+                    statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
+                } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; }
+            } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; }
         }
         
-        // 轉診班表抓取邏輯 (維持不變)
         async function fetchTransferSchedule() {
             const statusText = document.getElementById('duty_status');
-            const line1El = document.getElementById('duty_line1');
-            const line2El = document.getElementById('duty_line2');
             try {
-                const sheetId = '1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130';
-                const gid = '1484666256';
-                const url = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&gid=${gid}&range=D3:E4&headers=0`;
-                
-                const response = await fetch(url);
-                if (!response.ok) throw new Error('Network error');
-                const csvText = await response.text();
-                if (csvText.includes('<html')) throw new Error('Not public');
-                
-                const rows = csvText.trim().split('\n').map(row => 
-                    row.split(',').map(cell => cell.replace(/(^"|"$)/g, '').trim())
-                );
-                
+                const url = `https://docs.google.com/spreadsheets/d/1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130/gviz/tq?tqx=out:csv&gid=1484666256&range=D3:E4&headers=0`;
+                const res = await fetch(url); if (!res.ok) throw new Error();
+                const csv = await res.text(); if (csv.includes('<html')) throw new Error();
+                const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
                 if (rows.length >= 2) {
-                    const currentHour = new Date().getHours();
-                    const isDayShift = (currentHour >= 8 && currentHour < 17);
-                    if (isDayShift) {
-                        line1El.innerText = rows[0][0] || "無"; line2El.innerText = rows[0][1] || "無"; 
-                        statusText.innerText = "(載入成功: 日班)";
-                    } else {
-                        line1El.innerText = rows[1][0] || "無"; line2El.innerText = rows[1][1] || "無"; 
-                        statusText.innerText = "(載入成功: 夜班)";
-                    }
-                    statusText.style.color = "#2ecc71"; 
-                } else { throw new Error('Format mismatch'); }
-            } catch (error) {
-                console.error('Fetch error:', error);
-                statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c";
-                line1El.innerText = "請查表"; line2El.innerText = "請查表";
-            }
+                    const isDay = (new Date().getHours() >= 8 && new Date().getHours() < 17);
+                    document.getElementById('duty_line1').innerText = isDay ? (rows[0][0] || "無") : (rows[1][0] || "無");
+                    document.getElementById('duty_line2').innerText = isDay ? (rows[0][1] || "無") : (rows[1][1] || "無");
+                    statusText.innerText = isDay ? "(載入成功: 日班)" : "(載入成功: 夜班)"; statusText.style.color = "#2ecc71"; 
+                } else { throw new Error(); }
+            } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; }
         }
         fetchNeuroSchedule(); fetchTransferSchedule();
 
-        // --------------- 表單互動邏輯 ---------------
+        // --------------- 表單連動 ---------------
         function toggleNeuroRtpa() {
             const val = document.getElementById('n_rtpa_sel').value;
-            const textInput = document.getElementById('n_rtpa_text');
-            const doseWrap = document.getElementById('tpa_dose_wrap');
+            const doseWrap = document.getElementById('tpa_dose_wrap'); const textInput = document.getElementById('n_rtpa_text');
             if (val === '0.6 mg/kg' || val === '0.9 mg/kg') { doseWrap.style.display = 'flex'; textInput.style.display = 'none'; } 
             else if (val === '未施打') { doseWrap.style.display = 'none'; textInput.style.display = 'block'; textInput.placeholder = '未打原因'; } 
             else { doseWrap.style.display = 'none'; textInput.style.display = 'none'; }
         }
-        function toggleGfastDetails() {
-            const isChecked = document.getElementById('enable_gfast').checked;
-            document.getElementById('gfast_details').style.display = isChecked ? 'block' : 'none';
-        }
-        
-        // 【優化】當勾選框或是時間改變時，都會觸發影像欄位的顯示
+        function toggleGfastDetails() { document.getElementById('gfast_details').style.display = document.getElementById('enable_gfast').checked ? 'block' : 'none'; }
         function toggleImageDesc() {
-            const ncctChecked = document.getElementById('cb-ncct').checked;
-            const hasNcctTime = !!document.getElementById('time-ncct').value;
-            const showNcct = ncctChecked || hasNcctTime;
-            if (hasNcctTime) document.getElementById('cb-ncct').checked = true;
-
-            const ctaChecked = document.getElementById('cb-cta').checked;
-            const hasCtaTime = !!document.getElementById('time-cta').value;
-            const showCta = ctaChecked || hasCtaTime;
-            if (hasCtaTime) document.getElementById('cb-cta').checked = true;
-
-            document.getElementById('n_ncct_wrap').style.display = showNcct ? 'block' : 'none';
-            document.getElementById('n_cta_wrap').style.display = showCta ? 'block' : 'none';
-            document.getElementById('n_image_block').style.display = (showNcct || showCta) ? 'block' : 'none';
+            const nc = document.getElementById('cb-ncct').checked, ct = document.getElementById('cb-cta').checked;
+            const htNc = !!document.getElementById('time-ncct').value, htCt = !!document.getElementById('time-cta').value;
+            if(htNc) document.getElementById('cb-ncct').checked = true; if(htCt) document.getElementById('cb-cta').checked = true;
+            document.getElementById('n_ncct_wrap').style.display = (nc || htNc) ? 'block' : 'none';
+            document.getElementById('n_cta_wrap').style.display = (ct || htCt) ? 'block' : 'none';
+            document.getElementById('n_image_block').style.display = (nc || htNc || ct || htCt) ? 'block' : 'none';
         }
 
         document.getElementById('n_onset').value = getLocalIsoString(new Date());
 
         function calcNeuroNIHSS() {
-            const input = document.getElementById('n_nihss').value; let sum = 0, hasX = false;
-            for (let char of input) { if (/[0-9]/.test(char)) sum += parseInt(char); else if (char.toUpperCase() === 'X') hasX = true; }
-            const displayEl = document.getElementById('n_nihss_display');
-            if (input.trim() === "") { displayEl.innerText = ""; return ""; } 
-            else { let resultStr = hasX ? `${sum}+X` : `${sum}`; displayEl.innerText = `(${resultStr}分)`; return ` (${resultStr}分)`; }
+            const val = document.getElementById('n_nihss').value; let sum = 0, hasX = false;
+            for (let c of val) { if (/[0-9]/.test(c)) sum += parseInt(c); else if (c.toUpperCase() === 'X') hasX = true; }
+            if (val.trim() === "") { document.getElementById('n_nihss_display').innerText = ""; return ""; } 
+            else { document.getElementById('n_nihss_display').innerText = `(${hasX ? sum+'+X' : sum}分)`; return ` (${hasX ? sum+'+X' : sum}分)`; }
         }
         function calcErGFAST() {
-            const cbs = document.querySelectorAll('.er-gfast-cb'); let score = 0;
-            cbs.forEach(cb => { if (cb.checked) score++; });
-            document.getElementById('er_gfast_display').innerText = score;
-            return score;
+            let score = 0; document.querySelectorAll('.er-gfast-cb:checked').forEach(() => score++);
+            document.getElementById('er_gfast_display').innerText = score; return score;
         }
 
-        // --------------- 雲端資料收集與還原 ---------------
+        // --------------- 資料包裝與還原 ---------------
         function collectDataArray() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
-            let pmhStr = pmhArr.join(',');
-
             let gfastArr = []; document.querySelectorAll('.er-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
-            let gfastStr = document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "";
 
-            // 對應 B 到 AF 欄
             return [
-                formatDT(document.getElementById('door-time').value),      // [0] B
-                formatDT(document.getElementById('n_onset').value),        // [1] C
-                formatDT(document.getElementById('n_lkw').value),          // [2] D
-                formatDT(document.getElementById('time-ncct').value),      // [3] E
-                formatDT(document.getElementById('time-tpa').value),       // [4] F
-                formatDT(document.getElementById('time-cta').value),       // [5] G
-                formatDT(document.getElementById('time-puncture').value),  // [6] H
-                document.getElementById('n_age').value,                    // [7] I
-                document.getElementById('n_gender').value,                 // [8] J
-                document.getElementById('n_mrs').value,                    // [9] K
-                document.getElementById('n_symptoms').value,               // [10] L
-                document.getElementById('n_nihss').value,                  // [11] M
-                gfastStr,                                                  // [12] N
-                pmhStr,                                                    // [13] O
-                document.getElementById('n_cre').value,                    // [14] P
-                document.getElementById('n_lab_other').value,              // [15] Q
-                document.getElementById('n_rtpa_sel').value,               // [16] R
-                document.getElementById('n_tpa_bolus').value,              // [17] S
-                document.getElementById('n_tpa_cif').value,                // [18] T
-                document.getElementById('n_rtpa_text').value,              // [19] U
-                document.getElementById('n_ncct_desc').value,              // [20] V
-                document.getElementById('n_cta_desc').value,               // [21] W
-                document.getElementById('t_hosp_out').value,               // [22] X
-                document.getElementById('t_hosp_in').value,                // [23] Y
-                document.getElementById('t_fam_sel').value,                // [24] Z
-                document.getElementById('t_fam_text').value,               // [25] AA
-                document.getElementById('t_consent').value,                // [26] AB
-                document.getElementById('er_note').value,                  // [27] AC
-                document.getElementById('np_note').value,                  // [28] AD
-                document.getElementById('nurse_note').value,               // [29] AE
-                document.getElementById('evt_note').value                  // [30] AF
+                formatDT(document.getElementById('door-time').value), formatDT(document.getElementById('n_onset').value),
+                formatDT(document.getElementById('n_lkw').value), formatDT(document.getElementById('time-ncct').value),
+                formatDT(document.getElementById('time-tpa').value), formatDT(document.getElementById('time-cta').value),
+                formatDT(document.getElementById('time-puncture').value), document.getElementById('n_age').value,
+                document.getElementById('n_gender').value, document.getElementById('n_mrs').value,
+                document.getElementById('n_symptoms').value, document.getElementById('n_nihss').value,
+                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", pmhArr.join(','),
+                document.getElementById('n_cre').value, document.getElementById('n_lab_other').value,
+                document.getElementById('n_rtpa_sel').value, document.getElementById('n_tpa_bolus').value,
+                document.getElementById('n_tpa_cif').value, document.getElementById('n_rtpa_text').value,
+                document.getElementById('n_ncct_desc').value, document.getElementById('n_cta_desc').value,
+                document.getElementById('t_hosp_out').value, document.getElementById('t_hosp_in').value,
+                document.getElementById('t_fam_sel').value, document.getElementById('t_fam_text').value,
+                document.getElementById('t_consent').value, document.getElementById('er_note').value,
+                document.getElementById('np_note').value, document.getElementById('nurse_note').value,
+                document.getElementById('evt_note').value
             ];
         }
 
         function populateDataArray(row) {
-            // 【重要修復】解決 Excel 下載的文字時間無法塞回 datetime-local 欄位的問題
             const setTime = (id, val) => { 
                 if(!val) { document.getElementById(id).value = ""; return; }
-                // 清理來自 Google Sheets 的時間格式 (如 "2026/03/14 18:50:00")
-                let cleanStr = val.replace(/\//g, '-'); 
-                let d = new Date(cleanStr);
-                if(!isNaN(d.getTime())) {
-                    document.getElementById(id).value = getLocalIsoString(d);
-                } else {
-                    document.getElementById(id).value = val.replace(' ', 'T');
-                }
+                let d = new Date(val.replace(/\//g, '-'));
+                document.getElementById(id).value = !isNaN(d.getTime()) ? getLocalIsoString(d) : val.replace(' ', 'T');
             };
             
-            // row[0] 是 ID (A欄)
             setTime('door-time', row[1]); setTime('n_onset', row[2]); setTime('n_lkw', row[3]); 
             setTime('time-ncct', row[4]); setTime('time-tpa', row[5]); setTime('time-cta', row[6]); setTime('time-puncture', row[7]);
             
-            document.getElementById('n_age').value = row[8] || "";
-            document.getElementById('n_gender').value = row[9] || "";
-            document.getElementById('n_mrs').value = row[10] || "";
-            document.getElementById('n_symptoms').value = row[11] || "";
+            document.getElementById('n_age').value = row[8] || ""; document.getElementById('n_gender').value = row[9] || "";
+            document.getElementById('n_mrs').value = row[10] || ""; document.getElementById('n_symptoms').value = row[11] || "";
             document.getElementById('n_nihss').value = row[12] || "";
             
             let gStr = row[13] || "";
-            if (gStr) {
-                document.getElementById('enable_gfast').checked = true;
-                document.querySelectorAll('.er-gfast-cb').forEach(cb => cb.checked = gStr.includes(cb.value));
-            }
-
+            if (gStr) { document.getElementById('enable_gfast').checked = true; document.querySelectorAll('.er-gfast-cb').forEach(cb => cb.checked = gStr.includes(cb.value)); }
+            
             let pStr = row[14] || "";
             document.querySelectorAll('.n-pmh-cb').forEach(cb => cb.checked = pStr.includes(cb.value));
-            let otherPmh = pStr.split(',').filter(x => !['DM','HTN','Hyperlipidemia','AF','CAD','ESRD'].includes(x));
-            document.getElementById('n_pmh_other').value = otherPmh.join(',') || "";
+            document.getElementById('n_pmh_other').value = pStr.split(',').filter(x => !['DM','HTN','Hyperlipidemia','AF','CAD','ESRD'].includes(x)).join(',') || "";
 
-            document.getElementById('n_cre').value = row[15] || "";
-            document.getElementById('n_lab_other').value = row[16] || "";
-            document.getElementById('n_rtpa_sel').value = row[17] || "";
-            document.getElementById('n_tpa_bolus').value = row[18] || "";
-            document.getElementById('n_tpa_cif').value = row[19] || "";
-            document.getElementById('n_rtpa_text').value = row[20] || "";
-            document.getElementById('n_ncct_desc').value = row[21] || "no ICH";
-            document.getElementById('n_cta_desc').value = row[22] || "";
+            document.getElementById('n_cre').value = row[15] || ""; document.getElementById('n_lab_other').value = row[16] || "";
+            document.getElementById('n_rtpa_sel').value = row[17] || ""; document.getElementById('n_tpa_bolus').value = row[18] || "";
+            document.getElementById('n_tpa_cif').value = row[19] || ""; document.getElementById('n_rtpa_text').value = row[20] || "";
+            document.getElementById('n_ncct_desc').value = row[21] || "no ICH"; document.getElementById('n_cta_desc').value = row[22] || "";
             
-            document.getElementById('t_hosp_out').value = row[23] || "新竹台大";
-            document.getElementById('t_hosp_in').value = row[24] || "皆可";
-            document.getElementById('t_fam_sel').value = row[25] || "";
-            document.getElementById('t_fam_text').value = row[26] || "";
-            document.getElementById('t_consent').value = row[27] || "";
-            
-            document.getElementById('er_note').value = row[28] || "";
-            document.getElementById('np_note').value = row[29] || "";
-            document.getElementById('nurse_note').value = row[30] || "";
+            document.getElementById('t_hosp_out').value = row[23] || "新竹台大"; document.getElementById('t_hosp_in').value = row[24] || "皆可";
+            document.getElementById('t_fam_sel').value = row[25] || ""; document.getElementById('t_fam_text').value = row[26] || "";
+            document.getElementById('t_consent').value = row[27] || ""; document.getElementById('er_note').value = row[28] || "";
+            document.getElementById('np_note').value = row[29] || ""; document.getElementById('nurse_note').value = row[30] || "";
             document.getElementById('evt_note').value = row[31] || "";
 
-            updateCustomDateDisplays();
-            toggleNeuroRtpa();
-            toggleGfastDetails();
-            
-            document.getElementById('cb-ncct').checked = !!row[4];
-            document.getElementById('cb-tpa').checked = !!row[5];
-            document.getElementById('cb-cta').checked = !!row[6];
-            document.getElementById('cb-puncture').checked = !!row[7];
-            
-            toggleImageDesc();
-            calcNeuroNIHSS();
-            calcErGFAST();
-            calculateAllMetrics();
+            updateCustomDateDisplays(); toggleNeuroRtpa(); toggleGfastDetails();
+            document.getElementById('cb-ncct').checked = !!row[4]; document.getElementById('cb-tpa').checked = !!row[5];
+            document.getElementById('cb-cta').checked = !!row[6]; document.getElementById('cb-puncture').checked = !!row[7];
+            toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); calculateAllMetrics();
         }
 
-        // --------------- 生成文字邏輯 ---------------
+        // --------------- 文字生成 ---------------
         function getGenData() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
             return {
                 age: document.getElementById('n_age').value, gender: document.getElementById('n_gender').value,
-                onset: formatDT(document.getElementById('n_onset').value), lkw: formatDT(document.getElementById('n_lkw').value),
-                door: formatDT(document.getElementById('door-time').value), mrs: document.getElementById('n_mrs').value,
-                symptoms: document.getElementById('n_symptoms').value, nihssRaw: document.getElementById('n_nihss').value,
-                nihssScore: document.getElementById('n_nihss_display').innerText, enableGfast: document.getElementById('enable_gfast').checked,
-                erGfast: document.getElementById('er_gfast_display').innerText, pmhList: pmhArr,
+                onset: formatDT(document.getElementById('n_onset').value), lkw: formatDT(document.getElementById('n_lkw').value), door: formatDT(document.getElementById('door-time').value),
+                mrs: document.getElementById('n_mrs').value, symptoms: document.getElementById('n_symptoms').value, nihssRaw: document.getElementById('n_nihss').value, nihssScore: document.getElementById('n_nihss_display').innerText,
+                enableGfast: document.getElementById('enable_gfast').checked, erGfast: document.getElementById('er_gfast_display').innerText, pmhList: pmhArr,
                 cre: document.getElementById('n_cre').value, labOther: document.getElementById('n_lab_other').value,
-                rtpaSel: document.getElementById('n_rtpa_sel').value, rtpaText: document.getElementById('n_rtpa_text').value,
-                tpaBolusDose: document.getElementById('n_tpa_bolus').value, tpaCifDose: document.getElementById('n_tpa_cif').value,
-                tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
-                ncctChecked: document.getElementById('cb-ncct').checked, ncctDesc: document.getElementById('n_ncct_desc').value,
-                ctaChecked: document.getElementById('cb-cta').checked, ctaDesc: document.getElementById('n_cta_desc').value,
-                famSel: document.getElementById('t_fam_sel').value, famText: document.getElementById('t_fam_text').value,
-                consent: document.getElementById('t_consent').value, hospOut: document.getElementById('t_hosp_out').value, hospIn: document.getElementById('t_hosp_in').value
+                rtpaSel: document.getElementById('n_rtpa_sel').value, rtpaText: document.getElementById('n_rtpa_text').value, tpaBolusDose: document.getElementById('n_tpa_bolus').value, tpaCifDose: document.getElementById('n_tpa_cif').value, tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
+                ncctChecked: document.getElementById('cb-ncct').checked, ncctDesc: document.getElementById('n_ncct_desc').value, ctaChecked: document.getElementById('cb-cta').checked, ctaDesc: document.getElementById('n_cta_desc').value,
+                famSel: document.getElementById('t_fam_sel').value, famText: document.getElementById('t_fam_text').value, consent: document.getElementById('t_consent').value, hospOut: document.getElementById('t_hosp_out').value, hospIn: document.getElementById('t_hosp_in').value
             };
         }
 
         function genConsultText() {
-            const d = getGenData(); let genderEng = d.gender === '男' ? 'man' : (d.gender === '女' ? 'woman' : '(gender)');
-            let pmhStr = d.pmhList.length > 0 ? `- ${d.pmhList.join('\n- ')}` : '- None';
+            const d = getGenData(); let pmhStr = d.pmhList.length > 0 ? `- ${d.pmhList.join('\n- ')}` : '- None';
             let tpaBlock = '';
             if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') { tpaBlock = `tPA Bolus time: ${d.tpaBolusTime || 'Not recorded'}\nBolus dose: ${d.tpaBolusDose} cIF dose: ${d.tpaCifDose}`; } 
             else if (d.rtpaSel === '未施打') { tpaBlock = `tPA not given due to ${d.rtpaText}`; }
@@ -597,225 +463,137 @@
             let imageBlock = '';
             if (d.ncctChecked || document.getElementById('time-ncct').value) imageBlock += `Brain NCCT: ${d.ncctDesc}\n`;
             if (d.ctaChecked || document.getElementById('time-cta').value) imageBlock += `Brain CTA: ${d.ctaDesc}\n`;
-            
-            let neuroStr = "";
-            if (d.nihssRaw) neuroStr += `NIHSS: ${d.nihssRaw}${d.nihssScore}\n`;
-            if (d.enableGfast) neuroStr += `GFAST: ${d.erGfast}\n`;
+            let neuroStr = ""; if (d.nihssRaw) neuroStr += `NIHSS: ${d.nihssRaw}${d.nihssScore}\n`; if (d.enableGfast) neuroStr += `GFAST: ${d.erGfast}\n`;
 
-            const result = `[Consultation note]\nThis is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of\n${pmhStr}\n\n[brief course]\nLNT: ${d.lkw}\nOnset/Found abnormal: ${d.onset}\nSymptoms:\n${d.symptoms}\n${neuroStr}${imageBlock}\n${tpaBlock}`;
-            const outBox = document.getElementById('c-output'); outBox.innerText = result.trim(); outBox.style.display = 'block';
+            const result = `[Consultation note]\nThis is a ${d.age || '(age)'}-year-old ${d.gender === '男' ? 'man' : (d.gender === '女' ? 'woman' : '(gender)')}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of\n${pmhStr}\n\n[brief course]\nLNT: ${d.lkw}\nOnset/Found abnormal: ${d.onset}\nSymptoms:\n${d.symptoms}\n${neuroStr}${imageBlock}\n${tpaBlock}`;
+            const ob = document.getElementById('c-output'); ob.innerText = result.trim(); ob.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
 
         function genTransferText() {
             const d = getGenData(); let pmhStr = d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
             let rtpa_final = d.rtpaSel;
-            if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') {
-                if (d.tpaBolusTime) rtpa_final += ` (${d.tpaBolusTime})`; rtpa_final += ` Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
-            } else if (d.rtpaSel === '未施打') { rtpa_final += ` (${d.rtpaText})`; }
+            if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') { rtpa_final += (d.tpaBolusTime ? ` (${d.tpaBolusTime})` : "") + ` Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`; } 
+            else if (d.rtpaSel === '未施打') { rtpa_final += ` (${d.rtpaText})`; }
 
             let imageLine = '';
             if (d.ncctChecked || document.getElementById('time-ncct').value) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
             if (d.ctaChecked || document.getElementById('time-cta').value) imageLine += `\n   - brain CTA: ${d.ctaDesc}`;
             
-            let neuroEvalParts = [];
-            if (d.nihssRaw) neuroEvalParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore}`);
-            if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast}`);
-            let neuroEvalLine = neuroEvalParts.length > 0 ? `\n   - 神經學評估：${neuroEvalParts.join(' / ')}` : '';
-            let fam_final = (d.famSel + " " + d.famText).trim();
-            const intro = d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`;
+            let npParts = []; if (d.nihssRaw) npParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore}`); if (d.enableGfast) npParts.push(`GFAST=${d.erGfast}`);
+            let neuroLine = npParts.length > 0 ? `\n   - 神經學評估：${npParts.join(' / ')}` : '';
 
-            const result = `${intro}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 最後正常(LNT)：${d.lkw}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${fam_final}\n   - 是否同意轉院取栓：${d.consent}`;
-            const outBox = document.getElementById('t-output'); outBox.innerText = result; outBox.style.display = 'block';
+            const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 最後正常(LNT)：${d.lkw}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
+            const ob = document.getElementById('t-output'); ob.innerText = result; ob.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
 
-        // --------------- 主畫面 時鐘與雲端連線邏輯 ---------------
+        // --------------- 時鐘與主流程 ---------------
         const sysTimeDisplay = document.getElementById('current-sys-time');
         const doorTimeInput = document.getElementById('door-time');
-        const setDoorNowBtn = document.getElementById('set-door-now');
         const startBtn = document.getElementById('start-btn');
         const downloadBtn = document.getElementById('btn-download');
         const uploadBtn = document.getElementById('btn-upload');
         const syncStatus = document.getElementById('sync-status');
-        const initGroup = document.getElementById('init-group');
-        const activeGroup = document.getElementById('active-group');
-        const btnActiveClock = document.getElementById('btn-active-clock');
-        
         let timerInterval;
 
         toggleNeuroRtpa(); doorTimeInput.value = getLocalIsoString(new Date()); updateCustomDateDisplays(); 
         setInterval(() => sysTimeDisplay.textContent = new Date().toLocaleString('zh-TW', { hour12: false }), 1000);
 
-        setDoorNowBtn.addEventListener('click', () => { doorTimeInput.value = getLocalIsoString(new Date()); updateCustomDateDisplays(); calculateAllMetrics(); });
+        document.getElementById('set-door-now').addEventListener('click', () => { doorTimeInput.value = getLocalIsoString(new Date()); updateCustomDateDisplays(); calculateAllMetrics(); });
         ['n_onset', 'n_lkw', 'door-time'].forEach(id => document.getElementById(id).addEventListener('change', () => { updateCustomDateDisplays(); calculateAllMetrics(); }));
-
-        // 【優化】側邊欄的時間如果手動更改，也要觸發主畫面的指標更新與影像顯示
-        document.querySelectorAll('.sidebar-item input[type="datetime-local"]').forEach(el => {
-            el.addEventListener('input', () => { toggleImageDesc(); calculateAllMetrics(); });
-            el.addEventListener('change', () => { toggleImageDesc(); calculateAllMetrics(); });
-        });
+        document.querySelectorAll('.sidebar-item input[type="datetime-local"]').forEach(el => { el.addEventListener('input', () => { toggleImageDesc(); calculateAllMetrics(); }); el.addEventListener('change', () => { toggleImageDesc(); calculateAllMetrics(); }); });
 
         document.querySelectorAll('.quick-log-btn').forEach(btn => {
             btn.addEventListener('click', function() {
-                const target = this.getAttribute('data-target'); 
-                document.getElementById(`time-${target}`).value = getLocalIsoString(new Date());
-                document.getElementById(`cb-${target}`).checked = true;
-                
-                toggleImageDesc(); // 打卡後也要觸發影像描述判斷
-                calculateAllMetrics();
-                
+                const target = this.getAttribute('data-target'); document.getElementById(`time-${target}`).value = getLocalIsoString(new Date()); document.getElementById(`cb-${target}`).checked = true;
+                toggleImageDesc(); calculateAllMetrics();
                 this.style.transform = "scale(1.3)"; setTimeout(() => this.style.transform = "scale(1)", 150);
             });
         });
-
-        function calculateDiffInMinutes(endStr, startStr) {
-            if (!endStr || !startStr) return '--';
-            return Math.floor((new Date(endStr).getTime() - new Date(startStr).getTime()) / 60000) + ' 分鐘';
-        }
+        ['ncct', 'tpa', 'cta', 'puncture'].forEach(target => {
+            document.getElementById(`cb-${target}`).addEventListener('change', function() { document.getElementById(`time-${target}`).value = this.checked ? getLocalIsoString(new Date()) : ""; toggleImageDesc(); calculateAllMetrics(); });
+        });
 
         function calculateAllMetrics() {
             const door = doorTimeInput.value;
-            document.getElementById('val-dtct').textContent = calculateDiffInMinutes(document.getElementById('time-ncct').value, door);
-            document.getElementById('val-dtn').textContent = calculateDiffInMinutes(document.getElementById('time-tpa').value, door);
-            document.getElementById('val-dta').textContent = calculateDiffInMinutes(document.getElementById('time-cta').value, door);
-            document.getElementById('val-dtp').textContent = calculateDiffInMinutes(document.getElementById('time-puncture').value, door);
+            const diff = (e, s) => (!e || !s) ? '--' : Math.floor((new Date(e).getTime() - new Date(s).getTime()) / 60000) + ' 分鐘';
+            document.getElementById('val-dtct').textContent = diff(document.getElementById('time-ncct').value, door);
+            document.getElementById('val-dtn').textContent = diff(document.getElementById('time-tpa').value, door);
+            document.getElementById('val-dta').textContent = diff(document.getElementById('time-cta').value, door);
+            document.getElementById('val-dtp').textContent = diff(document.getElementById('time-puncture').value, door);
         }
 
         function updateMainClock(doorTs) {
-            let diff = new Date().getTime() - doorTs; 
-            if (diff < 0) { document.getElementById('clock-minutes').textContent = "00"; document.getElementById('clock-seconds').textContent = "無效"; return; }
-            const totalMinutes = Math.floor(diff / (1000 * 60));
-            const remainingSeconds = Math.floor((diff % (1000 * 60)) / 1000);
-            clockMinutes.textContent = String(totalMinutes).padStart(2, '0');
-            clockSeconds.textContent = String(remainingSeconds).padStart(2, '0');
+            let diff = new Date().getTime() - doorTs; if (diff < 0) { document.getElementById('clock-minutes').textContent = "00"; document.getElementById('clock-seconds').textContent = "無效"; return; }
+            document.getElementById('clock-minutes').textContent = String(Math.floor(diff / 60000)).padStart(2, '0'); document.getElementById('clock-seconds').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
         }
 
         function updateOnsetClock() {
-            let lntVal = document.getElementById('n_lkw').value, onsetVal = document.getElementById('n_onset').value;
-            let targetTimeVal = lntVal ? lntVal : onsetVal;
-            if (!targetTimeVal) { document.getElementById('onset-clock-display').textContent = "未設定"; return; }
-            let diff = new Date().getTime() - new Date(targetTimeVal).getTime();
-            if (diff < 0) { document.getElementById('onset-clock-display').textContent = "無效"; return; }
-            let hh = String(Math.floor(diff / 3600000)).padStart(2, '0');
-            let mm = String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0');
-            let ss = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-            document.getElementById('onset-clock-display').textContent = `${hh}:${mm}:${ss}`;
+            let tv = document.getElementById('n_lkw').value ? document.getElementById('n_lkw').value : document.getElementById('n_onset').value;
+            if (!tv) { document.getElementById('onset-clock-display').textContent = "未設定"; return; }
+            let diff = new Date().getTime() - new Date(tv).getTime(); if (diff < 0) { document.getElementById('onset-clock-display').textContent = "無效"; return; }
+            document.getElementById('onset-clock-display').textContent = `${String(Math.floor(diff / 3600000)).padStart(2, '0')}:${String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0')}:${String(Math.floor((diff % 60000) / 1000)).padStart(2, '0')}`;
         }
 
         function activateClockUI(id) {
             currentRecordId = id;
-            initGroup.style.display = 'none';
-            activeGroup.style.display = 'flex';
-            btnActiveClock.textContent = `時鐘已啟用 (${id})`;
-            document.getElementById('digital-clock').style.display = 'block';
-            document.getElementById('onset-clock-container').style.display = 'flex';
-            document.getElementById('metrics-board').style.display = 'block';
+            document.getElementById('init-group').style.display = 'none'; document.getElementById('active-group').style.display = 'flex';
+            document.getElementById('btn-active-clock').textContent = `時鐘已啟用 (${id})`;
+            document.getElementById('digital-clock').style.display = 'block'; document.getElementById('onset-clock-container').style.display = 'flex'; document.getElementById('metrics-board').style.display = 'block';
             
-            const doorTimestamp = new Date(doorTimeInput.value).getTime();
             if (timerInterval) clearInterval(timerInterval);
-            updateMainClock(doorTimestamp); updateOnsetClock();
-            timerInterval = setInterval(() => { 
-                // 確保隨時抓到最新的 doorTimeInput
-                updateMainClock(new Date(document.getElementById('door-time').value).getTime()); 
-                updateOnsetClock(); 
-            }, 1000);
+            updateMainClock(new Date(document.getElementById('door-time').value).getTime()); updateOnsetClock();
+            timerInterval = setInterval(() => { updateMainClock(new Date(document.getElementById('door-time').value).getTime()); updateOnsetClock(); }, 1000);
         }
 
-        // ================= 雲端同步核心 (Start, Download, Upload) =================
+        // ================= 雲端連線 =================
         startBtn.addEventListener('click', function() {
-            if(!GAS_URL || GAS_URL.includes("請在此貼上")) { alert("尚未設定 Web App URL"); return; }
             const doorValue = formatDT(doorTimeInput.value);
             if (!doorValue) { alert("請先輸入檢傷時間！"); return; }
             
-            syncStatus.textContent = "⏳ 雲端配發編號中...";
-            startBtn.disabled = true; startBtn.style.backgroundColor = "#ccc";
+            // 永遠啟動時鐘，即使沒網路或沒設定網址也能用
+            activateClockUI("本機模式");
 
-            fetch(GAS_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ 
-                    action: "create", 
-                    doorTime: doorValue,
-                    onset: formatDT(document.getElementById('n_onset').value),
-                    lnt: formatDT(document.getElementById('n_lkw').value)
-                })
-            })
-            .then(res => res.json())
-            .then(data => {
+            if(!GAS_URL || GAS_URL.includes("請在此貼上")) { 
+                syncStatus.textContent = "⚠️ 尚未設定 Web App URL，目前為離線單機模式";
+                syncStatus.style.color = "#e67e22";
+                return; 
+            }
+
+            syncStatus.textContent = "⏳ 雲端配發編號中...";
+            document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (連線中...)";
+
+            fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "create", doorTime: doorValue, onset: formatDT(document.getElementById('n_onset').value), lnt: formatDT(document.getElementById('n_lkw').value) }) })
+            .then(res => res.json()).then(data => {
                 if(data.status === "success") {
-                    syncStatus.textContent = "✅ 已配發編號，開始計時";
-                    syncStatus.style.color = "#2ecc71";
-                    activateClockUI(data.id);
+                    syncStatus.textContent = "✅ 已配發編號，同步成功"; syncStatus.style.color = "#2ecc71";
+                    activateClockUI(data.id); // 更新為正確的雲端 ID
                 }
-            })
-            .catch(err => {
-                syncStatus.textContent = "❌ 雲端連線失敗";
-                syncStatus.style.color = "#e74c3c";
-                startBtn.disabled = false; startBtn.style.backgroundColor = "#d32f2f";
-            });
+            }).catch(err => { syncStatus.textContent = "❌ 雲端連線失敗 (可繼續離線使用)"; syncStatus.style.color = "#e74c3c"; document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (離線)"; });
         });
 
         downloadBtn.addEventListener('click', function() {
             if(!GAS_URL || GAS_URL.includes("請在此貼上")) { alert("尚未設定 Web App URL"); return; }
-            const idVal = document.getElementById('sync-id').value;
-            if (!idVal) { alert("請先輸入要下載的編號(ID)！"); return; }
-
-            syncStatus.textContent = "⏳ 下載雲端資料中...";
-            downloadBtn.disabled = true;
-
-            fetch(GAS_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: "download", id: idVal })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "found") {
-                    populateDataArray(data.data);
-                    syncStatus.textContent = `✅ 已下載編號 ${idVal} 的資料`;
-                    syncStatus.style.color = "#2ecc71";
-                    activateClockUI(idVal);
-                } else {
-                    syncStatus.textContent = "❌ " + (data.error || "找不到此編號");
-                    syncStatus.style.color = "#e74c3c";
-                    downloadBtn.disabled = false;
-                }
-            })
-            .catch(err => {
-                syncStatus.textContent = "❌ 下載失敗";
-                syncStatus.style.color = "#e74c3c";
-                downloadBtn.disabled = false;
-            });
+            const idVal = document.getElementById('sync-id').value; if (!idVal) { alert("請先輸入編號！"); return; }
+            syncStatus.textContent = "⏳ 下載中..."; downloadBtn.disabled = true;
+            fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "download", id: idVal }) })
+            .then(res => res.json()).then(data => {
+                if(data.status === "found") { populateDataArray(data.data); syncStatus.textContent = `✅ 已下載編號 ${idVal}`; syncStatus.style.color = "#2ecc71"; activateClockUI(idVal); } 
+                else { syncStatus.textContent = "❌ " + (data.error || "找不到此編號"); syncStatus.style.color = "#e74c3c"; downloadBtn.disabled = false; }
+            }).catch(err => { syncStatus.textContent = "❌ 下載失敗"; syncStatus.style.color = "#e74c3c"; downloadBtn.disabled = false; });
         });
 
         uploadBtn.addEventListener('click', function() {
-            if(!currentRecordId) return;
-            syncStatus.textContent = "⏳ 上傳更新中...";
-            uploadBtn.disabled = true; uploadBtn.style.backgroundColor = "#ccc";
-
-            fetch(GAS_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'text/plain' },
-                body: JSON.stringify({ action: "upload", id: currentRecordId, payload: collectDataArray() })
-            })
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === "success") {
-                    syncStatus.textContent = `✅ 儲存成功！ (${new Date().toLocaleTimeString()})`;
-                    syncStatus.style.color = "#2ecc71";
-                } else {
-                    syncStatus.textContent = "❌ 儲存失敗：" + (data.error || "未知錯誤");
-                    syncStatus.style.color = "#e74c3c";
-                }
+            if(!currentRecordId || currentRecordId === "本機模式") { alert("目前為單機模式，無法上傳"); return; }
+            syncStatus.textContent = "⏳ 更新中..."; uploadBtn.disabled = true; uploadBtn.style.backgroundColor = "#ccc";
+            fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "upload", id: currentRecordId, payload: collectDataArray() }) })
+            .then(res => res.json()).then(data => {
+                if(data.status === "success") { syncStatus.textContent = `✅ 儲存成功！ (${new Date().toLocaleTimeString()})`; syncStatus.style.color = "#2ecc71"; } 
+                else { syncStatus.textContent = "❌ 儲存失敗：" + (data.error || "錯誤"); syncStatus.style.color = "#e74c3c"; }
                 uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12";
-            })
-            .catch(err => {
-                syncStatus.textContent = "❌ 上傳失敗，請檢查網路連線";
-                syncStatus.style.color = "#e74c3c";
-                uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12";
-            });
+            }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12"; });
         });
     </script>
 </body>
