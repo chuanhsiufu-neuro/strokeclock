@@ -127,7 +127,7 @@
         <button class="tab-btn" data-target="panel-nurse">護理</button>
         <button class="tab-btn" data-target="panel-evt">取栓</button>
         <button class="tab-btn" data-target="panel-transfer">轉診</button>
-        <button class="tab-btn" data-target="panel-edu">解釋</button>
+        <button class="tab-btn" data-target="panel-edu">病解</button>
     </div>
 
     <div id="sidebar">
@@ -181,7 +181,7 @@
                 </div>
                 
                 <div class="sb-row" style="margin-bottom:8px; align-items:center;">
-                    <div style="flex:1.3;"><span class="sb-label" style="margin:0; font-weight:bold; color:#f1c40f;">Neuro arrival:</span></div>
+                    <div style="flex:1.3;"><span class="sb-label" style="margin:0; font-weight:bold; color:#f1c40f;">Neuro arrival</span></div>
                     <div style="flex:1;"><input type="datetime-local" id="n_neuro_arrival" class="sb-input" step="1"></div>
                 </div>
                 
@@ -263,7 +263,7 @@
                     <div class="cl-time">⏰ 時間點：Line 取栓醫師回覆</div>
                     <ul class="cl-list">
                         <li>找 ICU 床位</li>
-                        <li>給家屬取栓圖文單張 (怎麼做、價錢、可能風險)</li>
+                        <li>給家屬取栓圖文單張<br><span style="color:#7f8c8d; font-size:0.9em;">(怎麼做、價錢、可能風險)</span></li>
                     </ul>
                 </div>
                 <div class="cl-item">
@@ -298,7 +298,7 @@
                     <div class="cl-time">⏰ 時間點：找到床位</div>
                     <ul class="cl-list">
                         <li>請住中 (住院中心) 配床</li>
-                        <li>依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])</li>
+                        <li>依 <a href="ERNurse_EVTchecklist.pdf" target="_blank" style="color:#3498db; text-decoration:underline; font-weight:bold;">Check list</a> 開藥 (Fentanyl / Perdipine / [Aggrastat])</li>
                     </ul>
                 </div>
                 <div class="cl-item">
@@ -560,9 +560,39 @@
         }
 
         // NE 範本邏輯
-        const neTemplateL = `[NE]\nGCS   E3M5V2\nLanguage: mute, failed in naming/repetition\nNeglect: not demonstratable\nCN:\nPupil 3/3, light reflex +/+, right hemianopia to threatening\nEOM: forced deviation to the left, could not be corrected by VOR\nFace: right central facial palsy\n\nMP:\nRUL/LUL 2(to pain) / >4\nRLL/LLL  2~3 可踩床/>4\n\nBabinski R/L +/-\nSensation: right limbs hypesthesia to pain\nFNF, HKS: could not cooperate`;
+        const neTemplateL = `[NE]
+GCS   E3M5V2
+Language: mute, failed in naming/repetition
+Neglect: not demonstratable
+CN:
+Pupil 3/3, light reflex +/+, right hemianopia to threatening
+EOM: forced deviation to the left, could not be corrected by VOR
+Face: right central facial palsy
 
-        const neTemplateR = `[NE]\nGCS   E3M6V3\nLanguage: fluent, could follow 1 step order\nNeglect: left neglect to auditory stimuli\n\nPupil 3/3, light reflex +/+, left hemianopia to threatening\nEOM: forced deviation to his right, not be corrected by VOR\nFace: left central facial palsy\n\nMP:\nRUL/LUL 5/ 2(to pain)\nRLL/LLL 5/ 2~3 可踩床\n\nBabinski R/L flexor/extensor\nSensation: nearly loss over left limbs to pain\nFNF, HKS: could not cooperate`;
+MP:
+RUL/LUL 2(to pain) / >4
+RLL/LLL  2~3 可踩床/>4
+
+Babinski R/L +/-
+Sensation: right limbs hypesthesia to pain
+FNF, HKS: could not cooperate`;
+
+        const neTemplateR = `[NE]
+GCS   E3M6V3
+Language: fluent, could follow 1 step order
+Neglect: left neglect to auditory stimuli
+
+Pupil 3/3, light reflex +/+, left hemianopia to threatening
+EOM: forced deviation to his right, not be corrected by VOR
+Face: left central facial palsy
+
+MP:
+RUL/LUL 5/ 2(to pain)
+RLL/LLL 5/ 2~3 可踩床
+
+Babinski R/L flexor/extensor
+Sensation: nearly loss over left limbs to pain
+FNF, HKS: could not cooperate`;
 
         document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
             radio.addEventListener('change', function() {
@@ -577,7 +607,6 @@
             });
         });
 
-        // 快速勾選 Code 觸發器
         document.querySelectorAll('input[name="main_code_trigger"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('n_code_type').value = this.value;
@@ -748,7 +777,6 @@
             let nihssLine = d.nihssRaw ? `NIHSS: ${d.nihssRaw} ${d.nihssScore}\n` : "";
             let neBlock = d.neText ? `\n${d.neText}\n` : '';
 
-            // 符合嚴格空行格式要求
             const result = `[Consultation note]
 This is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of
 ${pmhStr}
