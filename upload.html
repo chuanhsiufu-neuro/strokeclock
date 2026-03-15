@@ -161,33 +161,32 @@
 
             <div class="sb-group">
                 <div class="sb-title">基本資料</div>
-                <div class="sb-row" style="margin-bottom:8px;">
-                    <div style="flex:1;"><span class="sb-label">年齡 (歲)</span><input type="number" id="n_age" class="sb-input"></div>
-                    <div style="flex:1;"><span class="sb-label">性別</span><select id="n_gender" class="sb-select"><option value="男">男 (man)</option><option value="女">女 (woman)</option><option value=""></option></select></div>
-                    <div style="flex:1.5;"><span class="sb-label">Pre-mRS</span><select id="n_mrs" class="sb-select"><option value=""></option><option value="0">0 (無症狀)</option><option value="1">1 (無顯著失能)</option><option value="2">2 (輕度失能)</option><option value="3">3 (中度失能)</option><option value="4">4 (中重度)</option><option value="5">5 (臥床)</option></select></div>
+                <div class="sb-row">
+                    <div><span class="sb-label">年齡 (歲)</span><input type="number" id="n_age" class="sb-input"></div>
+                    <div><span class="sb-label">性別</span><select id="n_gender" class="sb-select"><option value="男">男 (man)</option><option value="女">女 (woman)</option><option value=""></option></select></div>
+                </div>
+                <div class="sb-row" style="margin-top: 8px;">
+                    <div style="flex:1;"><span class="sb-label">Pre-mRS</span><select id="n_mrs" class="sb-select"><option value=""></option><option value="0">0 (無症狀)</option><option value="1">1 (無顯著失能)</option><option value="2">2 (輕度失能)</option><option value="3">3 (中度失能)</option><option value="4">4 (中重度)</option><option value="5">5 (臥床)</option></select></div>
                 </div>
             </div>
 
             <div class="sb-group">
                 <div class="sb-title">臨床資訊</div>
                 
-                <div class="sb-row" style="margin-bottom:8px; align-items:center;">
+                <input type="hidden" id="n_code_type">
+                <div class="sb-row" id="n_code_row" style="margin-bottom:8px; align-items:center; display:none;">
                     <div style="flex:1.3;">
-                        <select id="n_code_type" class="sb-select" style="font-weight:bold; color:#d32f2f;">
-                            <option value="">-- 無 Code 啟動 --</option>
-                            <option value="Stroke code <3.5hr">Stroke code &lt;3.5hr</option>
-                            <option value="IA code 3.5-24hr">IA code 3.5-24hr</option>
-                        </select>
+                        <span id="n_code_label" style="font-weight:bold; color:#f1c40f; font-size:14px;"></span>
                     </div>
                     <div style="flex:1;"><input type="datetime-local" id="n_code_time" class="sb-input" step="1"></div>
                 </div>
                 
                 <div class="sb-row" style="margin-bottom:8px; align-items:center;">
-                    <div style="flex:1.3;"><span class="sb-label" style="margin:0; font-weight:bold; color:#f1c40f;">Neuro arrival time:</span></div>
+                    <div style="flex:1.3;"><span class="sb-label" style="margin:0; font-weight:bold; color:#f1c40f;">Neuro arrival:</span></div>
                     <div style="flex:1;"><input type="datetime-local" id="n_neuro_arrival" class="sb-input" step="1"></div>
                 </div>
                 
-                <span class="sb-label">簡述症狀與肌力 (Symptoms)</span>
+                <span class="sb-label">簡述症狀與肌力 (clinical course)</span>
                 <textarea id="n_symptoms" rows="2" class="sb-textarea" placeholder="例如: 右側無力 (MP: 2/5)..." style="margin-bottom: 8px;"></textarea>
                 
                 <div id="n_nihss_block" style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
@@ -256,37 +255,104 @@
 
         <div id="panel-np" class="sidebar-panel">
             <h3 class="sidebar-header">NP紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="np_note" class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea></div>
+            <div style="padding: 0 20px;">
+                <textarea id="np_note" class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea>
+            </div>
             <div class="checklist-container">
                 <div class="sb-title yellow">NP-Check-list</div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：家屬同意取栓</div><ul class="cl-list"><li>給予家屬取栓同意書</li></ul></div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：找到床位</div><ul class="cl-list"><li>請住中 (住院中心) 配床</li><li>依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])</li></ul></div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：IA Team 到院</div><ul class="cl-list"><li>開不穩定單——一路設定到 CCU</li><li>辦好住院</li><li>病人離部</li><li>若病人在急診插管，Call RT 至血攝室設定機器</li></ul></div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：家屬同意取栓</div>
+                    <ul class="cl-list">
+                        <li>給予家屬取栓同意書</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：找到床位</div>
+                    <ul class="cl-list">
+                        <li>請住中 (住院中心) 配床</li>
+                        <li>依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
+                    <ul class="cl-list">
+                        <li>開不穩定單——一路設定到 CCU</li>
+                        <li>辦好住院</li>
+                        <li>病人離部</li>
+                        <li>若病人在急診插管，Call RT 至血攝室設定機器</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="nurse_note" class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea></div>
+            <div style="padding: 0 20px;">
+                <textarea id="nurse_note" class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea>
+            </div>
             <div class="checklist-container">
                 <div class="sb-title yellow">護理-Check-list</div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：找到床位</div><ul class="cl-list"><li>請家屬辦住院手續</li><li>依 Check list 準備病人 (換手術衣等)</li></ul></div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：血攝室叫病人</div><ul class="cl-list"><li>Call 傳送，送病人到血攝室</li></ul></div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：病人到血攝室</div><ul class="cl-list"><li>急診交班</li></ul></div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：找到床位</div>
+                    <ul class="cl-list">
+                        <li>請家屬辦住院手續</li>
+                        <li>依 Check list 準備病人 (換手術衣等)</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：血攝室叫病人</div>
+                    <ul class="cl-list">
+                        <li>Call 傳送，送病人到血攝室</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：病人到血攝室</div>
+                    <ul class="cl-list">
+                        <li>急診交班</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
         <div id="panel-evt" class="sidebar-panel">
             <h3 class="sidebar-header">取栓紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="evt_note" class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea></div>
+            <div style="padding: 0 20px;">
+                <textarea id="evt_note" class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea>
+            </div>
             <div class="checklist-container">
                 <div class="sb-title yellow">取栓醫師-Check-list</div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：找到床位</div><ul class="cl-list"><li>Call IA Team</li><li>到院解釋風險</li><li>若要麻醉提早告知麻醉科</li></ul></div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：IA Team 到院</div><ul class="cl-list"><li>規劃怎麼取栓</li><li>若要全麻，要聯絡麻醉科醫師</li></ul></div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：找到床位</div>
+                    <ul class="cl-list">
+                        <li>Call IA Team</li>
+                        <li>到院解釋風險</li>
+                        <li>若要麻醉提早告知麻醉科</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
+                    <ul class="cl-list">
+                        <li>規劃怎麼取栓</li>
+                        <li>若要全麻，要聯絡麻醉科醫師</li>
+                    </ul>
+                </div>
                 
                 <div class="sb-title yellow" style="margin-top: 20px;">取栓護理師/放射師-Check-list</div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：IA Team 到院</div><ul class="cl-list"><li>備物</li><li>確認同意書</li><li>確認影醫照會</li></ul></div>
-                <div class="cl-item"><div class="cl-time">⏰ 時間點：病人到血攝室</div><ul class="cl-list"><li>術前準備</li><li>急診交班</li></ul></div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
+                    <ul class="cl-list">
+                        <li>備物</li>
+                        <li>確認同意書</li>
+                        <li>確認影醫照會</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：病人到血攝室</div>
+                    <ul class="cl-list">
+                        <li>術前準備</li>
+                        <li>急診交班</li>
+                    </ul>
+                </div>
             </div>
         </div>
 
@@ -359,7 +425,6 @@
     </div>
 
     <script>
-        // 【重要】請把部署得到的「全新網址」貼在這裡
         const GAS_URL = "https://script.google.com/macros/s/AKfycbztKugKweri9Xz1qaOweh1ze8ir3xHJ_WULxSXKDr61Jya_q7F4XNFzVyoFKMM4eodu/exec"; 
         
         let currentRecordId = null; 
@@ -443,21 +508,76 @@
             document.getElementById('n_image_block').style.display = (nc || htNc || ct || htCt) ? 'block' : 'none';
         }
 
-        // NE 範本邏輯
-        const neTemplateL = `(Left MCA)\n[NE]\nGCS   E3M5V2\nNIHSS \nLanguage: only sound, could follow 1 step order\nRepetition( ), Naming( ), dysarthria( )\nNeglect: not demonstratable\n\nPupil 3/3, light reflex sluggish/sluggish\nConfrontation/Threatening: right hemianopia \nEOM: forced deviation to the left, could not be corrected by VOR\nFace: right central facial palsy, cornea(R/L) +/+\nTongue and uvula: no deviation\n\nMP:\nLUL >4        LLL >4\nRUL 2(to pain) RLL 2~3 可踩床\n\nBabinski R/L extensor/flexor\nSensation: nearly loss over right limbs to pain\nFNF, HKS: could not cooperate`;
-        const neTemplateR = `(Right MCA)\n[NE]\nGCS   E3M6V3\nNIHSS \nLanguage: fluent, could follow 1 step order\nRepetition( ), Naming( ), dysarthria( )\nNeglect: not demonstratable\n\nPupil 3/3, light reflex sluggish/sluggish\nConfrontation/Threatening: Left hemianopia \nEOM: forced deviation to his right, could not be corrected by VOR\nFace: left central facial palsy, cornea(R/L) +/+\nTongue and uvula: no deviation\n\nMP:\nRUL 5   RLL 5\nLUL 2(to pain)   LLL 2~3 可踩床\n\nBabinski R/L flexor/extensor\nSensation: nearly loss over left limbs to pain\nFNF, HKS: could not cooperate`;
+        // NE 範本邏輯 (去除 L't MCA 標題字眼)
+        const neTemplateL = `[NE]
+GCS   E3M5V2
+NIHSS 
+Language: only sound, could follow 1 step order
+Repetition( ), Naming( ), dysarthria( )
+Neglect: not demonstratable
+
+Pupil 3/3, light reflex sluggish/sluggish
+Confrontation/Threatening: right hemianopia 
+EOM: forced deviation to the left, could not be corrected by VOR
+Face: right central facial palsy, cornea(R/L) +/+
+Tongue and uvula: no deviation
+
+MP:
+LUL >4        LLL >4
+RUL 2(to pain) RLL 2~3 可踩床
+
+Babinski R/L extensor/flexor
+Sensation: nearly loss over right limbs to pain
+FNF, HKS: could not cooperate`;
+
+        const neTemplateR = `[NE]
+GCS   E3M6V3
+NIHSS 
+Language: fluent, could follow 1 step order
+Repetition( ), Naming( ), dysarthria( )
+Neglect: not demonstratable
+
+Pupil 3/3, light reflex sluggish/sluggish
+Confrontation/Threatening: Left hemianopia 
+EOM: forced deviation to his right, could not be corrected by VOR
+Face: left central facial palsy, cornea(R/L) +/+
+Tongue and uvula: no deviation
+
+MP:
+RUL 5   RLL 5
+LUL 2(to pain)   LLL 2~3 可踩床
+
+Babinski R/L flexor/extensor
+Sensation: nearly loss over left limbs to pain
+FNF, HKS: could not cooperate`;
 
         document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
             radio.addEventListener('change', function() {
-                if (this.value === 'L') { document.getElementById('n_ne_text').value = neTemplateL; } 
-                else if (this.value === 'R') { document.getElementById('n_ne_text').value = neTemplateR; }
+                if (this.value === 'L') { 
+                    document.getElementById('n_ne_text').value = neTemplateL; 
+                    document.getElementById('n_nihss').value = "021 121 0302 01320";
+                } else if (this.value === 'R') { 
+                    document.getElementById('n_ne_text').value = neTemplateR; 
+                    document.getElementById('n_nihss').value = "010 121 3020 02012";
+                }
+                calcNeuroNIHSS();
             });
         });
 
+        // 快速勾選 Code 觸發器
         document.querySelectorAll('input[name="main_code_trigger"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('n_code_type').value = this.value;
-                document.getElementById('n_code_time').value = getLocalIsoString(new Date());
+                let shortText = this.value.includes('<3.5') ? '<3.5' : '3.5-24';
+                document.getElementById('n_code_label').innerText = shortText;
+                document.getElementById('n_code_row').style.display = 'flex';
+                
+                let now = new Date();
+                document.getElementById('n_code_time').value = getLocalIsoString(now);
+                // 自動預設 neuro arrival 為 5 分鐘後
+                document.getElementById('n_neuro_arrival').value = getLocalIsoString(new Date(now.getTime() + 5*60000));
+                
+                // 自動按 Start
                 document.getElementById('start-btn').click();
             });
         });
@@ -468,14 +588,14 @@
             const val = document.getElementById('n_nihss').value; let sum = 0, hasX = false;
             for (let c of val) { if (/[0-9]/.test(c)) sum += parseInt(c); else if (c.toUpperCase() === 'X') hasX = true; }
             if (val.trim() === "") { document.getElementById('n_nihss_display').innerText = ""; return ""; } 
-            else { document.getElementById('n_nihss_display').innerText = `(${hasX ? sum+'+X' : sum}分)`; return ` (${hasX ? sum+'+X' : sum}分)`; }
+            else { document.getElementById('n_nihss_display').innerText = `(${hasX ? sum+'+X' : sum})`; return ` (${hasX ? sum+'+X' : sum})`; }
         }
         function calcErGFAST() {
             let score = 0; document.querySelectorAll('.er-gfast-cb:checked').forEach(() => score++);
             document.getElementById('er_gfast_display').innerText = score; return score;
         }
 
-        // --------------- 雲端資料收集與還原 (依照最新的排序) ---------------
+        // --------------- 雲端資料收集與還原 ---------------
         function collectDataArray() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
@@ -535,9 +655,19 @@
             };
             
             setTime('door-time', row[1]); setTime('n_onset', row[2]); setTime('n_lkw', row[3]); 
-            document.getElementById('n_code_type').value = row[4] || "";
-            setTime('n_code_time', row[5]);
-            setTime('n_neuro_arrival', row[6]);
+            
+            // Code Type 與連動
+            let codeType = row[4] || "";
+            document.getElementById('n_code_type').value = codeType;
+            if (codeType) {
+                let shortText = codeType.includes('<3.5') ? '<3.5' : '3.5-24';
+                document.getElementById('n_code_label').innerText = shortText;
+                document.getElementById('n_code_row').style.display = 'flex';
+            } else {
+                document.getElementById('n_code_row').style.display = 'none';
+            }
+
+            setTime('n_code_time', row[5]); setTime('n_neuro_arrival', row[6]);
             setTime('time-ncct', row[7]); setTime('time-tpa', row[8]); setTime('time-cta', row[9]); 
             setTime('time-puncture', row[10]); setTime('time-ed-leave', row[11]); setTime('time-amb-dep', row[12]); 
             
@@ -606,11 +736,29 @@
             if (d.ncctChecked || document.getElementById('time-ncct').value) imageBlock += `Brain NCCT: ${d.ncctDesc}\n`;
             if (d.ctaChecked || document.getElementById('time-cta').value) imageBlock += `Brain CTA: ${d.ctaDesc}\n`;
             
-            let neuroStr = ""; if (d.nihssRaw) neuroStr += `NIHSS: ${d.nihssRaw}${d.nihssScore}\n`; if (d.enableGfast) neuroStr += `GFAST: ${d.erGfast}\n`;
+            let nihssLine = d.nihssRaw ? `NIHSS: ${d.nihssRaw} ${d.nihssScore}\n` : "";
             let neBlock = d.neText ? `\n${d.neText}\n` : '';
 
-            const result = `[Consultation note]\nThis is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of\n${pmhStr}\n\n[brief course]\nLNT: ${d.lkw}\nOnset/Found abnormal: ${d.onset}\n${codeStr}${neuroArrStr}Symptoms:\n${d.symptoms}${neBlock}\n${neuroStr}${imageBlock}\n${tpaBlock}`;
-            const ob = document.getElementById('c-output'); ob.innerText = result.trim(); ob.style.display = 'block';
+            // 符合嚴格空行格式要求
+            const result = `[Consultation note]
+This is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of
+${pmhStr}
+
+[brief course]
+LNT: ${d.lkw}
+Onset/Found abnormal: ${d.onset}
+${codeStr}${neuroArrStr}
+Clinical course:
+${d.symptoms}
+
+${nihssLine}${neBlock}
+${imageBlock.trim()}
+
+${tpaBlock}`;
+
+            const outBox = document.getElementById('c-output');
+            outBox.innerText = result.trim();
+            outBox.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
 
@@ -631,7 +779,7 @@
             let neuroEvalLine = neuroEvalParts.length > 0 ? `\n   - 神經學評估：${neuroEvalParts.join(' / ')}` : '';
 
             const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 最後正常(LNT)：${d.lkw}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
-            const ob = document.getElementById('t-output'); ob.innerText = result; ob.style.display = 'block';
+            const outBox = document.getElementById('t-output'); outBox.innerText = result; outBox.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
@@ -663,6 +811,11 @@
         ['ncct', 'tpa', 'cta', 'puncture', 'ed-leave', 'amb-dep'].forEach(target => {
             document.getElementById(`cb-${target}`).addEventListener('change', function() { document.getElementById(`time-${target}`).value = this.checked ? getLocalIsoString(new Date()) : ""; toggleImageDesc(); calculateAllMetrics(); });
         });
+
+        function calculateDiffInMinutes(endStr, startStr) {
+            if (!endStr || !startStr) return '--';
+            return Math.floor((new Date(endStr).getTime() - new Date(startStr).getTime()) / 60000) + ' 分鐘';
+        }
 
         function calculateAllMetrics() {
             const door = doorTimeInput.value;
