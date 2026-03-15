@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Stroke Clock</title>
     <style>
-        /* 整體設計 (手機優先) */
+        /* 整體設計 */
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f4f4f9; color: #333; padding: 20px 10px 20px 55px; text-align: center; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; overflow-x: hidden; }
         h1 { color: #d32f2f; margin-top: 0; margin-bottom: 20px; font-size: 32px; }
 
@@ -26,8 +26,6 @@
         .sidebar-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .sidebar-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
         .sidebar-item input[type="datetime-local"] { width: 100%; font-size: 16px; padding: 6px; background-color: #ecf0f1; color: #333; border: none; border-radius: 4px; box-sizing: border-box; }
-        
-        /* 縮減原本的 textarea 高度，把空間留給 Check-list */
         .custom-textarea { width: 100%; height: 150px; border-radius: 5px; padding: 10px; font-size: 14px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 15px; line-height: 1.5; }
 
         /* 側邊表單共用樣式 */
@@ -36,7 +34,6 @@
         .sb-title.orange { color: #e67e22; border-left-color: #e67e22; }
         .sb-title.yellow { color: #f1c40f; border-left-color: #f1c40f; } 
         
-        /* Check-list 專用樣式 */
         .checklist-container { padding: 0 15px; text-align: left; margin-bottom: 15px; }
         .cl-item { margin-bottom: 12px; }
         .cl-time { font-weight: bold; color: #1abc9c; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
@@ -99,6 +96,11 @@
         .id-input { flex: 1; font-size: 16px; padding: 8px; border: 1px solid #aaa; border-radius: 8px; text-align: center; font-weight: bold; }
         .btn-download { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-download:hover { background-color: #2980b9; }
+        
+        .quick-code-row { display: flex; gap: 10px; justify-content: center; margin-top: 5px; }
+        .quick-code-label { font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 6px; background: #e8f4f8; border: 1px solid #bce8f1; color: #31708f; transition: 0.2s; }
+        .quick-code-label:hover { background: #d9edf7; }
+        .quick-code-label input { width: 16px; height: 16px; cursor: pointer; margin: 0; }
 
         #active-group { width: 90%; max-width: 380px; display: none; gap: 8px; margin-bottom: 10px; }
         .btn-active-clock { flex: 1; font-size: 22px; font-weight: bold; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 8px; cursor: default; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
@@ -156,15 +158,54 @@
                     </div>
                 </div>
             </div>
+
             <div class="sb-group">
                 <div class="sb-title">基本資料</div>
-                <div class="sb-row"><div><span class="sb-label">年齡 (歲)</span><input type="number" id="n_age" class="sb-input"></div><div><span class="sb-label">性別</span><select id="n_gender" class="sb-select"><option value="男">男 (man)</option><option value="女">女 (woman)</option><option value=""></option></select></div></div>
+                <div class="sb-row" style="margin-bottom:8px;">
+                    <div style="flex:1;"><span class="sb-label">年齡 (歲)</span><input type="number" id="n_age" class="sb-input"></div>
+                    <div style="flex:1;"><span class="sb-label">性別</span><select id="n_gender" class="sb-select"><option value="男">男 (man)</option><option value="女">女 (woman)</option><option value=""></option></select></div>
+                    <div style="flex:1.5;"><span class="sb-label">Pre-mRS</span><select id="n_mrs" class="sb-select"><option value=""></option><option value="0">0 (無症狀)</option><option value="1">1 (無顯著失能)</option><option value="2">2 (輕度失能)</option><option value="3">3 (中度失能)</option><option value="4">4 (中重度)</option><option value="5">5 (臥床)</option></select></div>
+                </div>
             </div>
+
             <div class="sb-group">
                 <div class="sb-title">臨床資訊</div>
-                <span class="sb-label">Pre-mRS</span><select id="n_mrs" class="sb-select" style="margin-bottom: 8px;"><option value=""></option><option value="0">0 (無症狀)</option><option value="1">1 (無顯著失能)</option><option value="2">2 (輕度失能, 不用他人協助)</option><option value="3">3 (中度失能, 日常活動部份協助)</option><option value="4">4 (中重度失能, 日常皆需協助)</option><option value="5">5 (重度失能, 臥床)</option></select>
-                <span class="sb-label">簡述症狀與肌力 (Symptoms)</span><textarea id="n_symptoms" rows="2" class="sb-textarea" placeholder="例如: 右側無力 (MP: 2/5)..." style="margin-bottom: 8px;"></textarea>
-                <div id="n_nihss_block" style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;"><span class="sb-label">NIHSS 評估分數 <span id="n_nihss_display" class="score-display"></span></span><input type="text" id="n_nihss" class="sb-input" placeholder="細項(含X自動加總) 例如: 21002..." oninput="calcNeuroNIHSS()"></div>
+                
+                <div class="sb-row" style="margin-bottom:8px; align-items:center;">
+                    <div style="flex:1.3;">
+                        <select id="n_code_type" class="sb-select" style="font-weight:bold; color:#d32f2f;">
+                            <option value="">-- 無 Code 啟動 --</option>
+                            <option value="Stroke code <3.5hr">Stroke code &lt;3.5hr</option>
+                            <option value="IA code 3.5-24hr">IA code 3.5-24hr</option>
+                        </select>
+                    </div>
+                    <div style="flex:1;"><input type="datetime-local" id="n_code_time" class="sb-input" step="1"></div>
+                </div>
+                
+                <div class="sb-row" style="margin-bottom:8px; align-items:center;">
+                    <div style="flex:1.3;"><span class="sb-label" style="margin:0; font-weight:bold; color:#f1c40f;">Neuro arrival time:</span></div>
+                    <div style="flex:1;"><input type="datetime-local" id="n_neuro_arrival" class="sb-input" step="1"></div>
+                </div>
+                
+                <span class="sb-label">簡述症狀與肌力 (Symptoms)</span>
+                <textarea id="n_symptoms" rows="2" class="sb-textarea" placeholder="例如: 右側無力 (MP: 2/5)..." style="margin-bottom: 8px;"></textarea>
+                
+                <div id="n_nihss_block" style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
+                    <span class="sb-label">NIHSS 評估分數 <span id="n_nihss_display" class="score-display"></span></span>
+                    <input type="text" id="n_nihss" class="sb-input" placeholder="細項(含X自動加總) 例如: 21002..." oninput="calcNeuroNIHSS()">
+                </div>
+
+                <div id="n_ne_block" style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
+                    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+                        <span class="sb-label" style="margin:0; font-weight:bold; color:#3498db;">神經學檢查 (NE)</span>
+                        <div style="display:flex; gap:10px;">
+                            <label class="sb-cb-label" style="color:#2ecc71;"><input type="radio" name="ne_template" value="L"> L't MCA</label>
+                            <label class="sb-cb-label" style="color:#e67e22;"><input type="radio" name="ne_template" value="R"> R't MCA</label>
+                        </div>
+                    </div>
+                    <textarea id="n_ne_text" rows="6" class="sb-textarea" placeholder="勾選上方帶入範本，或手動輸入..."></textarea>
+                </div>
+
                 <span class="sb-label">過去病史 (Past history)</span>
                 <div class="sb-cb-container">
                     <label class="sb-cb-label"><input type="checkbox" class="n-pmh-cb" value="DM"> DM</label>
@@ -176,6 +217,7 @@
                     <input type="text" id="n_pmh_other" class="sb-input" placeholder="其他..." style="margin-top: 4px;">
                 </div>
             </div>
+
             <div class="sb-group">
                 <div class="sb-title">檢驗數據</div>
                 <div class="sb-row"><div style="flex: 0.8;"><span class="sb-label">Lab: Cre</span><input type="text" id="n_cre" class="sb-input" placeholder="數值"></div><div style="flex: 1.2;"><span class="sb-label">其他 (INR, EKG...)</span><input type="text" id="n_lab_other" class="sb-input"></div></div>
@@ -214,104 +256,37 @@
 
         <div id="panel-np" class="sidebar-panel">
             <h3 class="sidebar-header">NP紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea id="np_note" class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea>
-            </div>
+            <div style="padding: 0 20px;"><textarea id="np_note" class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea></div>
             <div class="checklist-container">
                 <div class="sb-title yellow">NP-Check-list</div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：家屬同意取栓</div>
-                    <ul class="cl-list">
-                        <li>給予家屬取栓同意書</li>
-                    </ul>
-                </div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：找到床位</div>
-                    <ul class="cl-list">
-                        <li>請住中 (住院中心) 配床</li>
-                        <li>依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])</li>
-                    </ul>
-                </div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
-                    <ul class="cl-list">
-                        <li>開不穩定單——一路設定到 CCU</li>
-                        <li>辦好住院</li>
-                        <li>病人離部</li>
-                        <li>若病人在急診插管，Call RT 至血攝室設定機器</li>
-                    </ul>
-                </div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：家屬同意取栓</div><ul class="cl-list"><li>給予家屬取栓同意書</li></ul></div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：找到床位</div><ul class="cl-list"><li>請住中 (住院中心) 配床</li><li>依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])</li></ul></div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：IA Team 到院</div><ul class="cl-list"><li>開不穩定單——一路設定到 CCU</li><li>辦好住院</li><li>病人離部</li><li>若病人在急診插管，Call RT 至血攝室設定機器</li></ul></div>
             </div>
         </div>
 
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea id="nurse_note" class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea>
-            </div>
+            <div style="padding: 0 20px;"><textarea id="nurse_note" class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea></div>
             <div class="checklist-container">
                 <div class="sb-title yellow">護理-Check-list</div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：找到床位</div>
-                    <ul class="cl-list">
-                        <li>請家屬辦住院手續</li>
-                        <li>依 Check list 準備病人 (換手術衣等)</li>
-                    </ul>
-                </div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：血攝室叫病人</div>
-                    <ul class="cl-list">
-                        <li>Call 傳送，送病人到血攝室</li>
-                    </ul>
-                </div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：病人到血攝室</div>
-                    <ul class="cl-list">
-                        <li>急診交班</li>
-                    </ul>
-                </div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：找到床位</div><ul class="cl-list"><li>請家屬辦住院手續</li><li>依 Check list 準備病人 (換手術衣等)</li></ul></div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：血攝室叫病人</div><ul class="cl-list"><li>Call 傳送，送病人到血攝室</li></ul></div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：病人到血攝室</div><ul class="cl-list"><li>急診交班</li></ul></div>
             </div>
         </div>
 
         <div id="panel-evt" class="sidebar-panel">
             <h3 class="sidebar-header">取栓紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea id="evt_note" class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea>
-            </div>
+            <div style="padding: 0 20px;"><textarea id="evt_note" class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea></div>
             <div class="checklist-container">
                 <div class="sb-title yellow">取栓醫師-Check-list</div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：找到床位</div>
-                    <ul class="cl-list">
-                        <li>Call IA Team</li>
-                        <li>到院解釋風險</li>
-                        <li>若要麻醉提早告知麻醉科</li>
-                    </ul>
-                </div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
-                    <ul class="cl-list">
-                        <li>規劃怎麼取栓</li>
-                        <li>若要全麻，要聯絡麻醉科醫師</li>
-                    </ul>
-                </div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：找到床位</div><ul class="cl-list"><li>Call IA Team</li><li>到院解釋風險</li><li>若要麻醉提早告知麻醉科</li></ul></div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：IA Team 到院</div><ul class="cl-list"><li>規劃怎麼取栓</li><li>若要全麻，要聯絡麻醉科醫師</li></ul></div>
                 
                 <div class="sb-title yellow" style="margin-top: 20px;">取栓護理師/放射師-Check-list</div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
-                    <ul class="cl-list">
-                        <li>備物</li>
-                        <li>確認同意書</li>
-                        <li>確認影醫照會</li>
-                    </ul>
-                </div>
-                <div class="cl-item">
-                    <div class="cl-time">⏰ 時間點：病人到血攝室</div>
-                    <ul class="cl-list">
-                        <li>術前準備</li>
-                        <li>急診交班</li>
-                    </ul>
-                </div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：IA Team 到院</div><ul class="cl-list"><li>備物</li><li>確認同意書</li><li>確認影醫照會</li></ul></div>
+                <div class="cl-item"><div class="cl-time">⏰ 時間點：病人到血攝室</div><ul class="cl-list"><li>術前準備</li><li>急診交班</li></ul></div>
             </div>
         </div>
 
@@ -357,7 +332,14 @@
 
         <div id="init-group">
             <button id="start-btn" class="btn-start">Start!</button>
-            <div class="download-row"><input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料"><button id="btn-download" class="btn-download" title="下載資料">⬇️</button></div>
+            <div class="download-row">
+                <input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料">
+                <button id="btn-download" class="btn-download" title="下載資料">⬇️</button>
+            </div>
+            <div class="quick-code-row">
+                <label class="quick-code-label"><input type="radio" name="main_code_trigger" value="Stroke code <3.5hr"> Stroke code &lt;3.5hr</label>
+                <label class="quick-code-label" style="color: #e67e22; border-color: #fbd6b6; background: #fff4eb;"><input type="radio" name="main_code_trigger" value="IA code 3.5-24hr"> IA code 3.5-24hr</label>
+            </div>
         </div>
 
         <div id="active-group">
@@ -378,7 +360,7 @@
 
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwYRwO7q85_jgZhLA0V1msJ0HrCQbDQ_ZO0SlaelQgCthdQo-egyF3Lt9FtXSwVoGWK/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbztKugKweri9Xz1qaOweh1ze8ir3xHJ_WULxSXKDr61Jya_q7F4XNFzVyoFKMM4eodu/exec"; 
         
         let currentRecordId = null; 
 
@@ -461,6 +443,25 @@
             document.getElementById('n_image_block').style.display = (nc || htNc || ct || htCt) ? 'block' : 'none';
         }
 
+        // NE 範本邏輯
+        const neTemplateL = `(Left MCA)\n[NE]\nGCS   E3M5V2\nNIHSS \nLanguage: only sound, could follow 1 step order\nRepetition( ), Naming( ), dysarthria( )\nNeglect: not demonstratable\n\nPupil 3/3, light reflex sluggish/sluggish\nConfrontation/Threatening: right hemianopia \nEOM: forced deviation to the left, could not be corrected by VOR\nFace: right central facial palsy, cornea(R/L) +/+\nTongue and uvula: no deviation\n\nMP:\nLUL >4        LLL >4\nRUL 2(to pain) RLL 2~3 可踩床\n\nBabinski R/L extensor/flexor\nSensation: nearly loss over right limbs to pain\nFNF, HKS: could not cooperate`;
+        const neTemplateR = `(Right MCA)\n[NE]\nGCS   E3M6V3\nNIHSS \nLanguage: fluent, could follow 1 step order\nRepetition( ), Naming( ), dysarthria( )\nNeglect: not demonstratable\n\nPupil 3/3, light reflex sluggish/sluggish\nConfrontation/Threatening: Left hemianopia \nEOM: forced deviation to his right, could not be corrected by VOR\nFace: left central facial palsy, cornea(R/L) +/+\nTongue and uvula: no deviation\n\nMP:\nRUL 5   RLL 5\nLUL 2(to pain)   LLL 2~3 可踩床\n\nBabinski R/L flexor/extensor\nSensation: nearly loss over left limbs to pain\nFNF, HKS: could not cooperate`;
+
+        document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                if (this.value === 'L') { document.getElementById('n_ne_text').value = neTemplateL; } 
+                else if (this.value === 'R') { document.getElementById('n_ne_text').value = neTemplateR; }
+            });
+        });
+
+        document.querySelectorAll('input[name="main_code_trigger"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                document.getElementById('n_code_type').value = this.value;
+                document.getElementById('n_code_time').value = getLocalIsoString(new Date());
+                document.getElementById('start-btn').click();
+            });
+        });
+
         document.getElementById('n_onset').value = getLocalIsoString(new Date());
 
         function calcNeuroNIHSS() {
@@ -474,50 +475,55 @@
             document.getElementById('er_gfast_display').innerText = score; return score;
         }
 
+        // --------------- 雲端資料收集與還原 (依照最新的排序) ---------------
         function collectDataArray() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
             let gfastArr = []; document.querySelectorAll('.er-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
 
             return [
-                formatDT(document.getElementById('door-time').value),      
-                formatDT(document.getElementById('n_onset').value),        
-                formatDT(document.getElementById('n_lkw').value),          
-                formatDT(document.getElementById('time-ncct').value),      
-                formatDT(document.getElementById('time-tpa').value),       
-                formatDT(document.getElementById('time-cta').value),       
-                formatDT(document.getElementById('time-puncture').value),  
-                formatDT(document.getElementById('time-ed-leave').value),  
-                formatDT(document.getElementById('time-amb-dep').value),   
-                document.getElementById('n_age').value,                    
-                document.getElementById('n_gender').value,                 
-                document.getElementById('n_mrs').value,                    
-                document.getElementById('n_symptoms').value,               
-                document.getElementById('n_nihss').value,                  
-                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", 
-                pmhArr.join(','),                                          
-                document.getElementById('n_cre').value,                    
-                document.getElementById('n_lab_other').value,              
-                document.getElementById('n_rtpa_sel').value,               
-                document.getElementById('n_tpa_bolus').value,              
-                document.getElementById('n_tpa_cif').value,                
-                document.getElementById('n_rtpa_text').value,              
-                document.getElementById('n_ncct_desc').value,              
-                document.getElementById('n_cta_desc').value,               
-                document.getElementById('t_hosp_out').value,               
-                document.getElementById('t_hosp_in').value,                
-                document.getElementById('t_fam_sel').value,                
-                document.getElementById('t_fam_text').value,               
-                document.getElementById('t_consent').value,                
-                document.getElementById('er_note').value,                  
-                document.getElementById('np_note').value,                  
-                document.getElementById('nurse_note').value,               
-                document.getElementById('evt_note').value,                 
-                document.getElementById('val-dtct').innerText,             
-                document.getElementById('val-dtn').innerText,              
-                document.getElementById('val-dta').innerText,              
-                document.getElementById('val-dtp').innerText,              
-                document.getElementById('val-dido').innerText              
+                formatDT(document.getElementById('door-time').value),      // [0] B
+                formatDT(document.getElementById('n_onset').value),        // [1] C
+                formatDT(document.getElementById('n_lkw').value),          // [2] D
+                document.getElementById('n_code_type').value,              // [3] E
+                formatDT(document.getElementById('n_code_time').value),    // [4] F
+                formatDT(document.getElementById('n_neuro_arrival').value),// [5] G
+                formatDT(document.getElementById('time-ncct').value),      // [6] H
+                formatDT(document.getElementById('time-tpa').value),       // [7] I
+                formatDT(document.getElementById('time-cta').value),       // [8] J
+                formatDT(document.getElementById('time-puncture').value),  // [9] K
+                formatDT(document.getElementById('time-ed-leave').value),  // [10] L
+                formatDT(document.getElementById('time-amb-dep').value),   // [11] M
+                document.getElementById('n_age').value,                    // [12] N
+                document.getElementById('n_gender').value,                 // [13] O
+                document.getElementById('n_mrs').value,                    // [14] P
+                document.getElementById('n_symptoms').value,               // [15] Q
+                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", // [16] R
+                document.getElementById('n_nihss').value,                  // [17] S
+                document.getElementById('n_ne_text').value,                // [18] T
+                pmhArr.join(','),                                          // [19] U
+                document.getElementById('n_cre').value,                    // [20] V
+                document.getElementById('n_lab_other').value,              // [21] W
+                document.getElementById('n_rtpa_sel').value,               // [22] X
+                document.getElementById('n_tpa_bolus').value,              // [23] Y
+                document.getElementById('n_tpa_cif').value,                // [24] Z
+                document.getElementById('n_rtpa_text').value,              // [25] AA
+                document.getElementById('n_ncct_desc').value,              // [26] AB
+                document.getElementById('n_cta_desc').value,               // [27] AC
+                document.getElementById('t_hosp_out').value,               // [28] AD
+                document.getElementById('t_hosp_in').value,                // [29] AE
+                document.getElementById('t_fam_sel').value,                // [30] AF
+                document.getElementById('t_fam_text').value,               // [31] AG
+                document.getElementById('t_consent').value,                // [32] AH
+                document.getElementById('er_note').value,                  // [33] AI
+                document.getElementById('np_note').value,                  // [34] AJ
+                document.getElementById('nurse_note').value,               // [35] AK
+                document.getElementById('evt_note').value,                 // [36] AL
+                document.getElementById('val-dtct').innerText,             // [37] AM
+                document.getElementById('val-dtn').innerText,              // [38] AN
+                document.getElementById('val-dta').innerText,              // [39] AO
+                document.getElementById('val-dtp').innerText,              // [40] AP
+                document.getElementById('val-dido').innerText              // [41] AQ
             ];
         }
 
@@ -529,38 +535,45 @@
             };
             
             setTime('door-time', row[1]); setTime('n_onset', row[2]); setTime('n_lkw', row[3]); 
-            setTime('time-ncct', row[4]); setTime('time-tpa', row[5]); setTime('time-cta', row[6]); setTime('time-puncture', row[7]);
-            setTime('time-ed-leave', row[8]); setTime('time-amb-dep', row[9]); 
+            document.getElementById('n_code_type').value = row[4] || "";
+            setTime('n_code_time', row[5]);
+            setTime('n_neuro_arrival', row[6]);
+            setTime('time-ncct', row[7]); setTime('time-tpa', row[8]); setTime('time-cta', row[9]); 
+            setTime('time-puncture', row[10]); setTime('time-ed-leave', row[11]); setTime('time-amb-dep', row[12]); 
             
-            document.getElementById('n_age').value = row[10] || ""; document.getElementById('n_gender').value = row[11] || "";
-            document.getElementById('n_mrs').value = row[12] || ""; document.getElementById('n_symptoms').value = row[13] || "";
-            document.getElementById('n_nihss').value = row[14] || "";
+            document.getElementById('n_age').value = row[13] || ""; document.getElementById('n_gender').value = row[14] || "";
+            document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('n_symptoms').value = row[16] || "";
             
-            let gStr = row[15] || "";
+            let gStr = row[17] || "";
             if (gStr) { document.getElementById('enable_gfast').checked = true; document.querySelectorAll('.er-gfast-cb').forEach(cb => cb.checked = gStr.includes(cb.value)); }
+            else { document.getElementById('enable_gfast').checked = false; document.querySelectorAll('.er-gfast-cb').forEach(cb => cb.checked = false); }
             
-            let pStr = row[16] || "";
+            document.getElementById('n_nihss').value = row[18] || "";
+            document.getElementById('n_ne_text').value = row[19] || "";
+            
+            let pStr = row[20] || "";
             document.querySelectorAll('.n-pmh-cb').forEach(cb => cb.checked = pStr.includes(cb.value));
             document.getElementById('n_pmh_other').value = pStr.split(',').filter(x => !['DM','HTN','Hyperlipidemia','AF','CAD','ESRD'].includes(x)).join(',') || "";
 
-            document.getElementById('n_cre').value = row[17] || ""; document.getElementById('n_lab_other').value = row[18] || "";
-            document.getElementById('n_rtpa_sel').value = row[19] || ""; document.getElementById('n_tpa_bolus').value = row[20] || "";
-            document.getElementById('n_tpa_cif').value = row[21] || ""; document.getElementById('n_rtpa_text').value = row[22] || "";
-            document.getElementById('n_ncct_desc').value = row[23] || "no ICH"; document.getElementById('n_cta_desc').value = row[24] || "";
+            document.getElementById('n_cre').value = row[21] || ""; document.getElementById('n_lab_other').value = row[22] || "";
+            document.getElementById('n_rtpa_sel').value = row[23] || ""; document.getElementById('n_tpa_bolus').value = row[24] || "";
+            document.getElementById('n_tpa_cif').value = row[25] || ""; document.getElementById('n_rtpa_text').value = row[26] || "";
+            document.getElementById('n_ncct_desc').value = row[27] || "no ICH"; document.getElementById('n_cta_desc').value = row[28] || "";
             
-            document.getElementById('t_hosp_out').value = row[25] || "新竹台大"; document.getElementById('t_hosp_in').value = row[26] || "皆可";
-            document.getElementById('t_fam_sel').value = row[27] || ""; document.getElementById('t_fam_text').value = row[28] || "";
-            document.getElementById('t_consent').value = row[29] || ""; document.getElementById('er_note').value = row[30] || "";
-            document.getElementById('np_note').value = row[31] || ""; document.getElementById('nurse_note').value = row[32] || "";
-            document.getElementById('evt_note').value = row[33] || "";
+            document.getElementById('t_hosp_out').value = row[29] || "新竹台大"; document.getElementById('t_hosp_in').value = row[30] || "皆可";
+            document.getElementById('t_fam_sel').value = row[31] || ""; document.getElementById('t_fam_text').value = row[32] || "";
+            document.getElementById('t_consent').value = row[33] || ""; document.getElementById('er_note').value = row[34] || "";
+            document.getElementById('np_note').value = row[35] || ""; document.getElementById('nurse_note').value = row[36] || "";
+            document.getElementById('evt_note').value = row[37] || "";
 
             updateCustomDateDisplays(); toggleNeuroRtpa(); toggleGfastDetails();
-            document.getElementById('cb-ncct').checked = !!row[4]; document.getElementById('cb-tpa').checked = !!row[5];
-            document.getElementById('cb-cta').checked = !!row[6]; document.getElementById('cb-puncture').checked = !!row[7];
-            document.getElementById('cb-ed-leave').checked = !!row[8]; document.getElementById('cb-amb-dep').checked = !!row[9];
+            document.getElementById('cb-ncct').checked = !!row[7]; document.getElementById('cb-tpa').checked = !!row[8];
+            document.getElementById('cb-cta').checked = !!row[9]; document.getElementById('cb-puncture').checked = !!row[10];
+            document.getElementById('cb-ed-leave').checked = !!row[11]; document.getElementById('cb-amb-dep').checked = !!row[12];
             toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); calculateAllMetrics();
         }
 
+        // --------------- 文字生成 ---------------
         function getGenData() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
@@ -572,13 +585,19 @@
                 cre: document.getElementById('n_cre').value, labOther: document.getElementById('n_lab_other').value,
                 rtpaSel: document.getElementById('n_rtpa_sel').value, rtpaText: document.getElementById('n_rtpa_text').value, tpaBolusDose: document.getElementById('n_tpa_bolus').value, tpaCifDose: document.getElementById('n_tpa_cif').value, tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
                 ncctChecked: document.getElementById('cb-ncct').checked, ncctDesc: document.getElementById('n_ncct_desc').value, ctaChecked: document.getElementById('cb-cta').checked, ctaDesc: document.getElementById('n_cta_desc').value,
-                famSel: document.getElementById('t_fam_sel').value, famText: document.getElementById('t_fam_text').value, consent: document.getElementById('t_consent').value, hospOut: document.getElementById('t_hosp_out').value, hospIn: document.getElementById('t_hosp_in').value
+                famSel: document.getElementById('t_fam_sel').value, famText: document.getElementById('t_fam_text').value, consent: document.getElementById('t_consent').value, hospOut: document.getElementById('t_hosp_out').value, hospIn: document.getElementById('t_hosp_in').value,
+                codeType: document.getElementById('n_code_type').value, codeTime: formatDT(document.getElementById('n_code_time').value),
+                neuroArrival: formatDT(document.getElementById('n_neuro_arrival').value), neText: document.getElementById('n_ne_text').value
             };
         }
 
         function genConsultText() {
             const d = getGenData(); let genderEng = d.gender === '男' ? 'man' : (d.gender === '女' ? 'woman' : '(gender)');
             let pmhStr = d.pmhList.length > 0 ? `- ${d.pmhList.join('\n- ')}` : '- None';
+            
+            let codeStr = (d.codeType && d.codeTime) ? `${d.codeType}: ${d.codeTime}\n` : '';
+            let neuroArrStr = d.neuroArrival ? `Neuro arrival: ${d.neuroArrival}\n` : '';
+            
             let tpaBlock = '';
             if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') { tpaBlock = `tPA Bolus time: ${d.tpaBolusTime || 'Not recorded'}\nBolus dose: ${d.tpaBolusDose} cIF dose: ${d.tpaCifDose}`; } 
             else if (d.rtpaSel === '未施打') { tpaBlock = `tPA not given due to ${d.rtpaText}`; }
@@ -586,9 +605,11 @@
             let imageBlock = '';
             if (d.ncctChecked || document.getElementById('time-ncct').value) imageBlock += `Brain NCCT: ${d.ncctDesc}\n`;
             if (d.ctaChecked || document.getElementById('time-cta').value) imageBlock += `Brain CTA: ${d.ctaDesc}\n`;
+            
             let neuroStr = ""; if (d.nihssRaw) neuroStr += `NIHSS: ${d.nihssRaw}${d.nihssScore}\n`; if (d.enableGfast) neuroStr += `GFAST: ${d.erGfast}\n`;
+            let neBlock = d.neText ? `\n${d.neText}\n` : '';
 
-            const result = `[Consultation note]\nThis is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of\n${pmhStr}\n\n[brief course]\nLNT: ${d.lkw}\nOnset/Found abnormal: ${d.onset}\nSymptoms:\n${d.symptoms}\n${neuroStr}${imageBlock}\n${tpaBlock}`;
+            const result = `[Consultation note]\nThis is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of\n${pmhStr}\n\n[brief course]\nLNT: ${d.lkw}\nOnset/Found abnormal: ${d.onset}\n${codeStr}${neuroArrStr}Symptoms:\n${d.symptoms}${neBlock}\n${neuroStr}${imageBlock}\n${tpaBlock}`;
             const ob = document.getElementById('c-output'); ob.innerText = result.trim(); ob.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
