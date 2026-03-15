@@ -26,12 +26,23 @@
         .sidebar-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .sidebar-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
         .sidebar-item input[type="datetime-local"] { width: 100%; font-size: 16px; padding: 6px; background-color: #ecf0f1; color: #333; border: none; border-radius: 4px; box-sizing: border-box; }
-        .custom-textarea { width: 100%; height: 220px; border-radius: 5px; padding: 10px; font-size: 14px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 10px; line-height: 1.5; }
+        
+        /* 縮減原本的 textarea 高度，把空間留給 Check-list */
+        .custom-textarea { width: 100%; height: 150px; border-radius: 5px; padding: 10px; font-size: 14px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 15px; line-height: 1.5; }
 
         /* 側邊表單共用樣式 */
         .sb-group { padding: 0 15px; margin-bottom: 12px; }
         .sb-title { background: #34495e; padding: 5px 10px; border-radius: 4px; font-size: 14px; font-weight: bold; color: #3498db; margin-bottom: 8px; border-left: 3px solid #3498db; }
         .sb-title.orange { color: #e67e22; border-left-color: #e67e22; }
+        .sb-title.yellow { color: #f1c40f; border-left-color: #f1c40f; } /* 新增的亮黃色標題 */
+        
+        /* Check-list 專用樣式 */
+        .checklist-container { padding: 0 15px; text-align: left; margin-bottom: 15px; }
+        .cl-item { margin-bottom: 12px; }
+        .cl-time { font-weight: bold; color: #1abc9c; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
+        .cl-list { margin: 0; padding-left: 24px; color: #bdc3c7; font-size: 14px; line-height: 1.5; }
+        .cl-list li { margin-bottom: 4px; }
+
         .sb-label { display: block; font-size: 13px; color: #bdc3c7; margin-bottom: 4px; }
         .sb-input, .sb-select, .sb-textarea { width: 100%; padding: 6px; border-radius: 4px; border: none; background: #ecf0f1; color: #333; font-size: 14px; box-sizing: border-box; }
         .sb-textarea { resize: vertical; }
@@ -203,49 +214,105 @@
 
         <div id="panel-np" class="sidebar-panel">
             <h3 class="sidebar-header">NP紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="np_note" class="custom-textarea">
-時間點：家屬同意取栓
-* 給予家屬取栓同意書
-時間點：找到床位
-* 請住中 (住院中心) 配床
-* 依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])
-時間點：IA Team 到院
-* 開不穩定單——一路設定到 CCU
-* 辦好住院
-* 病人離部
-* 若病人在急診插管，Call RT 至血攝室設定機器</textarea></div>
+            <div style="padding: 0 20px;">
+                <textarea id="np_note" class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea>
+            </div>
+            <div class="checklist-container">
+                <div class="sb-title yellow">NP-Check-list</div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：家屬同意取栓</div>
+                    <ul class="cl-list">
+                        <li>給予家屬取栓同意書</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：找到床位</div>
+                    <ul class="cl-list">
+                        <li>請住中 (住院中心) 配床</li>
+                        <li>依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
+                    <ul class="cl-list">
+                        <li>開不穩定單——一路設定到 CCU</li>
+                        <li>辦好住院</li>
+                        <li>病人離部</li>
+                        <li>若病人在急診插管，Call RT 至血攝室設定機器</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="nurse_note" class="custom-textarea">
-時間點：找到床位
-* 請家屬辦住院手續
-* 依 Check list 準備病人 (換手術衣等)
-時間點：血攝室叫病人
-* Call 傳送，送病人到血攝室
-時間點：病人到血攝室
-* 急診交班</textarea></div>
+            <div style="padding: 0 20px;">
+                <textarea id="nurse_note" class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea>
+            </div>
+            <div class="checklist-container">
+                <div class="sb-title yellow">護理-Check-list</div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：找到床位</div>
+                    <ul class="cl-list">
+                        <li>請家屬辦住院手續</li>
+                        <li>依 Check list 準備病人 (換手術衣等)</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：血攝室叫病人</div>
+                    <ul class="cl-list">
+                        <li>Call 傳送，送病人到血攝室</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：病人到血攝室</div>
+                    <ul class="cl-list">
+                        <li>急診交班</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div id="panel-evt" class="sidebar-panel">
             <h3 class="sidebar-header">取栓紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="evt_note" class="custom-textarea">
-時間點：找到床位
-IA 醫師 *Call IA Team
-* 到院解釋風險
-* 若要麻醉提早告知麻醉科
-時間點：IA Team 到院
-* 規劃怎麼取栓
-* 若要全麻，要聯絡麻醉科醫師
-取栓護理師/放射師
-時間點：IA Team 到院
-* 備物
-* 確認同意書
-* 確認影醫照會
-時間點：病人到血攝室
-* 術前準備
-* 急診交班</textarea></div>
+            <div style="padding: 0 20px;">
+                <textarea id="evt_note" class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea>
+            </div>
+            <div class="checklist-container">
+                <div class="sb-title yellow">取栓醫師-Check-list</div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：找到床位</div>
+                    <ul class="cl-list">
+                        <li>Call IA Team</li>
+                        <li>到院解釋風險</li>
+                        <li>若要麻醉提早告知麻醉科</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
+                    <ul class="cl-list">
+                        <li>規劃怎麼取栓</li>
+                        <li>若要全麻，要聯絡麻醉科醫師</li>
+                    </ul>
+                </div>
+                
+                <div class="sb-title yellow" style="margin-top: 20px;">取栓護理師/放射師-Check-list</div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
+                    <ul class="cl-list">
+                        <li>備物</li>
+                        <li>確認同意書</li>
+                        <li>確認影醫照會</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：病人到血攝室</div>
+                    <ul class="cl-list">
+                        <li>術前準備</li>
+                        <li>急診交班</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div id="panel-transfer" class="sidebar-panel">
@@ -277,7 +344,6 @@ IA 醫師 *Call IA Team
     <h1>Stroke Clock</h1>
 
     <div id="digital-clock"><span id="clock-minutes">00</span><span id="clock-seconds">00</span></div>
-
     <div id="onset-clock-container"><div id="onset-clock-title">Time from symptoms onset</div><div id="onset-clock"><span id="onset-clock-display">00:00:00</span></div></div>
 
     <div id="controls-container">
@@ -291,10 +357,7 @@ IA 醫師 *Call IA Team
 
         <div id="init-group">
             <button id="start-btn" class="btn-start">Start!</button>
-            <div class="download-row">
-                <input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料">
-                <button id="btn-download" class="btn-download" title="下載資料">⬇️</button>
-            </div>
+            <div class="download-row"><input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料"><button id="btn-download" class="btn-download" title="下載資料">⬇️</button></div>
         </div>
 
         <div id="active-group">
@@ -319,7 +382,6 @@ IA 醫師 *Call IA Team
         
         let currentRecordId = null; 
 
-        // --------------- 時間邏輯與格式化 ---------------
         function getLocalIsoString(date) { const offset = date.getTimezoneOffset() * 60000; return (new Date(date - offset)).toISOString().slice(0, 16); }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
 
@@ -334,7 +396,6 @@ IA 醫師 *Call IA Team
             document.getElementById('display_door_time').innerText = formatStr(document.getElementById('door-time').value);
         }
 
-        // --------------- 頁籤與排班 ---------------
         const tabBtns = document.querySelectorAll('.tab-btn');
         const sidebar = document.getElementById('sidebar');
         const panels = document.querySelectorAll('.sidebar-panel');
@@ -383,7 +444,6 @@ IA 醫師 *Call IA Team
         }
         fetchNeuroSchedule(); fetchTransferSchedule();
 
-        // --------------- 表單連動 ---------------
         function toggleNeuroRtpa() {
             const val = document.getElementById('n_rtpa_sel').value;
             const doseWrap = document.getElementById('tpa_dose_wrap'); const textInput = document.getElementById('n_rtpa_text');
@@ -414,52 +474,50 @@ IA 醫師 *Call IA Team
             document.getElementById('er_gfast_display').innerText = score; return score;
         }
 
-        // --------------- 資料包裝與還原 ---------------
         function collectDataArray() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
             let gfastArr = []; document.querySelectorAll('.er-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
 
-            // 完全對應 B 到 AM 欄 (含新增的急診/救護車與計算指標)
             return [
-                formatDT(document.getElementById('door-time').value),      // [0] B
-                formatDT(document.getElementById('n_onset').value),        // [1] C
-                formatDT(document.getElementById('n_lkw').value),          // [2] D
-                formatDT(document.getElementById('time-ncct').value),      // [3] E
-                formatDT(document.getElementById('time-tpa').value),       // [4] F
-                formatDT(document.getElementById('time-cta').value),       // [5] G
-                formatDT(document.getElementById('time-puncture').value),  // [6] H
-                formatDT(document.getElementById('time-ed-leave').value),  // [7] I (NEW 急診離部)
-                formatDT(document.getElementById('time-amb-dep').value),   // [8] J (NEW 救護車出發)
-                document.getElementById('n_age').value,                    // [9] K
-                document.getElementById('n_gender').value,                 // [10] L
-                document.getElementById('n_mrs').value,                    // [11] M
-                document.getElementById('n_symptoms').value,               // [12] N
-                document.getElementById('n_nihss').value,                  // [13] O
-                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", // [14] P
-                pmhArr.join(','),                                          // [15] Q
-                document.getElementById('n_cre').value,                    // [16] R
-                document.getElementById('n_lab_other').value,              // [17] S
-                document.getElementById('n_rtpa_sel').value,               // [18] T
-                document.getElementById('n_tpa_bolus').value,              // [19] U
-                document.getElementById('n_tpa_cif').value,                // [20] V
-                document.getElementById('n_rtpa_text').value,              // [21] W
-                document.getElementById('n_ncct_desc').value,              // [22] X
-                document.getElementById('n_cta_desc').value,               // [23] Y
-                document.getElementById('t_hosp_out').value,               // [24] Z
-                document.getElementById('t_hosp_in').value,                // [25] AA
-                document.getElementById('t_fam_sel').value,                // [26] AB
-                document.getElementById('t_fam_text').value,               // [27] AC
-                document.getElementById('t_consent').value,                // [28] AD
-                document.getElementById('er_note').value,                  // [29] AE
-                document.getElementById('np_note').value,                  // [30] AF
-                document.getElementById('nurse_note').value,               // [31] AG
-                document.getElementById('evt_note').value,                 // [32] AH
-                document.getElementById('val-dtct').innerText,             // [33] AI (DTCT)
-                document.getElementById('val-dtn').innerText,              // [34] AJ (DTN)
-                document.getElementById('val-dta').innerText,              // [35] AK (DTA)
-                document.getElementById('val-dtp').innerText,              // [36] AL (DTP)
-                document.getElementById('val-dido').innerText              // [37] AM (DIDO)
+                formatDT(document.getElementById('door-time').value),      
+                formatDT(document.getElementById('n_onset').value),        
+                formatDT(document.getElementById('n_lkw').value),          
+                formatDT(document.getElementById('time-ncct').value),      
+                formatDT(document.getElementById('time-tpa').value),       
+                formatDT(document.getElementById('time-cta').value),       
+                formatDT(document.getElementById('time-puncture').value),  
+                formatDT(document.getElementById('time-ed-leave').value),  
+                formatDT(document.getElementById('time-amb-dep').value),   
+                document.getElementById('n_age').value,                    
+                document.getElementById('n_gender').value,                 
+                document.getElementById('n_mrs').value,                    
+                document.getElementById('n_symptoms').value,               
+                document.getElementById('n_nihss').value,                  
+                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", 
+                pmhArr.join(','),                                          
+                document.getElementById('n_cre').value,                    
+                document.getElementById('n_lab_other').value,              
+                document.getElementById('n_rtpa_sel').value,               
+                document.getElementById('n_tpa_bolus').value,              
+                document.getElementById('n_tpa_cif').value,                
+                document.getElementById('n_rtpa_text').value,              
+                document.getElementById('n_ncct_desc').value,              
+                document.getElementById('n_cta_desc').value,               
+                document.getElementById('t_hosp_out').value,               
+                document.getElementById('t_hosp_in').value,                
+                document.getElementById('t_fam_sel').value,                
+                document.getElementById('t_fam_text').value,               
+                document.getElementById('t_consent').value,                
+                document.getElementById('er_note').value,                  
+                document.getElementById('np_note').value,                  
+                document.getElementById('nurse_note').value,               
+                document.getElementById('evt_note').value,                 
+                document.getElementById('val-dtct').innerText,             
+                document.getElementById('val-dtn').innerText,              
+                document.getElementById('val-dta').innerText,              
+                document.getElementById('val-dtp').innerText,              
+                document.getElementById('val-dido').innerText              
             ];
         }
 
@@ -503,7 +561,6 @@ IA 醫師 *Call IA Team
             toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); calculateAllMetrics();
         }
 
-        // --------------- 文字生成 ---------------
         function getGenData() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
@@ -572,7 +629,6 @@ IA 醫師 *Call IA Team
         ['n_onset', 'n_lkw', 'door-time'].forEach(id => document.getElementById(id).addEventListener('change', () => { updateCustomDateDisplays(); calculateAllMetrics(); }));
         document.querySelectorAll('.sidebar-item input[type="datetime-local"]').forEach(el => { el.addEventListener('input', () => { toggleImageDesc(); calculateAllMetrics(); }); el.addEventListener('change', () => { toggleImageDesc(); calculateAllMetrics(); }); });
 
-        // 綁定所有主畫面的快速打卡鍵 (包含 ed-leave)
         document.querySelectorAll('.quick-log-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const target = this.getAttribute('data-target'); document.getElementById(`time-${target}`).value = getLocalIsoString(new Date()); document.getElementById(`cb-${target}`).checked = true;
