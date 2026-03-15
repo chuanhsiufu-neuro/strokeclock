@@ -26,7 +26,7 @@
         .sidebar-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .sidebar-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
         .sidebar-item input[type="datetime-local"] { width: 100%; font-size: 16px; padding: 6px; background-color: #ecf0f1; color: #333; border: none; border-radius: 4px; box-sizing: border-box; }
-        .custom-textarea { width: 100%; height: 200px; border-radius: 5px; padding: 10px; font-size: 16px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 10px; }
+        .custom-textarea { width: 100%; height: 220px; border-radius: 5px; padding: 10px; font-size: 14px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 10px; line-height: 1.5; }
 
         /* 側邊表單共用樣式 */
         .sb-group { padding: 0 15px; margin-bottom: 12px; }
@@ -123,6 +123,9 @@
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-tpa">tPA Bolus time</label><input type="datetime-local" id="time-tpa" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-cta">CTA time</label><input type="datetime-local" id="time-cta" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-puncture">Puncture time</label><input type="datetime-local" id="time-puncture" step="1"></div>
+            <hr style="border: 0; border-top: 1px solid #34495e; margin: 15px 20px;">
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ed-leave">急診離部</label><input type="datetime-local" id="time-ed-leave" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-amb-dep">救護車出發</label><input type="datetime-local" id="time-amb-dep" step="1"></div>
         </div>
 
         <div id="panel-neuro" class="sidebar-panel">
@@ -200,17 +203,49 @@
 
         <div id="panel-np" class="sidebar-panel">
             <h3 class="sidebar-header">NP紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="np_note" class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea></div>
+            <div style="padding: 0 20px;"><textarea id="np_note" class="custom-textarea">
+時間點：家屬同意取栓
+* 給予家屬取栓同意書
+時間點：找到床位
+* 請住中 (住院中心) 配床
+* 依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])
+時間點：IA Team 到院
+* 開不穩定單——一路設定到 CCU
+* 辦好住院
+* 病人離部
+* 若病人在急診插管，Call RT 至血攝室設定機器</textarea></div>
         </div>
 
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="nurse_note" class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea></div>
+            <div style="padding: 0 20px;"><textarea id="nurse_note" class="custom-textarea">
+時間點：找到床位
+* 請家屬辦住院手續
+* 依 Check list 準備病人 (換手術衣等)
+時間點：血攝室叫病人
+* Call 傳送，送病人到血攝室
+時間點：病人到血攝室
+* 急診交班</textarea></div>
         </div>
 
         <div id="panel-evt" class="sidebar-panel">
             <h3 class="sidebar-header">取栓紀錄</h3>
-            <div style="padding: 0 20px;"><textarea id="evt_note" class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea></div>
+            <div style="padding: 0 20px;"><textarea id="evt_note" class="custom-textarea">
+時間點：找到床位
+IA 醫師 *Call IA Team
+* 到院解釋風險
+* 若要麻醉提早告知麻醉科
+時間點：IA Team 到院
+* 規劃怎麼取栓
+* 若要全麻，要聯絡麻醉科醫師
+取栓護理師/放射師
+時間點：IA Team 到院
+* 備物
+* 確認同意書
+* 確認影醫照會
+時間點：病人到血攝室
+* 術前準備
+* 急診交班</textarea></div>
         </div>
 
         <div id="panel-transfer" class="sidebar-panel">
@@ -242,6 +277,7 @@
     <h1>Stroke Clock</h1>
 
     <div id="digital-clock"><span id="clock-minutes">00</span><span id="clock-seconds">00</span></div>
+
     <div id="onset-clock-container"><div id="onset-clock-title">Time from symptoms onset</div><div id="onset-clock"><span id="onset-clock-display">00:00:00</span></div></div>
 
     <div id="controls-container">
@@ -255,7 +291,10 @@
 
         <div id="init-group">
             <button id="start-btn" class="btn-start">Start!</button>
-            <div class="download-row"><input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料"><button id="btn-download" class="btn-download" title="下載資料">⬇️</button></div>
+            <div class="download-row">
+                <input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料">
+                <button id="btn-download" class="btn-download" title="下載資料">⬇️</button>
+            </div>
         </div>
 
         <div id="active-group">
@@ -270,12 +309,13 @@
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="tpa" title="記錄 tPA Bolus 時間">⏰</button><div class="metric-label">DTN <span class="sub-text">(tPA)</span></div><div class="metric-value" id="val-dtn">--</div></div>
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="cta" title="記錄 CTA 時間">⏰</button><div class="metric-label">DTA <span class="sub-text">(CTA)</span></div><div class="metric-value" id="val-dta">--</div></div>
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="puncture" title="記錄 Puncture 時間">⏰</button><div class="metric-label">DTP <span class="sub-text">(Puncture)</span></div><div class="metric-value" id="val-dtp">--</div></div>
+            <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="ed-leave" title="記錄急診離部時間">⏰</button><div class="metric-label">DIDO <span class="sub-text">(急診離部)</span></div><div class="metric-value" id="val-dido">--</div></div>
         </div>
     </div>
 
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwmGET2wwD5xHq676tjK9hF7HLeys2H8IMiQwpd19de3SSCsbSlZuEqyUvuUX32AuKM/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbwYRwO7q85_jgZhLA0V1msJ0HrCQbDQ_ZO0SlaelQgCthdQo-egyF3Lt9FtXSwVoGWK/exec"; 
         
         let currentRecordId = null; 
 
@@ -380,23 +420,46 @@
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
             let gfastArr = []; document.querySelectorAll('.er-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
 
+            // 完全對應 B 到 AM 欄 (含新增的急診/救護車與計算指標)
             return [
-                formatDT(document.getElementById('door-time').value), formatDT(document.getElementById('n_onset').value),
-                formatDT(document.getElementById('n_lkw').value), formatDT(document.getElementById('time-ncct').value),
-                formatDT(document.getElementById('time-tpa').value), formatDT(document.getElementById('time-cta').value),
-                formatDT(document.getElementById('time-puncture').value), document.getElementById('n_age').value,
-                document.getElementById('n_gender').value, document.getElementById('n_mrs').value,
-                document.getElementById('n_symptoms').value, document.getElementById('n_nihss').value,
-                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", pmhArr.join(','),
-                document.getElementById('n_cre').value, document.getElementById('n_lab_other').value,
-                document.getElementById('n_rtpa_sel').value, document.getElementById('n_tpa_bolus').value,
-                document.getElementById('n_tpa_cif').value, document.getElementById('n_rtpa_text').value,
-                document.getElementById('n_ncct_desc').value, document.getElementById('n_cta_desc').value,
-                document.getElementById('t_hosp_out').value, document.getElementById('t_hosp_in').value,
-                document.getElementById('t_fam_sel').value, document.getElementById('t_fam_text').value,
-                document.getElementById('t_consent').value, document.getElementById('er_note').value,
-                document.getElementById('np_note').value, document.getElementById('nurse_note').value,
-                document.getElementById('evt_note').value
+                formatDT(document.getElementById('door-time').value),      // [0] B
+                formatDT(document.getElementById('n_onset').value),        // [1] C
+                formatDT(document.getElementById('n_lkw').value),          // [2] D
+                formatDT(document.getElementById('time-ncct').value),      // [3] E
+                formatDT(document.getElementById('time-tpa').value),       // [4] F
+                formatDT(document.getElementById('time-cta').value),       // [5] G
+                formatDT(document.getElementById('time-puncture').value),  // [6] H
+                formatDT(document.getElementById('time-ed-leave').value),  // [7] I (NEW 急診離部)
+                formatDT(document.getElementById('time-amb-dep').value),   // [8] J (NEW 救護車出發)
+                document.getElementById('n_age').value,                    // [9] K
+                document.getElementById('n_gender').value,                 // [10] L
+                document.getElementById('n_mrs').value,                    // [11] M
+                document.getElementById('n_symptoms').value,               // [12] N
+                document.getElementById('n_nihss').value,                  // [13] O
+                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", // [14] P
+                pmhArr.join(','),                                          // [15] Q
+                document.getElementById('n_cre').value,                    // [16] R
+                document.getElementById('n_lab_other').value,              // [17] S
+                document.getElementById('n_rtpa_sel').value,               // [18] T
+                document.getElementById('n_tpa_bolus').value,              // [19] U
+                document.getElementById('n_tpa_cif').value,                // [20] V
+                document.getElementById('n_rtpa_text').value,              // [21] W
+                document.getElementById('n_ncct_desc').value,              // [22] X
+                document.getElementById('n_cta_desc').value,               // [23] Y
+                document.getElementById('t_hosp_out').value,               // [24] Z
+                document.getElementById('t_hosp_in').value,                // [25] AA
+                document.getElementById('t_fam_sel').value,                // [26] AB
+                document.getElementById('t_fam_text').value,               // [27] AC
+                document.getElementById('t_consent').value,                // [28] AD
+                document.getElementById('er_note').value,                  // [29] AE
+                document.getElementById('np_note').value,                  // [30] AF
+                document.getElementById('nurse_note').value,               // [31] AG
+                document.getElementById('evt_note').value,                 // [32] AH
+                document.getElementById('val-dtct').innerText,             // [33] AI (DTCT)
+                document.getElementById('val-dtn').innerText,              // [34] AJ (DTN)
+                document.getElementById('val-dta').innerText,              // [35] AK (DTA)
+                document.getElementById('val-dtp').innerText,              // [36] AL (DTP)
+                document.getElementById('val-dido').innerText              // [37] AM (DIDO)
             ];
         }
 
@@ -409,32 +472,34 @@
             
             setTime('door-time', row[1]); setTime('n_onset', row[2]); setTime('n_lkw', row[3]); 
             setTime('time-ncct', row[4]); setTime('time-tpa', row[5]); setTime('time-cta', row[6]); setTime('time-puncture', row[7]);
+            setTime('time-ed-leave', row[8]); setTime('time-amb-dep', row[9]); 
             
-            document.getElementById('n_age').value = row[8] || ""; document.getElementById('n_gender').value = row[9] || "";
-            document.getElementById('n_mrs').value = row[10] || ""; document.getElementById('n_symptoms').value = row[11] || "";
-            document.getElementById('n_nihss').value = row[12] || "";
+            document.getElementById('n_age').value = row[10] || ""; document.getElementById('n_gender').value = row[11] || "";
+            document.getElementById('n_mrs').value = row[12] || ""; document.getElementById('n_symptoms').value = row[13] || "";
+            document.getElementById('n_nihss').value = row[14] || "";
             
-            let gStr = row[13] || "";
+            let gStr = row[15] || "";
             if (gStr) { document.getElementById('enable_gfast').checked = true; document.querySelectorAll('.er-gfast-cb').forEach(cb => cb.checked = gStr.includes(cb.value)); }
             
-            let pStr = row[14] || "";
+            let pStr = row[16] || "";
             document.querySelectorAll('.n-pmh-cb').forEach(cb => cb.checked = pStr.includes(cb.value));
             document.getElementById('n_pmh_other').value = pStr.split(',').filter(x => !['DM','HTN','Hyperlipidemia','AF','CAD','ESRD'].includes(x)).join(',') || "";
 
-            document.getElementById('n_cre').value = row[15] || ""; document.getElementById('n_lab_other').value = row[16] || "";
-            document.getElementById('n_rtpa_sel').value = row[17] || ""; document.getElementById('n_tpa_bolus').value = row[18] || "";
-            document.getElementById('n_tpa_cif').value = row[19] || ""; document.getElementById('n_rtpa_text').value = row[20] || "";
-            document.getElementById('n_ncct_desc').value = row[21] || "no ICH"; document.getElementById('n_cta_desc').value = row[22] || "";
+            document.getElementById('n_cre').value = row[17] || ""; document.getElementById('n_lab_other').value = row[18] || "";
+            document.getElementById('n_rtpa_sel').value = row[19] || ""; document.getElementById('n_tpa_bolus').value = row[20] || "";
+            document.getElementById('n_tpa_cif').value = row[21] || ""; document.getElementById('n_rtpa_text').value = row[22] || "";
+            document.getElementById('n_ncct_desc').value = row[23] || "no ICH"; document.getElementById('n_cta_desc').value = row[24] || "";
             
-            document.getElementById('t_hosp_out').value = row[23] || "新竹台大"; document.getElementById('t_hosp_in').value = row[24] || "皆可";
-            document.getElementById('t_fam_sel').value = row[25] || ""; document.getElementById('t_fam_text').value = row[26] || "";
-            document.getElementById('t_consent').value = row[27] || ""; document.getElementById('er_note').value = row[28] || "";
-            document.getElementById('np_note').value = row[29] || ""; document.getElementById('nurse_note').value = row[30] || "";
-            document.getElementById('evt_note').value = row[31] || "";
+            document.getElementById('t_hosp_out').value = row[25] || "新竹台大"; document.getElementById('t_hosp_in').value = row[26] || "皆可";
+            document.getElementById('t_fam_sel').value = row[27] || ""; document.getElementById('t_fam_text').value = row[28] || "";
+            document.getElementById('t_consent').value = row[29] || ""; document.getElementById('er_note').value = row[30] || "";
+            document.getElementById('np_note').value = row[31] || ""; document.getElementById('nurse_note').value = row[32] || "";
+            document.getElementById('evt_note').value = row[33] || "";
 
             updateCustomDateDisplays(); toggleNeuroRtpa(); toggleGfastDetails();
             document.getElementById('cb-ncct').checked = !!row[4]; document.getElementById('cb-tpa').checked = !!row[5];
             document.getElementById('cb-cta').checked = !!row[6]; document.getElementById('cb-puncture').checked = !!row[7];
+            document.getElementById('cb-ed-leave').checked = !!row[8]; document.getElementById('cb-amb-dep').checked = !!row[9];
             toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); calculateAllMetrics();
         }
 
@@ -455,7 +520,8 @@
         }
 
         function genConsultText() {
-            const d = getGenData(); let pmhStr = d.pmhList.length > 0 ? `- ${d.pmhList.join('\n- ')}` : '- None';
+            const d = getGenData(); let genderEng = d.gender === '男' ? 'man' : (d.gender === '女' ? 'woman' : '(gender)');
+            let pmhStr = d.pmhList.length > 0 ? `- ${d.pmhList.join('\n- ')}` : '- None';
             let tpaBlock = '';
             if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') { tpaBlock = `tPA Bolus time: ${d.tpaBolusTime || 'Not recorded'}\nBolus dose: ${d.tpaBolusDose} cIF dose: ${d.tpaCifDose}`; } 
             else if (d.rtpaSel === '未施打') { tpaBlock = `tPA not given due to ${d.rtpaText}`; }
@@ -465,7 +531,7 @@
             if (d.ctaChecked || document.getElementById('time-cta').value) imageBlock += `Brain CTA: ${d.ctaDesc}\n`;
             let neuroStr = ""; if (d.nihssRaw) neuroStr += `NIHSS: ${d.nihssRaw}${d.nihssScore}\n`; if (d.enableGfast) neuroStr += `GFAST: ${d.erGfast}\n`;
 
-            const result = `[Consultation note]\nThis is a ${d.age || '(age)'}-year-old ${d.gender === '男' ? 'man' : (d.gender === '女' ? 'woman' : '(gender)')}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of\n${pmhStr}\n\n[brief course]\nLNT: ${d.lkw}\nOnset/Found abnormal: ${d.onset}\nSymptoms:\n${d.symptoms}\n${neuroStr}${imageBlock}\n${tpaBlock}`;
+            const result = `[Consultation note]\nThis is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0-5)'}, with medical history of\n${pmhStr}\n\n[brief course]\nLNT: ${d.lkw}\nOnset/Found abnormal: ${d.onset}\nSymptoms:\n${d.symptoms}\n${neuroStr}${imageBlock}\n${tpaBlock}`;
             const ob = document.getElementById('c-output'); ob.innerText = result.trim(); ob.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
@@ -473,8 +539,9 @@
         function genTransferText() {
             const d = getGenData(); let pmhStr = d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
             let rtpa_final = d.rtpaSel;
-            if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') { rtpa_final += (d.tpaBolusTime ? ` (${d.tpaBolusTime})` : "") + ` Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`; } 
-            else if (d.rtpaSel === '未施打') { rtpa_final += ` (${d.rtpaText})`; }
+            if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') {
+                if (d.tpaBolusTime) rtpa_final += ` (${d.tpaBolusTime})`; rtpa_final += ` Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
+            } else if (d.rtpaSel === '未施打') { rtpa_final += ` (${d.rtpaText})`; }
 
             let imageLine = '';
             if (d.ncctChecked || document.getElementById('time-ncct').value) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
@@ -505,6 +572,7 @@
         ['n_onset', 'n_lkw', 'door-time'].forEach(id => document.getElementById(id).addEventListener('change', () => { updateCustomDateDisplays(); calculateAllMetrics(); }));
         document.querySelectorAll('.sidebar-item input[type="datetime-local"]').forEach(el => { el.addEventListener('input', () => { toggleImageDesc(); calculateAllMetrics(); }); el.addEventListener('change', () => { toggleImageDesc(); calculateAllMetrics(); }); });
 
+        // 綁定所有主畫面的快速打卡鍵 (包含 ed-leave)
         document.querySelectorAll('.quick-log-btn').forEach(btn => {
             btn.addEventListener('click', function() {
                 const target = this.getAttribute('data-target'); document.getElementById(`time-${target}`).value = getLocalIsoString(new Date()); document.getElementById(`cb-${target}`).checked = true;
@@ -512,7 +580,8 @@
                 this.style.transform = "scale(1.3)"; setTimeout(() => this.style.transform = "scale(1)", 150);
             });
         });
-        ['ncct', 'tpa', 'cta', 'puncture'].forEach(target => {
+        
+        ['ncct', 'tpa', 'cta', 'puncture', 'ed-leave', 'amb-dep'].forEach(target => {
             document.getElementById(`cb-${target}`).addEventListener('change', function() { document.getElementById(`time-${target}`).value = this.checked ? getLocalIsoString(new Date()) : ""; toggleImageDesc(); calculateAllMetrics(); });
         });
 
@@ -523,6 +592,7 @@
             document.getElementById('val-dtn').textContent = diff(document.getElementById('time-tpa').value, door);
             document.getElementById('val-dta').textContent = diff(document.getElementById('time-cta').value, door);
             document.getElementById('val-dtp').textContent = diff(document.getElementById('time-puncture').value, door);
+            document.getElementById('val-dido').textContent = diff(document.getElementById('time-ed-leave').value, door);
         }
 
         function updateMainClock(doorTs) {
@@ -553,24 +623,17 @@
             const doorValue = formatDT(doorTimeInput.value);
             if (!doorValue) { alert("請先輸入檢傷時間！"); return; }
             
-            // 永遠啟動時鐘，即使沒網路或沒設定網址也能用
             activateClockUI("本機模式");
 
             if(!GAS_URL || GAS_URL.includes("請在此貼上")) { 
-                syncStatus.textContent = "⚠️ 尚未設定 Web App URL，目前為離線單機模式";
-                syncStatus.style.color = "#e67e22";
-                return; 
+                syncStatus.textContent = "⚠️ 尚未設定 Web App URL，目前為離線單機模式"; syncStatus.style.color = "#e67e22"; return; 
             }
 
-            syncStatus.textContent = "⏳ 雲端配發編號中...";
-            document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (連線中...)";
+            syncStatus.textContent = "⏳ 雲端配發編號中..."; document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (連線中...)";
 
             fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "create", doorTime: doorValue, onset: formatDT(document.getElementById('n_onset').value), lnt: formatDT(document.getElementById('n_lkw').value) }) })
             .then(res => res.json()).then(data => {
-                if(data.status === "success") {
-                    syncStatus.textContent = "✅ 已配發編號，同步成功"; syncStatus.style.color = "#2ecc71";
-                    activateClockUI(data.id); // 更新為正確的雲端 ID
-                }
+                if(data.status === "success") { syncStatus.textContent = "✅ 已配發編號，同步成功"; syncStatus.style.color = "#2ecc71"; activateClockUI(data.id); }
             }).catch(err => { syncStatus.textContent = "❌ 雲端連線失敗 (可繼續離線使用)"; syncStatus.style.color = "#e74c3c"; document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (離線)"; });
         });
 
