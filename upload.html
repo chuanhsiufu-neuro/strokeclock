@@ -34,7 +34,7 @@
         .sb-group { padding: 0 15px; margin-bottom: 12px; }
         .sb-title { background: #34495e; padding: 5px 10px; border-radius: 4px; font-size: 14px; font-weight: bold; color: #3498db; margin-bottom: 8px; border-left: 3px solid #3498db; }
         .sb-title.orange { color: #e67e22; border-left-color: #e67e22; }
-        .sb-title.yellow { color: #f1c40f; border-left-color: #f1c40f; } /* 新增的亮黃色標題 */
+        .sb-title.yellow { color: #f1c40f; border-left-color: #f1c40f; } 
         
         /* Check-list 專用樣式 */
         .checklist-container { padding: 0 15px; text-align: left; margin-bottom: 15px; }
@@ -186,7 +186,7 @@
                     <div id="n_ncct_wrap" style="display:none; margin-bottom: 6px;"><span class="sb-label" style="color:#2ecc71;">Brain NCCT 影像描述</span><input type="text" id="n_ncct_desc" class="sb-input" value="no ICH"></div>
                     <div id="n_cta_wrap" style="display:none;"><span class="sb-label" style="color:#e67e22;">Brain CTA 影像描述</span><input type="text" id="n_cta_desc" class="sb-input" placeholder="例如: L't MCA occlusion"></div>
                 </div>
-                <span class="sb-label">處置: tPA</span>
+                <span class="sb-label">處置: tPA (時間抓取主畫面)</span>
                 <select id="n_rtpa_sel" class="sb-select" style="margin-bottom: 4px;" onchange="toggleNeuroRtpa()"><option value=""></option><option value="0.6 mg/kg">0.6 mg/kg</option><option value="0.9 mg/kg" selected>0.9 mg/kg</option><option value="未施打">未施打</option></select>
                 <div id="tpa_dose_wrap" style="display:none; gap: 6px; margin-bottom: 4px;" class="sb-row"><input type="text" id="n_tpa_bolus" class="sb-input" placeholder="Bolus dose"><input type="text" id="n_tpa_cif" class="sb-input" placeholder="cIF dose"></div>
                 <input type="text" id="n_rtpa_text" class="sb-input" style="display:none;" placeholder="未打原因">
@@ -350,9 +350,9 @@
         <div class="system-time">目前系統時間：<span id="current-sys-time">載入中...</span></div>
 
         <div class="main-time-container">
-            <div class="main-time-row"><label>發現異常</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="n_onset" step="1"><div class="custom-datetime-display" id="display_n_onset">--</div></div></div>
-            <div class="main-time-row"><label>最後正常</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="n_lkw" step="1"><div class="custom-datetime-display" id="display_n_lkw">--</div></div></div>
-            <div class="main-time-row"><label><button id="set-door-now" class="icon-btn small" title="設為現在時間">⏰</button> 檢傷</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="door-time" step="1"><div class="custom-datetime-display" id="display_door_time">--</div></div></div>
+            <div class="main-time-row"><label>發現異常</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="n_onset" step="1"><div class="custom-datetime-display" id="display_n_onset">📅 --</div></div></div>
+            <div class="main-time-row"><label>最後正常</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="n_lkw" step="1"><div class="custom-datetime-display" id="display_n_lkw">📅 --</div></div></div>
+            <div class="main-time-row"><label><button id="set-door-now" class="icon-btn small" title="設為現在時間">⏰</button> 檢傷</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="door-time" step="1"><div class="custom-datetime-display" id="display_door_time">📅 --</div></div></div>
         </div>
 
         <div id="init-group">
@@ -387,9 +387,9 @@
 
         function updateCustomDateDisplays() {
             const formatStr = (val) => {
-                if(!val) return "請選擇時間";
-                const d = new Date(val); if(isNaN(d)) return "請選擇時間";
-                return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+                if(!val) return "📅 請選擇時間";
+                const d = new Date(val); if(isNaN(d)) return "📅 請選擇時間";
+                return `📅 ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
             };
             document.getElementById('display_n_onset').innerText = formatStr(document.getElementById('n_onset').value);
             document.getElementById('display_n_lkw').innerText = formatStr(document.getElementById('n_lkw').value);
@@ -604,10 +604,12 @@
             if (d.ncctChecked || document.getElementById('time-ncct').value) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
             if (d.ctaChecked || document.getElementById('time-cta').value) imageLine += `\n   - brain CTA: ${d.ctaDesc}`;
             
-            let npParts = []; if (d.nihssRaw) npParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore}`); if (d.enableGfast) npParts.push(`GFAST=${d.erGfast}`);
-            let neuroLine = npParts.length > 0 ? `\n   - 神經學評估：${npParts.join(' / ')}` : '';
+            let neuroEvalParts = [];
+            if (d.nihssRaw) neuroEvalParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore}`);
+            if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast}`);
+            let neuroEvalLine = neuroEvalParts.length > 0 ? `\n   - 神經學評估：${neuroEvalParts.join(' / ')}` : '';
 
-            const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 最後正常(LNT)：${d.lkw}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
+            const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 最後正常(LNT)：${d.lkw}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
             const ob = document.getElementById('t-output'); ob.innerText = result; ob.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
