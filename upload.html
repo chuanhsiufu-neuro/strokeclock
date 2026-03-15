@@ -610,7 +610,7 @@ FNF, HKS: could not cooperate`;
         document.querySelectorAll('input[name="main_code_trigger"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('n_code_type').value = this.value;
-                let shortText = this.value.includes('<3.5') ? '<3.5' : '3.5-24';
+                let shortText = this.value.includes('<3.5') ? 'Code <3.5' : 'Code 3.5-24';
                 document.getElementById('n_code_label').innerText = shortText;
                 document.getElementById('n_code_row').style.display = 'flex';
                 
