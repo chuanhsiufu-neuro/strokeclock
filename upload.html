@@ -127,6 +127,7 @@
         <button class="tab-btn" data-target="panel-nurse">護理</button>
         <button class="tab-btn" data-target="panel-evt">取栓</button>
         <button class="tab-btn" data-target="panel-transfer">轉診</button>
+        <button class="tab-btn" data-target="panel-edu">解釋</button>
     </div>
 
     <div id="sidebar">
@@ -161,12 +162,10 @@
 
             <div class="sb-group">
                 <div class="sb-title">基本資料</div>
-                <div class="sb-row">
-                    <div><span class="sb-label">年齡 (歲)</span><input type="number" id="n_age" class="sb-input"></div>
-                    <div><span class="sb-label">性別</span><select id="n_gender" class="sb-select"><option value="男">男 (man)</option><option value="女">女 (woman)</option><option value=""></option></select></div>
-                </div>
-                <div class="sb-row" style="margin-top: 8px;">
-                    <div style="flex:1;"><span class="sb-label">Pre-mRS</span><select id="n_mrs" class="sb-select"><option value=""></option><option value="0">0 (無症狀)</option><option value="1">1 (無顯著失能)</option><option value="2">2 (輕度失能)</option><option value="3">3 (中度失能)</option><option value="4">4 (中重度)</option><option value="5">5 (臥床)</option></select></div>
+                <div class="sb-row" style="margin-bottom:8px;">
+                    <div style="flex:0.8;"><span class="sb-label">年齡</span><input type="number" id="n_age" class="sb-input"></div>
+                    <div style="flex:1;"><span class="sb-label">性別</span><select id="n_gender" class="sb-select"><option value="男">男(man)</option><option value="女">女(woman)</option><option value=""></option></select></div>
+                    <div style="flex:1.2;"><span class="sb-label">Pre-mRS</span><select id="n_mrs" class="sb-select"><option value=""></option><option value="0">0(無症狀)</option><option value="1">1(無顯著)</option><option value="2">2(輕度)</option><option value="3">3(中度)</option><option value="4">4(中重度)</option><option value="5">5(臥床)</option></select></div>
                 </div>
             </div>
 
@@ -186,7 +185,7 @@
                     <div style="flex:1;"><input type="datetime-local" id="n_neuro_arrival" class="sb-input" step="1"></div>
                 </div>
                 
-                <span class="sb-label">簡述症狀與肌力 (clinical course)</span>
+                <span class="sb-label">臨床病程 (Clinical course)</span>
                 <textarea id="n_symptoms" rows="2" class="sb-textarea" placeholder="例如: 右側無力 (MP: 2/5)..." style="margin-bottom: 8px;"></textarea>
                 
                 <div id="n_nihss_block" style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
@@ -251,6 +250,35 @@
                 </div>
             </div>
             <div style="padding: 0 20px;"><textarea id="er_note" class="custom-textarea" placeholder="在此輸入急診交班或生命徵象..."></textarea></div>
+
+            <div class="checklist-container">
+                <div class="sb-title yellow">神內-Check-list</div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：CTA 有 LVO</div>
+                    <ul class="cl-list">
+                        <li>Line 上貼取栓評估資訊</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：Line 取栓醫師回覆</div>
+                    <ul class="cl-list">
+                        <li>找 ICU 床位</li>
+                        <li>給家屬取栓圖文單張 (怎麼做、價錢、可能風險)</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：家屬同意取栓</div>
+                    <ul class="cl-list">
+                        <li>神內醫師回覆在取栓群組家屬意願</li>
+                    </ul>
+                </div>
+                <div class="cl-item">
+                    <div class="cl-time">⏰ 時間點：IA Team 到院</div>
+                    <ul class="cl-list">
+                        <li>等待配床，開立影像醫學部 (影醫) 照會單</li>
+                    </ul>
+                </div>
+            </div>
         </div>
 
         <div id="panel-np" class="sidebar-panel">
@@ -296,7 +324,7 @@
                     <div class="cl-time">⏰ 時間點：找到床位</div>
                     <ul class="cl-list">
                         <li>請家屬辦住院手續</li>
-                        <li>依 Check list 準備病人 (換手術衣等)</li>
+                        <li>依 <a href="ERNurse_EVTchecklist.pdf" target="_blank" style="color:#3498db; text-decoration:underline; font-weight:bold;">Check list</a> 準備病人 (換手術衣等)</li>
                     </ul>
                 </div>
                 <div class="cl-item">
@@ -380,6 +408,28 @@
             <div class="sb-btn-group"><button class="sb-btn sb-btn-gen" onclick="genTransferText()" style="background-color:#e67e22;">📝 生成轉診單</button><button class="sb-btn sb-btn-copy" onclick="copyBoxText('t-output')">📋 複製內容</button></div>
             <div id="t-output" class="output-box" style="border-left-color: #e67e22;"></div>
         </div>
+
+        <div id="panel-edu" class="sidebar-panel">
+            <h3 class="sidebar-header">病情解釋與衛教</h3>
+            <div class="sb-group">
+                <div class="sb-title orange">血栓溶解劑</div>
+                <div style="padding: 10px; background: #1a252f; border-radius: 4px; color: #bdc3c7; font-size: 14px; text-align: left; line-height: 1.5;">
+                    (未來可在此放置圖片超連結或說明)
+                </div>
+            </div>
+            <div class="sb-group">
+                <div class="sb-title orange">血栓取出術</div>
+                <div style="padding: 10px; background: #1a252f; border-radius: 4px; color: #bdc3c7; font-size: 14px; text-align: left; line-height: 1.5;">
+                    (未來可在此放置圖片超連結或說明)
+                </div>
+            </div>
+            <div class="sb-group">
+                <div class="sb-title orange">大片中風是否建議做取栓</div>
+                <div style="padding: 10px; background: #1a252f; border-radius: 4px; color: #bdc3c7; font-size: 14px; text-align: left; line-height: 1.5;">
+                    (未來可在此放置圖片超連結或說明)
+                </div>
+            </div>
+        </div>
     </div>
     
     <h1>Stroke Clock</h1>
@@ -425,6 +475,7 @@
     </div>
 
     <script>
+        // 【重要】請把部署得到的「全新網址」貼在這裡
         const GAS_URL = "https://script.google.com/macros/s/AKfycbztKugKweri9Xz1qaOweh1ze8ir3xHJ_WULxSXKDr61Jya_q7F4XNFzVyoFKMM4eodu/exec"; 
         
         let currentRecordId = null; 
@@ -508,48 +559,10 @@
             document.getElementById('n_image_block').style.display = (nc || htNc || ct || htCt) ? 'block' : 'none';
         }
 
-        // NE 範本邏輯 (去除 L't MCA 標題字眼)
-        const neTemplateL = `[NE]
-GCS   E3M5V2
-NIHSS 
-Language: only sound, could follow 1 step order
-Repetition( ), Naming( ), dysarthria( )
-Neglect: not demonstratable
+        // NE 範本邏輯
+        const neTemplateL = `[NE]\nGCS   E3M5V2\nLanguage: mute, failed in naming/repetition\nNeglect: not demonstratable\nCN:\nPupil 3/3, light reflex +/+, right hemianopia to threatening\nEOM: forced deviation to the left, could not be corrected by VOR\nFace: right central facial palsy\n\nMP:\nRUL/LUL 2(to pain) / >4\nRLL/LLL  2~3 可踩床/>4\n\nBabinski R/L +/-\nSensation: right limbs hypesthesia to pain\nFNF, HKS: could not cooperate`;
 
-Pupil 3/3, light reflex sluggish/sluggish
-Confrontation/Threatening: right hemianopia 
-EOM: forced deviation to the left, could not be corrected by VOR
-Face: right central facial palsy, cornea(R/L) +/+
-Tongue and uvula: no deviation
-
-MP:
-LUL >4        LLL >4
-RUL 2(to pain) RLL 2~3 可踩床
-
-Babinski R/L extensor/flexor
-Sensation: nearly loss over right limbs to pain
-FNF, HKS: could not cooperate`;
-
-        const neTemplateR = `[NE]
-GCS   E3M6V3
-NIHSS 
-Language: fluent, could follow 1 step order
-Repetition( ), Naming( ), dysarthria( )
-Neglect: not demonstratable
-
-Pupil 3/3, light reflex sluggish/sluggish
-Confrontation/Threatening: Left hemianopia 
-EOM: forced deviation to his right, could not be corrected by VOR
-Face: left central facial palsy, cornea(R/L) +/+
-Tongue and uvula: no deviation
-
-MP:
-RUL 5   RLL 5
-LUL 2(to pain)   LLL 2~3 可踩床
-
-Babinski R/L flexor/extensor
-Sensation: nearly loss over left limbs to pain
-FNF, HKS: could not cooperate`;
+        const neTemplateR = `[NE]\nGCS   E3M6V3\nLanguage: fluent, could follow 1 step order\nNeglect: left neglect to auditory stimuli\n\nPupil 3/3, light reflex +/+, left hemianopia to threatening\nEOM: forced deviation to his right, not be corrected by VOR\nFace: left central facial palsy\n\nMP:\nRUL/LUL 5/ 2(to pain)\nRLL/LLL 5/ 2~3 可踩床\n\nBabinski R/L flexor/extensor\nSensation: nearly loss over left limbs to pain\nFNF, HKS: could not cooperate`;
 
         document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
             radio.addEventListener('change', function() {
@@ -574,10 +587,7 @@ FNF, HKS: could not cooperate`;
                 
                 let now = new Date();
                 document.getElementById('n_code_time').value = getLocalIsoString(now);
-                // 自動預設 neuro arrival 為 5 分鐘後
                 document.getElementById('n_neuro_arrival').value = getLocalIsoString(new Date(now.getTime() + 5*60000));
-                
-                // 自動按 Start
                 document.getElementById('start-btn').click();
             });
         });
@@ -656,7 +666,6 @@ FNF, HKS: could not cooperate`;
             
             setTime('door-time', row[1]); setTime('n_onset', row[2]); setTime('n_lkw', row[3]); 
             
-            // Code Type 與連動
             let codeType = row[4] || "";
             document.getElementById('n_code_type').value = codeType;
             if (codeType) {
