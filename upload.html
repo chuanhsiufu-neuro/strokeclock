@@ -14,6 +14,9 @@
         .tab-btn { writing-mode: vertical-rl; text-orientation: upright; color: #bdc3c7; background: none; border: none; padding: 20px 0; font-size: 17px; font-weight: bold; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; border-left: 4px solid transparent; transition: all 0.2s; flex-shrink: 0; }
         .tab-btn:hover { color: white; background-color: #2c3e50; }
         .tab-btn.active { color: white; background-color: #2c3e50; border-left: 4px solid #d32f2f; }
+        
+        /* 特別針對 icon 的按鈕設定大一點的字體 */
+        .tab-btn.icon-tab { font-size: 22px; writing-mode: horizontal-tb; padding: 15px 0; }
 
         /* 側邊隱藏式分頁 */
         #sidebar { position: fixed; top: 0; left: -330px; width: 330px; height: 100%; background-color: #2c3e50; color: white; box-shadow: 2px 0 10px rgba(0,0,0,0.5); transition: left 0.3s ease-in-out; z-index: 101; text-align: left; box-sizing: border-box; overflow-y: auto; overflow-x: hidden; }
@@ -107,7 +110,7 @@
         .btn-upload-icon { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #f39c12; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-upload-icon:hover { background-color: #e67e22; }
 
-        #sync-status { font-size: 14px; font-weight: bold; color: #7f8c8d; margin-bottom: 15px; display: block; min-height: 20px;}
+        #sync-status { font-size: 14px; font-weight: bold; color: #7f8c8d; margin-bottom: 15px; display: block; min-height: 20px; line-height: 1.4;}
 
         #metrics-board { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 15px; width: 90%; margin: 0 auto; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: none; }
         .metric-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 18px; font-weight: bold; }
@@ -120,7 +123,8 @@
 <body>
 
     <div id="tab-bar">
-        <button class="tab-btn" data-target="panel-time">時間</button>
+        <button class="tab-btn icon-tab" data-target="panel-guide" title="使用說明">❓</button>
+        <button class="tab-btn icon-tab" data-target="panel-time" title="時間紀錄">⏰</button>
         <button class="tab-btn" data-target="panel-neuro">神內</button>
         <button class="tab-btn" data-target="panel-er">急診</button>
         <button class="tab-btn" data-target="panel-np">NP</button>
@@ -131,6 +135,32 @@
     </div>
 
     <div id="sidebar">
+        
+        <div id="panel-guide" class="sidebar-panel">
+            <h3 class="sidebar-header">系統使用說明</h3>
+            <div style="padding: 0 20px; text-align: left; color: #ecf0f1; font-size: 14px; line-height: 1.6;">
+                <ul style="padding-left: 20px; margin-bottom: 10px;">
+                    <li>起始頁面請輸入發現異常 / (最後正常) / 檢傷時間，點選 code type / start 開始編輯</li>
+                    <li>綠色數字鐘為距離檢傷時間 / 紅色數字鐘為距離 Onset/LNT 時間</li>
+                    <li>主頁面依 CT / tPA / CTA / Puncture / 離部，可按時鐘鈕紀錄當下時間 (側頁時鐘可編輯時間)</li>
+                </ul>
+                <div style="font-weight: bold; color: #f1c40f; margin-top: 15px;">側頁神內編輯臨床資訊:</div>
+                <ul style="padding-left: 20px; margin-bottom: 10px;">
+                    <li>stroke code 有點選才會跳出；神內抵達時間預設離 code 五分鐘</li>
+                    <li>CT/CTA 欄位有紀錄時間才會跳出欄位寫 finding</li>
+                    <li>NIHSS 輸入數字可自動計算總分，插管可輸入 X</li>
+                    <li>L't/R't MCA 可自動生成預設 NE 範本及 NIHSS</li>
+                    <li>按「📝 生成格式」>「📋 複製內容」可轉貼至 Line / 照會單</li>
+                    <li>院內/轉診取栓班表已預設該時段排班人員在側頁神內及側頁轉診</li>
+                    <li>若本院無取栓，至轉診頁面輸入欲轉至的醫院，主要決策者，生成格式 > 複製資訊可將側頁神內的臨床資訊部分帶入轉診資訊，方便轉傳至外援取栓群組</li>
+                    <li>病解頁面提供 tPA / EVT 之相關資訊</li>
+                </ul>
+                <div style="margin-top: 20px; font-weight: bold; color: #e74c3c; background: #fbd6b6; padding: 10px; border-radius: 5px; text-align: center;">
+                    編輯結束後，請記得按主頁面上傳鈕 ⬆️
+                </div>
+            </div>
+        </div>
+
         <div id="panel-time" class="sidebar-panel">
             <h3 class="sidebar-header">時間微調 / 補登</h3>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ncct">NCCT time</label><input type="datetime-local" id="time-ncct" step="1"></div>
@@ -476,7 +506,7 @@
 
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbztKugKweri9Xz1qaOweh1ze8ir3xHJ_WULxSXKDr61Jya_q7F4XNFzVyoFKMM4eodu/exec"; 
+        const GAS_URL = "請在此貼上你的_Web_App_URL"; 
         
         let currentRecordId = null; 
 
@@ -560,39 +590,9 @@
         }
 
         // NE 範本邏輯
-        const neTemplateL = `[NE]
-GCS   E3M5V2
-Language: mute, failed in naming/repetition
-Neglect: not demonstratable
-CN:
-Pupil 3/3, light reflex +/+, right hemianopia to threatening
-EOM: forced deviation to the left, could not be corrected by VOR
-Face: right central facial palsy
+        const neTemplateL = `[NE]\nGCS   E3M5V2\nLanguage: mute, failed in naming/repetition\nNeglect: not demonstratable\nCN:\nPupil 3/3, light reflex +/+, right hemianopia to threatening\nEOM: forced deviation to the left, could not be corrected by VOR\nFace: right central facial palsy\n\nMP:\nRUL/LUL 2(to pain) / >4\nRLL/LLL  2~3 可踩床/>4\n\nBabinski R/L +/-\nSensation: right limbs hypesthesia to pain\nFNF, HKS: could not cooperate`;
 
-MP:
-RUL/LUL 2(to pain) / >4
-RLL/LLL  2~3 可踩床/>4
-
-Babinski R/L +/-
-Sensation: right limbs hypesthesia to pain
-FNF, HKS: could not cooperate`;
-
-        const neTemplateR = `[NE]
-GCS   E3M6V3
-Language: fluent, could follow 1 step order
-Neglect: left neglect to auditory stimuli
-
-Pupil 3/3, light reflex +/+, left hemianopia to threatening
-EOM: forced deviation to his right, not be corrected by VOR
-Face: left central facial palsy
-
-MP:
-RUL/LUL 5/ 2(to pain)
-RLL/LLL 5/ 2~3 可踩床
-
-Babinski R/L flexor/extensor
-Sensation: nearly loss over left limbs to pain
-FNF, HKS: could not cooperate`;
+        const neTemplateR = `[NE]\nGCS   E3M6V3\nLanguage: fluent, could follow 1 step order\nNeglect: left neglect to auditory stimuli\n\nPupil 3/3, light reflex +/+, left hemianopia to threatening\nEOM: forced deviation to his right, not be corrected by VOR\nFace: left central facial palsy\n\nMP:\nRUL/LUL 5/ 2(to pain)\nRLL/LLL 5/ 2~3 可踩床\n\nBabinski R/L flexor/extensor\nSensation: nearly loss over left limbs to pain\nFNF, HKS: could not cooperate`;
 
         document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
             radio.addEventListener('change', function() {
@@ -610,7 +610,7 @@ FNF, HKS: could not cooperate`;
         document.querySelectorAll('input[name="main_code_trigger"]').forEach(radio => {
             radio.addEventListener('change', function() {
                 document.getElementById('n_code_type').value = this.value;
-                let shortText = this.value.includes('<3.5') ? 'Code <3.5' : 'Code ~24h';
+                let shortText = this.value.includes('<3.5') ? '<3.5' : '3.5-24';
                 document.getElementById('n_code_label').innerText = shortText;
                 document.getElementById('n_code_row').style.display = 'flex';
                 
@@ -682,7 +682,8 @@ FNF, HKS: could not cooperate`;
                 document.getElementById('val-dtn').innerText,              // [38] AN
                 document.getElementById('val-dta').innerText,              // [39] AO
                 document.getElementById('val-dtp').innerText,              // [40] AP
-                document.getElementById('val-dido').innerText              // [41] AQ
+                document.getElementById('val-dido').innerText,             // [41] AQ
+                new Date().toLocaleString('zh-TW', { hour12: false })      // [42] AR
             ];
         }
 
@@ -741,7 +742,6 @@ FNF, HKS: could not cooperate`;
             toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); calculateAllMetrics();
         }
 
-        // --------------- 文字生成 ---------------
         function getGenData() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
@@ -912,7 +912,12 @@ ${tpaBlock}`;
             syncStatus.textContent = "⏳ 下載中..."; downloadBtn.disabled = true;
             fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "download", id: idVal }) })
             .then(res => res.json()).then(data => {
-                if(data.status === "found") { populateDataArray(data.data); syncStatus.textContent = `✅ 已下載編號 ${idVal}`; syncStatus.style.color = "#2ecc71"; activateClockUI(idVal); } 
+                if(data.status === "found") { 
+                    populateDataArray(data.data); 
+                    let lastEdit = data.data[43] ? ` (最近編輯：${data.data[43]})` : "";
+                    syncStatus.textContent = `✅ 已下載編號 ${idVal}${lastEdit}`; 
+                    syncStatus.style.color = "#2ecc71"; activateClockUI(idVal); 
+                } 
                 else { syncStatus.textContent = "❌ " + (data.error || "找不到此編號"); syncStatus.style.color = "#e74c3c"; downloadBtn.disabled = false; }
             }).catch(err => { syncStatus.textContent = "❌ 下載失敗"; syncStatus.style.color = "#e74c3c"; downloadBtn.disabled = false; });
         });
