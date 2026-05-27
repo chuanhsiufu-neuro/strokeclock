@@ -118,6 +118,39 @@
         .metric-label { color: #333; margin-left: 10px; flex-grow: 1; }
         .metric-label span.sub-text { font-size: 14px; color: #7f8c8d; font-weight: normal; }
         .metric-value { color: #0056b3; min-width: 60px; text-align: right; }
+
+        /* 圖片放大 Modal 樣式 */
+        #img-modal {
+            display: none; /* 預設隱藏 */
+            position: fixed;
+            z-index: 9999; /* 確保在最上層，蓋過側邊欄 */
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.85); /* 半透明黑色背景 */
+            justify-content: center;
+            align-items: center;
+        }
+        #img-modal-content {
+            max-width: 95%;
+            max-height: 95vh;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+            animation: zoomIn 0.2s ease-in-out;
+        }
+        @keyframes zoomIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+        .edu-img {
+            cursor: pointer; /* 滑鼠移過去變手指 */
+            transition: transform 0.2s;
+        }
+        .edu-img:hover {
+            transform: scale(1.02); /* 側邊欄圖片滑鼠懸停時微放大提示 */
+            box-shadow: 0 0 8px rgba(255,255,255,0.3);
+        }
     </style>
 </head>
 <body>
@@ -439,27 +472,33 @@
             <div id="t-output" class="output-box" style="border-left-color: #e67e22;"></div>
         </div>
 
+<!-- 這裡是你原本的病解分頁，請替換裡面的 img 標籤 -->
         <div id="panel-edu" class="sidebar-panel">
             <h3 class="sidebar-header">病情解釋與衛教</h3>
             <div class="sb-group">
                 <div class="sb-title orange">血栓溶解劑</div>
                 <div style="padding: 10px; background: #1a252f; border-radius: 4px; text-align: center;">
-                    <img src="tPA.jpg" alt="血栓溶解劑衛教" style="max-width: 100%; border-radius: 4px;">
+                    <!-- 加上了 class="edu-img" 和 onclick -->
+                    <img src="tPA.jpg" alt="血栓溶解劑衛教" class="edu-img" style="max-width: 100%; border-radius: 4px;" onclick="openImgModal(this.src)">
                 </div>
             </div>
             <div class="sb-group">
                 <div class="sb-title orange">血栓取出術</div>
                 <div style="padding: 10px; background: #1a252f; border-radius: 4px; text-align: center;">
-                    <img src="EVT.jpg" alt="血栓取出術衛教" style="max-width: 100%; border-radius: 4px;">
+                    <img src="EVT.jpg" alt="血栓取出術衛教" class="edu-img" style="max-width: 100%; border-radius: 4px;" onclick="openImgModal(this.src)">
                 </div>
             </div>
             <div class="sb-group">
                 <div class="sb-title orange">大片中風是否建議做取栓</div>
                 <div style="padding: 10px; background: #1a252f; border-radius: 4px; text-align: center;">
-                    <img src="Largecore.jpg" alt="大片中風是否建議做取栓衛教" style="max-width: 100%; border-radius: 4px;">
+                    <img src="Largecore.jpg" alt="大片中風是否建議做取栓衛教" class="edu-img" style="max-width: 100%; border-radius: 4px;" onclick="openImgModal(this.src)">
                 </div>
             </div>
         </div>
+    </div> <!-- 這是原本 sidebar 結束的 div，不要刪掉喔 -->
+    <!-- 圖片放大視窗 -->
+    <div id="img-modal" onclick="closeImgModal()">
+        <img id="img-modal-content">
     </div>
     
     <h1>Stroke Clock</h1>
@@ -509,7 +548,17 @@
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwE23GUN6TzIPYwdmjl4xl94bfxdo1dCbsIwIGukNB1K4Vj1M7_AamOhPQUbuWx0A5o/exec"; 
         
         let currentRecordId = null; 
-
+        // --- 圖片放大功能 ---
+        function openImgModal(src) {
+            const modal = document.getElementById('img-modal');
+            const modalImg = document.getElementById('img-modal-content');
+            modalImg.src = src;
+            modal.style.display = 'flex';
+        }
+        function closeImgModal() {
+            document.getElementById('img-modal').style.display = 'none';
+        }
+        // -------------------
         function getLocalIsoString(date) { const offset = date.getTimezoneOffset() * 60000; return (new Date(date - offset)).toISOString().slice(0, 16); }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
 
