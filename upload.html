@@ -67,13 +67,15 @@
         .output-box { margin: 15px 15px 0 15px; padding: 10px; background: #1a252f; border-left: 3px solid #2ecc71; white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #ecf0f1; border-radius: 4px; display: none; line-height: 1.4; }
 
         /* 主畫面 UI */
-        #digital-clock { font-family: 'Courier New', Courier, monospace; background-color: #000; color: #00ff00; text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; display: none; padding: 10px 20px 20px 20px; border-radius: 12px; border: 4px solid #444; box-shadow: 0 4px 8px rgba(0,0,0,0.3); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; margin-bottom: 15px; }
-        #clock-minutes { font-size: 128px; font-weight: bold; display: block; line-height: 1; }
-        #clock-seconds { font-size: 27px; font-weight: normal; display: block; margin-top: 5px; letter-spacing: 2px; }
+        #digital-clock { font-family: 'Courier New', Courier, monospace; background-color: #000; color: #00ff00; text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; display: none; padding: 15px 20px 10px 20px; border-radius: 12px; border: 4px solid #444; box-shadow: 0 4px 8px rgba(0,0,0,0.3); width: 90%; max-width: 500px; box-sizing: border-box; text-align: center; margin-bottom: 15px; }
+        .clock-time-wrapper { display: flex; justify-content: center; align-items: baseline; line-height: 1; gap: 5px; }
+        #clock-minutes { font-size: 100px; font-weight: bold; }
+        #clock-seconds { font-size: 50px; font-weight: normal; }
+        #clock-alert-message { margin-top: 15px; font-size: 24px; font-weight: bold; color: #fff; min-height: 60px; line-height: 1.3; }
         
-        #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 100%; }
+        #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px; }
         #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; }
-        #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 32px; font-weight: bold; padding: 8px 20px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; }
+        #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 32px; font-weight: bold; padding: 8px 20px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box; text-align: center; }
 
         #controls-container { width: 100%; max-width: 500px; padding-top: 10px; margin-top: auto; display: flex; flex-direction: column; align-items: center;}
         
@@ -98,11 +100,6 @@
         .gfast-ch { font-size: 18px; margin-left: 5px; }
 
         .btn-start { font-size: 20px; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
-        .gray-btn { background-color: #95a5a6; cursor: not-allowed; }
-        .orange-btn { background-color: #e74c3c; animation: pulse 1.5s infinite; }
-        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); background-color: #c0392b; } 100% { transform: scale(1); } }
-        
-        .btn-start { font-size: 20px; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
         .green-btn { background-color: #27ae60; }
         .green-btn:hover { background-color: #2ecc71; }
         .gray-btn { background-color: #95a5a6; cursor: not-allowed; }
@@ -114,7 +111,7 @@
         .btn-download { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-download:hover { background-color: #2980b9; }
 
-        #active-group { width: 90%; max-width: 380px; display: none; gap: 8px; margin-bottom: 10px; }
+        #active-group { width: 90%; max-width: 500px; display: none; gap: 8px; margin-bottom: 10px; }
         .btn-active-clock { flex: 1; font-size: 22px; font-weight: bold; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 8px; cursor: default; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
         .btn-upload-icon { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #f39c12; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-upload-icon:hover { background-color: #e67e22; }
@@ -177,7 +174,7 @@
             </div>
         </div>
 
-<div id="panel-time" class="sidebar-panel">
+        <div id="panel-time" class="sidebar-panel">
             <h3 class="sidebar-header">時間微調 / 補登</h3>
             
             <div class="sidebar-item"><label class="sidebar-item-header">最後正常/發作 (LNT)</label><input type="datetime-local" id="side-onset-time" step="1"></div>
@@ -244,7 +241,7 @@
                             <label class="sb-cb-label" style="color:#e67e22;"><input type="radio" name="ne_template" value="R"> R't MCA</label>
                         </div>
                     </div>
-                    <textarea id="n_ne_text" rows="6" class="sb-textarea" placeholder="勾選上方帶入範本，或手動輸入..."></textarea>
+                    <textarea id="n_ne_text" rows="6" class="sb-textarea" placeholder="勾選上方帶入範本，或手 manual 輸入..."></textarea>
                 </div>
 
                 <span class="sb-label">過去病史 (Past history)</span>
@@ -275,12 +272,11 @@
                 <input type="text" id="n_rtpa_text" class="sb-input" style="display:none;" placeholder="未打原因">
             </div>
 
-
             <div class="sb-btn-group"><button class="sb-btn sb-btn-gen" onclick="genConsultText()">📝 生成格式</button><button class="sb-btn sb-btn-copy" onclick="copyBoxText('c-output')">📋 複製內容</button></div>
             <div id="c-output" class="output-box"></div>
         </div>
 
-<div id="panel-er" class="sidebar-panel">
+        <div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
             
             <div style="padding: 0 20px;">
@@ -470,11 +466,17 @@
         目前時間：<span id="front-sys-time">載入中...</span>
     </div>
 
-    <div id="digital-clock" style="max-width: 500px;"><span id="clock-minutes">00</span><span id="clock-seconds">00</span></div>
+    <div id="digital-clock" style="max-width: 500px;">
+        <div class="clock-time-wrapper">
+            <span id="clock-minutes">00</span>
+            <span id="clock-seconds">00</span>
+        </div>
+        <div id="clock-alert-message"></div>
+    </div>
     
     <div id="controls-container">
         
-    <div id="img-placeholder" style="margin: 5px 0 15px 0; text-align: center; width: 90%; max-width: 500px; box-sizing: border-box;">
+        <div id="img-placeholder" style="margin: 5px 0 15px 0; text-align: center; width: 90%; max-width: 500px; box-sizing: border-box;">
             <img src="GFAST.jpg" alt="GFAST圖示" style="max-width: 100%; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         </div>
 
@@ -580,13 +582,17 @@
         const GAS_URL = "https://script.google.com/macros/s/AKfycbwE23GUN6TzIPYwdmjl4xl94bfxdo1dCbsIwIGukNB1K4Vj1M7_AamOhPQUbuWx0A5o/exec"; 
         
         let currentRecordId = null; 
+        
+        // 保存抓取到的排班資訊供警示邏輯使用
+        let currentInHouseDrAvailable = false; 
+        
         // --- 圖片放大功能 ---
         function openImgModal(src) {
             const modal = document.getElementById('img-modal');
             const modalImg = document.getElementById('img-modal-content');
             modalImg.src = src;
             modal.style.display = 'flex';
-            modal.style.backgroundColor = 'rgba(0,0,0,0.95)'; // 強制變更黑以強調是預覽圖層
+            modal.style.backgroundColor = 'rgba(0,0,0,0.95)'; 
             modal.style.zIndex = '100000';
             modal.innerHTML = `<img id="img-modal-content" src="${src}" style="max-width: 95%; max-height: 95vh; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"><div style="position:absolute; top:20px; right:20px; color:white; font-size:30px; font-weight:bold; cursor:pointer;">×</div>`;
         }
@@ -624,8 +630,21 @@
                     document.getElementById('neuro_dr_n').innerText = fr[5] || "-"; document.getElementById('neuro_rad').innerText = fr[6] || "-"; 
                     document.getElementById('neuro_nur').innerText = fr[7] || "-";
                     statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
-                } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; }
-            } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; }
+                    
+                    // 根據目前時間判斷哪個班別，並更新 currentInHouseDrAvailable
+                    const currentHour = new Date().getHours();
+                    let activeDr = "-";
+                    if(currentHour >= 8 && currentHour < 12) activeDr = fr[3];
+                    else if(currentHour >= 12 && currentHour < 17) activeDr = fr[4];
+                    else activeDr = fr[5];
+                    
+                    if(activeDr && activeDr !== "-" && activeDr !== "無" && activeDr.trim() !== "") {
+                        currentInHouseDrAvailable = true;
+                    } else {
+                        currentInHouseDrAvailable = false;
+                    }
+                } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
+            } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
         }
         
         async function fetchTransferSchedule() {
@@ -716,7 +735,6 @@
                 document.getElementById('n_mrs').value,                    // [14] P
                 document.getElementById('n_symptoms').value,               // [15] Q
                 
-                // 這裡修改了 [16] R 的儲存邏輯，判斷主畫面 G-FAST 是否有顯示
                 document.getElementById('main-gfast-container').style.display !== 'none' ? gfastArr.join(',') : "", // [16] R
                 
                 document.getElementById('n_nihss').value,                  // [17] S
@@ -810,7 +828,6 @@
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
 
-// 新增這行來抓取首頁的 G-FAST 勾選數量
             let gfastArr = []; document.querySelectorAll('.main-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
 
             return {
@@ -818,7 +835,6 @@
                 age: document.getElementById('n_age').value, gender: document.getElementById('n_gender').value,
                 onset: formatDT(document.getElementById('n_onset').value), lkw: formatDT(document.getElementById('n_lkw').value), door: formatDT(document.getElementById('door-time').value),
                 mrs: document.getElementById('n_mrs').value, symptoms: document.getElementById('n_symptoms').value, nihssRaw: document.getElementById('n_nihss').value, nihssScore: document.getElementById('n_nihss_display').innerText,
-               // 這裡修改了 enableGfast 和 erGfast 的資料來源
                 enableGfast: document.getElementById('main-gfast-container').style.display !== 'none', erGfast: gfastArr.length, pmhList: pmhArr,
                 cre: document.getElementById('n_cre').value, labOther: document.getElementById('n_lab_other').value,
                 rtpaSel: document.getElementById('n_rtpa_sel').value, rtpaText: document.getElementById('n_rtpa_text').value, tpaBolusDose: document.getElementById('n_tpa_bolus').value, tpaCifDose: document.getElementById('n_tpa_cif').value, tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
@@ -899,13 +915,14 @@ ${tpaBlock}`;
         const downloadBtn = document.getElementById('btn-download');
         const uploadBtn = document.getElementById('btn-upload');
         const syncStatus = document.getElementById('sync-status');
+        const alertMessageDisplay = document.getElementById('clock-alert-message');
         let timerInterval;
 
         toggleNeuroRtpa(); doorTimeInput.value = getLocalIsoString(new Date());
         document.getElementById('side-door-time').value = doorTimeInput.value;
         document.getElementById('side-onset-time').value = document.getElementById('n_onset').value; 
         
-// 取得純 24 小時制格式 (避免 AM/PM)
+        // 取得純 24 小時制格式 (避免 AM/PM)
         function get24hTimeStr() {
             let d = new Date();
             return d.getFullYear() + '/' + 
@@ -1003,7 +1020,7 @@ ${tpaBlock}`;
             if (hrs < 3.5) {
                 startBtn.textContent = "請點選並啟動Stroke code<3.5hr";
                 startBtn.disabled = false;
-                startBtn.className = "btn-start orange-btn"; // 改成紅橘色提醒
+                startBtn.className = "btn-start orange-btn"; 
                 gfastContainer.style.display = "none";
             } else if (hrs >= 3.5 && hrs <= 24) {
                 gfastContainer.style.display = "block";
@@ -1013,7 +1030,7 @@ ${tpaBlock}`;
                     startBtn.className = "btn-start orange-btn";
                 } else {
                     startBtn.textContent = "請評估G-FAST";
-                    startBtn.disabled = true; // 鎖定直到勾選過關
+                    startBtn.disabled = true; 
                     startBtn.className = "btn-start gray-btn";
                 }
             } else {
@@ -1044,14 +1061,51 @@ ${tpaBlock}`;
             document.getElementById('val-dido').textContent = diff(document.getElementById('time-ed-leave').value, door);
         }
 
+        // 動態警語更新功能
+        function updateClockAlert(doorDiffMinutes) {
+            let alertMsg = "";
+            if(doorDiffMinutes < 25) {
+                alertMsg = "請在25分鐘內做到Non-contrast Brain CT";
+                alertMessageDisplay.style.color = "#f1c40f"; // 提醒黃色
+            } else if (doorDiffMinutes >= 25 && doorDiffMinutes <= 60) {
+                alertMsg = "符合tPA適應症/無禁忌症請盡快施打, 有大血管阻塞需考慮安排CTA";
+                alertMessageDisplay.style.color = "#e67e22"; // 警告橘色
+            } else {
+                if (currentInHouseDrAvailable) {
+                    alertMsg = "本院有取栓醫師, 請確認ICU床位及人力, 完成EVT check list事項";
+                    alertMessageDisplay.style.color = "#2ecc71"; // 綠色
+                } else {
+                    let line1Str = document.getElementById('duty_line1').innerText || "無";
+                    let line2Str = document.getElementById('duty_line2').innerText || "無";
+                    alertMsg = `本院無取栓人力，請至轉院群組提出轉院取栓需求\n(外院取栓第一線/第二線醫院: ${line1Str}/${line2Str})`;
+                    alertMessageDisplay.style.color = "#e74c3c"; // 紅色
+                }
+            }
+            alertMessageDisplay.innerText = alertMsg;
+        }
+
         function updateMainClock(doorTs) {
-            let diff = new Date().getTime() - doorTs; if (diff < 0) { document.getElementById('clock-minutes').textContent = "00"; document.getElementById('clock-seconds').textContent = "無效"; return; }
-            document.getElementById('clock-minutes').textContent = String(Math.floor(diff / 60000)).padStart(2, '0'); document.getElementById('clock-seconds').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+            let diff = new Date().getTime() - doorTs; 
+            if (diff < 0) { 
+                document.getElementById('clock-minutes').textContent = "00"; 
+                document.getElementById('clock-seconds').textContent = ":00"; 
+                alertMessageDisplay.innerText = "";
+                return; 
+            }
+            
+            let totalMinutes = Math.floor(diff / 60000);
+            let displaySeconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
+            
+            document.getElementById('clock-minutes').textContent = String(totalMinutes).padStart(2, '0'); 
+            document.getElementById('clock-seconds').textContent = ":" + displaySeconds;
+            
+            // 呼叫警告更新功能
+            updateClockAlert(totalMinutes);
         }
 
         function activateClockUI(id) {
             currentRecordId = id;
-            document.getElementById('init-group').style.display = 'none'; // 這會同時隱藏首頁的 G-FAST
+            document.getElementById('init-group').style.display = 'none'; 
             document.getElementById('active-group').style.display = 'flex';
             
             // 隱藏圖片預設區塊
