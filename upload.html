@@ -3,11 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Stroke Clock</title>
+    <title>中風個案檢傷篩檢工具</title>
     <style>
         /* 整體設計 */
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f4f4f9; color: #333; padding: 20px 10px 20px 55px; text-align: center; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; overflow-x: hidden; }
-        h1 { color: #d32f2f; margin-top: 0; margin-bottom: 20px; font-size: 32px; }
+        h1 { color: #2c3e50; margin-top: 0; margin-bottom: 20px; font-size: 32px; font-weight: bold; }
 
         /* 左側固定垂直標籤列 */
         #tab-bar { position: fixed; top: 0; left: 0; width: 45px; height: 100%; background-color: #1a252f; z-index: 102; display: flex; flex-direction: column; padding-top: 10px; box-shadow: 2px 0 5px rgba(0,0,0,0.3); overflow-y: auto; }
@@ -15,7 +15,6 @@
         .tab-btn:hover { color: white; background-color: #2c3e50; }
         .tab-btn.active { color: white; background-color: #2c3e50; border-left: 4px solid #d32f2f; }
         
-        /* 特別針對 icon 的按鈕設定大一點的字體 */
         .tab-btn.icon-tab { font-size: 22px; writing-mode: horizontal-tb; padding: 15px 0; }
 
         /* 側邊隱藏式分頁 */
@@ -31,7 +30,6 @@
         .sidebar-item input[type="datetime-local"] { width: 100%; font-size: 16px; padding: 6px; background-color: #ecf0f1; color: #333; border: none; border-radius: 4px; box-sizing: border-box; }
         .custom-textarea { width: 100%; height: 150px; border-radius: 5px; padding: 10px; font-size: 14px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 15px; line-height: 1.5; }
 
-        /* 側邊表單共用樣式 */
         .sb-group { padding: 0 15px; margin-bottom: 12px; }
         .sb-title { background: #34495e; padding: 5px 10px; border-radius: 4px; font-size: 14px; font-weight: bold; color: #3498db; margin-bottom: 8px; border-left: 3px solid #3498db; }
         .sb-title.orange { color: #e67e22; border-left-color: #e67e22; }
@@ -73,37 +71,49 @@
         #clock-minutes { font-size: 128px; font-weight: bold; display: block; line-height: 1; }
         #clock-seconds { font-size: 27px; font-weight: normal; display: block; margin-top: 5px; letter-spacing: 2px; }
         
-        #onset-clock-container { display: none; flex-direction: column; align-items: center; margin-bottom: 20px; width: 100%; }
+        #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 100%; }
         #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; }
         #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 32px; font-weight: bold; padding: 8px 20px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 90%; max-width: 350px; box-sizing: border-box; text-align: center; }
 
-        #controls-container { width: 100%; max-width: 400px; padding-top: 10px; margin-top: auto; display: flex; flex-direction: column; align-items: center;}
-        .system-time { color: #666; font-size: 16px; margin-bottom: 15px; font-weight: bold; }
-        
-        .main-time-container { width: 90%; max-width: 380px; margin: 0 auto 20px auto; display: flex; flex-direction: column; gap: 8px; }
-        .main-time-row { display: flex; justify-content: space-between; align-items: center; background: #fff; padding: 8px 12px; border-radius: 8px; border: 1px solid #ccc; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .main-time-row label { font-size: 16px; font-weight: bold; margin: 0; display: flex; align-items: center; gap: 5px; color: #333; }
-        .custom-datetime-wrapper { position: relative; width: 160px; height: 32px; background: #fff; border: 1px solid #aaa; border-radius: 5px; overflow: hidden; }
-        .custom-datetime-display { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: bold; font-size: 16px; color: #000; pointer-events: none; }
-        .custom-datetime-wrapper input[type="datetime-local"] { width: 100%; height: 100%; opacity: 0; cursor: pointer; box-sizing: border-box; }
+        #controls-container { width: 100%; max-width: 500px; padding-top: 10px; margin-top: auto; display: flex; flex-direction: column; align-items: center;}
         
         .icon-btn.small { font-size: 18px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
         .icon-btn.small:active { transform: scale(0.9); }
         .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
         .icon-btn:active { transform: scale(0.9); }
 
-        #init-group { width: 90%; max-width: 380px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 10px;}
-        .btn-start { font-size: 24px; font-weight: bold; padding: 12px; background-color: #d32f2f; color: white; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
-        .btn-start:hover { background-color: #b71c1c; }
-        .download-row { display: flex; gap: 8px; width: 100%; }
+        #init-group { width: 90%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; text-align: left; }
+        
+         /* 初始頁面專屬輸入框樣式 (黑框白底對齊) */
+        .front-row { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: bold; color: #34495e; }
+        .front-input { padding: 6px; border: 1px solid #aaa; border-radius: 4px; font-size: 15px; flex: 1; }
+        
+        .time-box { display: flex; align-items: center; background: #fff; border: 2px solid #000; border-radius: 6px; padding: 10px; margin-bottom: 12px; width: 100%; box-sizing: border-box; }
+        .time-label { font-size: 16px; font-weight: bold; color: #000; width: 90px; text-align: right; margin-right: 10px; line-height: 1.3; flex-shrink: 0; }
+        .time-colon { font-weight: bold; margin-right: 10px; color: #000; font-size: 18px; }
+        .time-content { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
+        .time-content input[type="datetime-local"] { border: 1px solid #aaa; padding: 6px; border-radius: 4px; font-size: 14px; flex: 1; min-width: 0; width: 100%; box-sizing: border-box; }
+
+        /* G-FAST 樣式 */
+        .gfast-en { font-size: 24px; font-weight: bold; display: inline-block; width: 25px; text-align: center; }
+        .gfast-ch { font-size: 18px; margin-left: 5px; }
+
+        .btn-start { font-size: 20px; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
+        .gray-btn { background-color: #95a5a6; cursor: not-allowed; }
+        .orange-btn { background-color: #e74c3c; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); background-color: #c0392b; } 100% { transform: scale(1); } }
+        
+        .btn-start { font-size: 20px; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
+        .green-btn { background-color: #27ae60; }
+        .green-btn:hover { background-color: #2ecc71; }
+        .gray-btn { background-color: #95a5a6; cursor: not-allowed; }
+        .orange-btn { background-color: #e74c3c; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); background-color: #c0392b; } 100% { transform: scale(1); } }
+
+        .download-row { display: flex; gap: 8px; width: 100%; margin-top: 15px; }
         .id-input { flex: 1; font-size: 16px; padding: 8px; border: 1px solid #aaa; border-radius: 8px; text-align: center; font-weight: bold; }
         .btn-download { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-download:hover { background-color: #2980b9; }
-        
-        .quick-code-row { display: flex; gap: 10px; justify-content: center; margin-top: 5px; }
-        .quick-code-label { font-size: 14px; font-weight: bold; cursor: pointer; display: flex; align-items: center; gap: 4px; padding: 6px 10px; border-radius: 6px; background: #e8f4f8; border: 1px solid #bce8f1; color: #31708f; transition: 0.2s; }
-        .quick-code-label:hover { background: #d9edf7; }
-        .quick-code-label input { width: 16px; height: 16px; cursor: pointer; margin: 0; }
 
         #active-group { width: 90%; max-width: 380px; display: none; gap: 8px; margin-bottom: 10px; }
         .btn-active-clock { flex: 1; font-size: 22px; font-weight: bold; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 8px; cursor: default; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
@@ -120,37 +130,11 @@
         .metric-value { color: #0056b3; min-width: 60px; text-align: right; }
 
         /* 圖片放大 Modal 樣式 */
-        #img-modal {
-            display: none; /* 預設隱藏 */
-            position: fixed;
-            z-index: 9999; /* 確保在最上層，蓋過側邊欄 */
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.85); /* 半透明黑色背景 */
-            justify-content: center;
-            align-items: center;
-        }
-        #img-modal-content {
-            max-width: 95%;
-            max-height: 95vh;
-            border-radius: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-            animation: zoomIn 0.2s ease-in-out;
-        }
-        @keyframes zoomIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-        .edu-img {
-            cursor: pointer; /* 滑鼠移過去變手指 */
-            transition: transform 0.2s;
-        }
-        .edu-img:hover {
-            transform: scale(1.02); /* 側邊欄圖片滑鼠懸停時微放大提示 */
-            box-shadow: 0 0 8px rgba(255,255,255,0.3);
-        }
+        #img-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
+        #img-modal-content { max-width: 95%; max-height: 95vh; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); animation: zoomIn 0.2s ease-in-out; }
+        @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        .edu-img { cursor: pointer; transition: transform 0.2s; }
+        .edu-img:hover { transform: scale(1.02); box-shadow: 0 0 8px rgba(255,255,255,0.3); }
     </style>
 </head>
 <body>
@@ -194,8 +178,14 @@
             </div>
         </div>
 
-        <div id="panel-time" class="sidebar-panel">
+<div id="panel-time" class="sidebar-panel">
             <h3 class="sidebar-header">時間微調 / 補登</h3>
+            
+            <div class="sidebar-item"><label class="sidebar-item-header">最後正常/發作 (LNT)</label><input type="datetime-local" id="side-onset-time" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header">檢傷時間 (Door)</label><input type="datetime-local" id="side-door-time" step="1"></div>
+            
+            <hr style="border: 0; border-top: 1px solid #34495e; margin: 15px 20px;">
+                    
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ncct">NCCT time</label><input type="datetime-local" id="time-ncct" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-tpa">tPA Bolus time</label><input type="datetime-local" id="time-tpa" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-cta">CTA time</label><input type="datetime-local" id="time-cta" step="1"></div>
@@ -207,34 +197,25 @@
 
         <div id="panel-neuro" class="sidebar-panel">
             <h3 class="sidebar-header">照會資訊</h3>
-            <div class="sb-group">
-                <div class="duty-block">
-                    <div style="font-weight: bold; color: #3498db; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                        <span>📍 本院取栓班表</span>
-                        <a href="https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/edit?usp=drivesdk" target="_blank" class="sheet-link">📊 班表</a>
-                    </div>
-                    <div id="neuro_duty_status" style="font-size: 12px; color: #bdc3c7; margin-bottom: 8px;">(連線讀取中...)</div>
-                    <table class="neuro-duty-table"><tr><th>時間</th><th>8-12</th><th>12-17</th><th>夜間</th></tr>
-                    <tr><td style="color: #ecf0f1; font-weight:normal;">取栓醫師</td><td id="neuro_dr_m" style="color: #f1c40f;">-</td><td id="neuro_dr_a" style="color: #f1c40f;">-</td><td id="neuro_dr_n" style="color: #f1c40f;">-</td></tr></table>
-                    <div style="font-size:13px; display:flex; justify-content:space-around; background: #2c3e50; padding: 6px; border-radius: 4px;">
-                        <span>放射師: <span id="neuro_rad" style="font-weight:bold; color:#2ecc71;">-</span></span>
-                        <span>護理師: <span id="neuro_nur" style="font-weight:bold; color:#e74c3c;">-</span></span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sb-group">
-                <div class="sb-title">基本資料</div>
-                <div class="sb-row" style="margin-bottom:8px;">
-                    <div style="flex:0.8;"><span class="sb-label">年齡</span><input type="number" id="n_age" class="sb-input"></div>
-                    <div style="flex:1;"><span class="sb-label">性別</span><select id="n_gender" class="sb-select"><option value="男">男(man)</option><option value="女">女(woman)</option><option value=""></option></select></div>
-                    <div style="flex:1.2;"><span class="sb-label">Pre-mRS</span><select id="n_mrs" class="sb-select"><option value=""></option><option value="0">0(無症狀)</option><option value="1">1(無顯著)</option><option value="2">2(輕度)</option><option value="3">3(中度)</option><option value="4">4(中重度)</option><option value="5">5(臥床)</option></select></div>
-                </div>
-            </div>
 
             <div class="sb-group">
                 <div class="sb-title">臨床資訊</div>
                 
+                <div class="sb-row" style="margin-bottom:12px; align-items:center;">
+                    <div style="flex:1;"><span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">Pre-mRS</span></div>
+                    <div style="flex:2;">
+                        <select id="n_mrs" class="sb-select">
+                            <option value=""></option>
+                            <option value="0">0(無症狀)</option>
+                            <option value="1">1(無顯著)</option>
+                            <option value="2">2(輕度)</option>
+                            <option value="3">3(中度)</option>
+                            <option value="4">4(中重度)</option>
+                            <option value="5">5(臥床)</option>
+                        </select>
+                    </div>
+                </div>
+
                 <input type="hidden" id="n_code_type">
                 <div class="sb-row" id="n_code_row" style="margin-bottom:8px; align-items:center; display:none;">
                     <div style="flex:1.3;">
@@ -294,25 +275,18 @@
                 <div id="tpa_dose_wrap" style="display:none; gap: 6px; margin-bottom: 4px;" class="sb-row"><input type="text" id="n_tpa_bolus" class="sb-input" placeholder="Bolus dose"><input type="text" id="n_tpa_cif" class="sb-input" placeholder="cIF dose"></div>
                 <input type="text" id="n_rtpa_text" class="sb-input" style="display:none;" placeholder="未打原因">
             </div>
+
+
             <div class="sb-btn-group"><button class="sb-btn sb-btn-gen" onclick="genConsultText()">📝 生成格式</button><button class="sb-btn sb-btn-copy" onclick="copyBoxText('c-output')">📋 複製內容</button></div>
             <div id="c-output" class="output-box"></div>
         </div>
 
-        <div id="panel-er" class="sidebar-panel">
+<div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
-            <div class="sb-group">
-                <div class="sb-title">
-                    <label style="cursor: pointer; display: flex; align-items: center; gap: 5px; color: #ecf0f1;"><input type="checkbox" id="enable_gfast" onchange="toggleGfastDetails()" style="width:16px; height:16px;"> G-FAST 評估</label>
-                </div>
-                <div id="gfast_details" style="display:none; background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
-                    <span class="sb-label">分數 = <span id="er_gfast_display" class="score-display">0</span></span>
-                    <label class="sb-cb-label"><input type="checkbox" class="er-gfast-cb" value="Gaze" onchange="calcErGFAST()"> Gaze</label>
-                    <label class="sb-cb-label"><input type="checkbox" class="er-gfast-cb" value="Face" onchange="calcErGFAST()"> Face</label>
-                    <label class="sb-cb-label"><input type="checkbox" class="er-gfast-cb" value="Arm" onchange="calcErGFAST()"> Arm (單側/四肢無力)</label>
-                    <label class="sb-cb-label"><input type="checkbox" class="er-gfast-cb" value="Speech" onchange="calcErGFAST()"> Speech (口齒/失語)</label>
-                </div>
+            
+            <div style="padding: 0 20px;">
+                <textarea id="er_note" class="custom-textarea" placeholder="在此輸入急診交班或生命徵象..."></textarea>
             </div>
-            <div style="padding: 0 20px;"><textarea id="er_note" class="custom-textarea" placeholder="在此輸入急診交班或生命徵象..."></textarea></div>
 
             <div class="checklist-container">
                 <div class="sb-title yellow">神內-Check-list</div>
@@ -361,7 +335,7 @@
                     <div class="cl-time">⏰ 時間點：找到床位</div>
                     <ul class="cl-list">
                         <li>請住中 (住院中心) 配床</li>
-                        <li>依 <a href="ERNurse_EVTchecklist.pdf" target="_blank" style="color:#3498db; text-decoration:underline; font-weight:bold;">Check list</a> 開藥 (Fentanyl / Perdipine / [Aggrastat])</li>
+                        <li>依 Check list 開藥 (Fentanyl / Perdipine / [Aggrastat])</li>
                     </ul>
                 </div>
                 <div class="cl-item">
@@ -387,7 +361,7 @@
                     <div class="cl-time">⏰ 時間點：找到床位</div>
                     <ul class="cl-list">
                         <li>請家屬辦住院手續</li>
-                        <li>依 <a href="ERNurse_EVTchecklist.pdf" target="_blank" style="color:#3498db; text-decoration:underline; font-weight:bold;">Check list</a> 準備病人 (換手術衣等)</li>
+                        <li>依 Check list 準備病人 (換手術衣等)</li>
                     </ul>
                 </div>
                 <div class="cl-item">
@@ -447,20 +421,12 @@
             </div>
         </div>
 
-        <div id="panel-transfer" class="sidebar-panel">
+       <div id="panel-transfer" class="sidebar-panel">
             <h3 class="sidebar-header">轉診資訊生成</h3>
-            <div class="sb-group">
-                <div class="duty-block">
-                    <div style="font-weight: bold; color: #f39c12; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                        <span>📍 取栓排班 (轉院參考)</span>
-                        <a href="https://docs.google.com/spreadsheets/d/1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130/edit?gid=1484666256#gid=1484666256" target="_blank" class="sheet-link">📊 班表</a>
-                    </div>
-                    <div id="duty_status" style="font-size: 12px; color: #3498db; margin-bottom: 8px;">(連線讀取中...)</div>
-                    <div class="sb-row"><div><span class="sb-label" style="color: #e74c3c;">第一線</span><div id="duty_line1" class="duty-text">讀取中</div></div><div><span class="sb-label" style="color: #f39c12;">第二線</span><div id="duty_line2" class="duty-text">讀取中</div></div></div>
-                </div>
-            </div>
+            
             <div class="sb-group">
                 <div class="sb-title orange">轉院設定</div>
+
                 <div class="sb-row"><div><span class="sb-label">轉出醫院</span><input type="text" id="t_hosp_out" value="新竹台大" class="sb-input"></div><div><span class="sb-label">預計轉入醫院</span><select id="t_hosp_in" class="sb-select"><option value="新竹台大">新竹台大</option><option value="東元醫院">東元醫院</option><option value="新竹中國">新竹中國</option><option value="聯新國際">聯新國際</option><option value="長庚醫院">長庚醫院</option><option value="皆可" selected>皆可</option></select></div></div>
             </div>
             <div class="sb-group">
@@ -472,13 +438,11 @@
             <div id="t-output" class="output-box" style="border-left-color: #e67e22;"></div>
         </div>
 
-<!-- 這裡是你原本的病解分頁，請替換裡面的 img 標籤 -->
         <div id="panel-edu" class="sidebar-panel">
             <h3 class="sidebar-header">病情解釋與衛教</h3>
             <div class="sb-group">
                 <div class="sb-title orange">血栓溶解劑</div>
                 <div style="padding: 10px; background: #1a252f; border-radius: 4px; text-align: center;">
-                    <!-- 加上了 class="edu-img" 和 onclick -->
                     <img src="tPA.jpg" alt="血栓溶解劑衛教" class="edu-img" style="max-width: 100%; border-radius: 4px;" onclick="openImgModal(this.src)">
                 </div>
             </div>
@@ -495,51 +459,121 @@
                 </div>
             </div>
         </div>
-    </div> <!-- 這是原本 sidebar 結束的 div，不要刪掉喔 -->
-    <!-- 圖片放大視窗 -->
+    </div> 
+    
     <div id="img-modal" onclick="closeImgModal()">
         <img id="img-modal-content">
     </div>
     
-    <h1>Stroke Clock</h1>
+    <h1 id="main-title">中風個案檢傷篩檢工具</h1>
 
-    <div id="digital-clock"><span id="clock-minutes">00</span><span id="clock-seconds">00</span></div>
-    <div id="onset-clock-container"><div id="onset-clock-title">Time from symptoms onset</div><div id="onset-clock"><span id="onset-clock-display">00:00:00</span></div></div>
+    <div style="color: #666; font-size: 16px; font-weight: bold; margin-bottom: 20px; text-align: center;">
+        目前時間：<span id="front-sys-time">載入中...</span>
+    </div>
 
+    <div id="digital-clock" style="max-width: 500px;"><span id="clock-minutes">00</span><span id="clock-seconds">00</span></div>
+    
     <div id="controls-container">
-        <div class="system-time">目前系統時間：<span id="current-sys-time">載入中...</span></div>
-
-        <div class="main-time-container">
-            <div class="main-time-row"><label>發現異常</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="n_onset" step="1"><div class="custom-datetime-display" id="display_n_onset">📅 --</div></div></div>
-            <div class="main-time-row"><label>最後正常</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="n_lkw" step="1"><div class="custom-datetime-display" id="display_n_lkw">📅 --</div></div></div>
-            <div class="main-time-row"><label><button id="set-door-now" class="icon-btn small" title="設為現在時間">⏰</button> 檢傷</label><div class="custom-datetime-wrapper"><input type="datetime-local" id="door-time" step="1"><div class="custom-datetime-display" id="display_door_time">📅 --</div></div></div>
+        
+        <div id="img-placeholder" style="margin: 5px 0 15px 0; border: 2px dashed #bdc3c7; border-radius: 8px; padding: 15px; color: #7f8c8d; font-size: 14px; text-align: center; background: #fff; width: 90%; max-width: 500px; box-sizing: border-box;">
+            <span>此處可插入圖片 (如衛教圖示)</span><br>
+            <img src="GFAST.jpg" alt="GFAST圖示" style="max-width: 100%; display: none; margin-top: 10px; border-radius: 8px;">
         </div>
 
-        <div id="init-group">
-            <button id="start-btn" class="btn-start">Start!</button>
-            <div class="download-row">
-                <input type="number" id="sync-id" class="id-input" placeholder="輸入編號 (ID) 下載舊資料">
-                <button id="btn-download" class="btn-download" title="下載資料">⬇️</button>
+        <div id="onset-clock-container" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px;">
+            <div id="onset-clock-title">Time from LNT/Onset</div>
+            <div id="onset-clock" style="width: 100%; max-width: 500px;"><span id="onset-clock-display">00:00:00</span></div>
+        </div>
+
+        <div id="init-group" style="width: 90%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; text-align: left;">
+            
+            <button id="start-btn" class="btn-start orange-btn">請點選並啟動Stroke code<3.5hr</button>
+            
+            <div id="main-gfast-container" style="display: none; background: #1a252f; color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                <div style="color: #f1c40f; font-weight: bold; margin-bottom: 10px; font-size: 16px;">G-FAST check list :</div>
+                <label class="sb-cb-label" style="margin-bottom: 8px;"><input type="checkbox" class="main-gfast-cb" value="Gaze"> <span class="gfast-en" style="color: #3498db;">G</span><span class="gfast-ch" style="color: #ecf0f1;">雙側眼睛偏移</span></label>
+                <label class="sb-cb-label" style="margin-bottom: 8px;"><input type="checkbox" class="main-gfast-cb" value="Face"> <span class="gfast-en" style="color: #e67e22;">F</span><span class="gfast-ch" style="color: #ecf0f1;">嘴角歪斜</span></label>
+                <label class="sb-cb-label" style="margin-bottom: 8px;"><input type="checkbox" class="main-gfast-cb" value="Arm"> <span class="gfast-en" style="color: #9b59b6;">A</span><span class="gfast-ch" style="color: #ecf0f1;">單側無力致無法抵抗重力</span></label>
+                <label class="sb-cb-label" style="margin-bottom: 8px;"><input type="checkbox" class="main-gfast-cb" value="Speech"> <span class="gfast-en" style="color: #f1c40f;">S</span><span class="gfast-ch" style="color: #ecf0f1;">失語症/表達理解困難</span></label>
+                <div style="margin-left: 20px; margin-bottom: 8px;"><span class="gfast-en" style="color: #2ecc71; text-align:left;">T</span><span class="gfast-ch" style="color: #2ecc71;">(最後正常時間距今&lt;24小時)</span></div>
+                
+                <div style="margin-top: 15px; font-size: 13px; color: #bdc3c7; line-height: 1.6; border-top: 1px dashed #7f8c8d; padding-top: 10px;">
+                    <span style="color: #e74c3c; font-weight: bold;">備註 :</span><br>
+                    1. 請排除Stroke mimic: 到院血糖 &lt; 50 mg/dL 或癲癇<br>
+                    2. 若其他cortical signs或不典型表現請盡早通知急診/神內醫師，如: 單側視野缺損、單側忽略、到院突發性意識昏迷
+                </div>
             </div>
-            <div class="quick-code-row">
-                <label class="quick-code-label"><input type="radio" name="main_code_trigger" value="Stroke code <3.5hr"> Stroke code &lt;3.5hr</label>
-                <label class="quick-code-label" style="color: #e67e22; border-color: #fbd6b6; background: #fff4eb;"><input type="radio" name="main_code_trigger" value="IA code 3.5-24hr"> IA code 3.5-24hr</label>
+
+            <div class="front-row" style="margin-bottom: 12px; flex-wrap: wrap; justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    年齡 <input type="number" id="n_age" class="front-input" style="width: 55px; text-align: center; padding: 6px 2px;">
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    性別 <select id="n_gender" class="front-input" style="width: 65px; padding: 6px 2px;"><option value="男">男</option><option value="女">女</option></select>
+                </div>
+                <div style="display: flex; align-items: center; gap: 5px;">
+                    <input type="number" id="sync-id" class="front-input" style="width: 100px; text-align: center; padding: 6px 2px;" placeholder="輸入舊ID">
+                    <button id="btn-download" class="btn-download" style="width: 40px; height: 35px; font-size: 18px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" title="下載資料">⬇️</button>
+                </div>
+            </div>
+            
+            <div class="time-box">
+                <div class="time-label">檢傷時間</div><div class="time-colon">:</div>
+                <div class="time-content">
+                    <input type="datetime-local" id="door-time" step="1">
+                    <button id="set-door-now" class="icon-btn small" title="設為現在時間">⏰</button>
+                </div>
+            </div>
+            
+            <div class="time-box">
+                <div class="time-label">最後正常/<br>發作時間</div><div class="time-colon">:</div>
+                <div class="time-content">
+                    <input type="datetime-local" id="n_onset" step="1">
+                    <input type="hidden" id="n_lkw"> 
+                </div>
             </div>
         </div>
 
-        <div id="active-group">
+        <div id="active-group" style="width: 90%; max-width: 500px; display: none; gap: 8px; margin-bottom: 10px;">
             <button id="btn-active-clock" class="btn-active-clock">時鐘已啟用</button>
             <button id="btn-upload" class="btn-upload-icon" title="上傳更新至目前編號">⬆️</button>
         </div>
 
         <span id="sync-status">歡迎使用雲端系統</span>
 
-        <div id="metrics-board">
+        <div id="metrics-board" style="max-width: 500px; box-sizing: border-box;">
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="ncct" title="記錄 NCCT 時間">⏰</button><div class="metric-label">DTCT <span class="sub-text">(NCCT)</span></div><div class="metric-value" id="val-dtct">--</div></div>
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="tpa" title="記錄 tPA Bolus 時間">⏰</button><div class="metric-label">DTN <span class="sub-text">(tPA)</span></div><div class="metric-value" id="val-dtn">--</div></div>
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="cta" title="記錄 CTA 時間">⏰</button><div class="metric-label">DTA <span class="sub-text">(CTA)</span></div><div class="metric-value" id="val-dta">--</div></div>
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="puncture" title="記錄 Puncture 時間">⏰</button><div class="metric-label">DTP <span class="sub-text">(Puncture)</span></div><div class="metric-value" id="val-dtp">--</div></div>
             <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="ed-leave" title="記錄急診離部時間">⏰</button><div class="metric-label">DIDO <span class="sub-text">(急診離部)</span></div><div class="metric-value" id="val-dido">--</div></div>
+        </div>
+
+        <div id="duty-rosters-container" style="width: 90%; max-width: 500px; margin-top: 15px;">
+            <div class="duty-block" style="text-align: left;">
+                <div style="font-weight: bold; color: #3498db; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>📍 本院取栓班表</span>
+                    <a href="https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/edit?usp=drivesdk" target="_blank" class="sheet-link">📊 班表</a>
+                </div>
+                <div id="neuro_duty_status" style="font-size: 12px; color: #bdc3c7; margin-bottom: 8px;">(連線讀取中...)</div>
+                <table class="neuro-duty-table" style="background:#2c3e50; border-radius:4px; padding:5px;"><tr><th>時間</th><th>8-12</th><th>12-17</th><th>夜間</th></tr>
+                <tr><td style="color: #ecf0f1; font-weight:normal;">取栓醫師</td><td id="neuro_dr_m" style="color: #f1c40f;">-</td><td id="neuro_dr_a" style="color: #f1c40f;">-</td><td id="neuro_dr_n" style="color: #f1c40f;">-</td></tr></table>
+                <div style="font-size:13px; display:flex; justify-content:space-around; background: #2c3e50; padding: 6px; border-radius: 4px; margin-top: 5px;">
+                    <span>放射師: <span id="neuro_rad" style="font-weight:bold; color:#2ecc71;">-</span></span>
+                    <span>護理師: <span id="neuro_nur" style="font-weight:bold; color:#e74c3c;">-</span></span>
+                </div>
+            </div>
+            <div class="duty-block" style="text-align: left;">
+                <div style="font-weight: bold; color: #f39c12; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>📍 外院取栓排班</span>
+                    <a href="https://docs.google.com/spreadsheets/d/1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130/edit?gid=1484666256#gid=1484666256" target="_blank" class="sheet-link">📊 班表</a>
+                </div>
+                <div id="duty_status" style="font-size: 12px; color: #3498db; margin-bottom: 8px;">(連線讀取中...)</div>
+                <div class="sb-row" style="background:#2c3e50; padding:8px; border-radius:4px;">
+                    <div><span class="sb-label" style="color: #e74c3c;">第一線</span><div id="duty_line1" class="duty-text">讀取中</div></div>
+                    <div><span class="sb-label" style="color: #f39c12;">第二線</span><div id="duty_line2" class="duty-text">讀取中</div></div>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -554,6 +588,9 @@
             const modalImg = document.getElementById('img-modal-content');
             modalImg.src = src;
             modal.style.display = 'flex';
+            modal.style.backgroundColor = 'rgba(0,0,0,0.95)'; // 強制變更黑以強調是預覽圖層
+            modal.style.zIndex = '100000';
+            modal.innerHTML = `<img id="img-modal-content" src="${src}" style="max-width: 95%; max-height: 95vh; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"><div style="position:absolute; top:20px; right:20px; color:white; font-size:30px; font-weight:bold; cursor:pointer;">×</div>`;
         }
         function closeImgModal() {
             document.getElementById('img-modal').style.display = 'none';
@@ -561,17 +598,6 @@
         // -------------------
         function getLocalIsoString(date) { const offset = date.getTimezoneOffset() * 60000; return (new Date(date - offset)).toISOString().slice(0, 16); }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
-
-        function updateCustomDateDisplays() {
-            const formatStr = (val) => {
-                if(!val) return "📅 請選擇時間";
-                const d = new Date(val); if(isNaN(d)) return "📅 請選擇時間";
-                return `📅 ${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()} ${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
-            };
-            document.getElementById('display_n_onset').innerText = formatStr(document.getElementById('n_onset').value);
-            document.getElementById('display_n_lkw').innerText = formatStr(document.getElementById('n_lkw').value);
-            document.getElementById('display_door_time').innerText = formatStr(document.getElementById('door-time').value);
-        }
 
         const tabBtns = document.querySelectorAll('.tab-btn');
         const sidebar = document.getElementById('sidebar');
@@ -628,7 +654,6 @@
             else if (val === '未施打') { doseWrap.style.display = 'none'; textInput.style.display = 'block'; textInput.placeholder = '未打原因'; } 
             else { doseWrap.style.display = 'none'; textInput.style.display = 'none'; }
         }
-        function toggleGfastDetails() { document.getElementById('gfast_details').style.display = document.getElementById('enable_gfast').checked ? 'block' : 'none'; }
         function toggleImageDesc() {
             const nc = document.getElementById('cb-ncct').checked, ct = document.getElementById('cb-cta').checked;
             const htNc = !!document.getElementById('time-ncct').value, htCt = !!document.getElementById('time-cta').value;
@@ -656,20 +681,6 @@
             });
         });
 
-        document.querySelectorAll('input[name="main_code_trigger"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                document.getElementById('n_code_type').value = this.value;
-                let shortText = this.value.includes('<3.5') ? '<3.5' : '3.5-24';
-                document.getElementById('n_code_label').innerText = shortText;
-                document.getElementById('n_code_row').style.display = 'flex';
-                
-                let now = new Date();
-                document.getElementById('n_code_time').value = getLocalIsoString(now);
-                document.getElementById('n_neuro_arrival').value = getLocalIsoString(new Date(now.getTime() + 5*60000));
-                document.getElementById('start-btn').click();
-            });
-        });
-
         document.getElementById('n_onset').value = getLocalIsoString(new Date());
 
         function calcNeuroNIHSS() {
@@ -679,15 +690,15 @@
             else { document.getElementById('n_nihss_display').innerText = `(${hasX ? sum+'+X' : sum})`; return ` (${hasX ? sum+'+X' : sum})`; }
         }
         function calcErGFAST() {
-            let score = 0; document.querySelectorAll('.er-gfast-cb:checked').forEach(() => score++);
-            document.getElementById('er_gfast_display').innerText = score; return score;
+            let score = 0; document.querySelectorAll('.main-gfast-cb:checked').forEach(() => score++);
+            return score;
         }
 
         // --------------- 雲端資料收集與還原 ---------------
         function collectDataArray() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
-            let gfastArr = []; document.querySelectorAll('.er-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
+            let gfastArr = []; document.querySelectorAll('.main-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
 
             return [
                 formatDT(document.getElementById('door-time').value),      // [0] B
@@ -706,7 +717,10 @@
                 document.getElementById('n_gender').value,                 // [13] O
                 document.getElementById('n_mrs').value,                    // [14] P
                 document.getElementById('n_symptoms').value,               // [15] Q
-                document.getElementById('enable_gfast').checked ? gfastArr.join(',') : "", // [16] R
+                
+                // 這裡修改了 [16] R 的儲存邏輯，判斷主畫面 G-FAST 是否有顯示
+                document.getElementById('main-gfast-container').style.display !== 'none' ? gfastArr.join(',') : "", // [16] R
+                
                 document.getElementById('n_nihss').value,                  // [17] S
                 document.getElementById('n_ne_text').value,                // [18] T
                 pmhArr.join(','),                                          // [19] U
@@ -732,7 +746,7 @@
                 document.getElementById('val-dta').innerText,              // [39] AO
                 document.getElementById('val-dtp').innerText,              // [40] AP
                 document.getElementById('val-dido').innerText,             // [41] AQ
-                new Date().toLocaleString('zh-TW', { hour12: false })      // [42] AR
+                get24hTimeStr()                                            // [42] AR
             ];
         }
 
@@ -763,8 +777,9 @@
             document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('n_symptoms').value = row[16] || "";
             
             let gStr = row[17] || "";
-            if (gStr) { document.getElementById('enable_gfast').checked = true; document.querySelectorAll('.er-gfast-cb').forEach(cb => cb.checked = gStr.includes(cb.value)); }
-            else { document.getElementById('enable_gfast').checked = false; document.querySelectorAll('.er-gfast-cb').forEach(cb => cb.checked = false); }
+            document.querySelectorAll('.main-gfast-cb').forEach(cb => {
+                cb.checked = gStr.includes(cb.value);
+            });
             
             document.getElementById('n_nihss').value = row[18] || "";
             document.getElementById('n_ne_text').value = row[19] || "";
@@ -784,21 +799,29 @@
             document.getElementById('np_note').value = row[35] || ""; document.getElementById('nurse_note').value = row[36] || "";
             document.getElementById('evt_note').value = row[37] || "";
 
-            updateCustomDateDisplays(); toggleNeuroRtpa(); toggleGfastDetails();
+            toggleNeuroRtpa();
             document.getElementById('cb-ncct').checked = !!row[7]; document.getElementById('cb-tpa').checked = !!row[8];
             document.getElementById('cb-cta').checked = !!row[9]; document.getElementById('cb-puncture').checked = !!row[10];
             document.getElementById('cb-ed-leave').checked = !!row[11]; document.getElementById('cb-amb-dep').checked = !!row[12];
+            document.getElementById('side-door-time').value = document.getElementById('door-time').value;
+            document.getElementById('side-onset-time').value = document.getElementById('n_onset').value;
             toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); calculateAllMetrics();
         }
 
         function getGenData() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
+
+// 新增這行來抓取首頁的 G-FAST 勾選數量
+            let gfastArr = []; document.querySelectorAll('.main-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
+
             return {
+
                 age: document.getElementById('n_age').value, gender: document.getElementById('n_gender').value,
                 onset: formatDT(document.getElementById('n_onset').value), lkw: formatDT(document.getElementById('n_lkw').value), door: formatDT(document.getElementById('door-time').value),
                 mrs: document.getElementById('n_mrs').value, symptoms: document.getElementById('n_symptoms').value, nihssRaw: document.getElementById('n_nihss').value, nihssScore: document.getElementById('n_nihss_display').innerText,
-                enableGfast: document.getElementById('enable_gfast').checked, erGfast: document.getElementById('er_gfast_display').innerText, pmhList: pmhArr,
+               // 這裡修改了 enableGfast 和 erGfast 的資料來源
+                enableGfast: document.getElementById('main-gfast-container').style.display !== 'none', erGfast: gfastArr.length, pmhList: pmhArr,
                 cre: document.getElementById('n_cre').value, labOther: document.getElementById('n_lab_other').value,
                 rtpaSel: document.getElementById('n_rtpa_sel').value, rtpaText: document.getElementById('n_rtpa_text').value, tpaBolusDose: document.getElementById('n_tpa_bolus').value, tpaCifDose: document.getElementById('n_tpa_cif').value, tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
                 ncctChecked: document.getElementById('cb-ncct').checked, ncctDesc: document.getElementById('n_ncct_desc').value, ctaChecked: document.getElementById('cb-cta').checked, ctaDesc: document.getElementById('n_cta_desc').value,
@@ -831,8 +854,7 @@ This is a ${d.age || '(age)'}-year-old ${genderEng}, with pre-mRS ${d.mrs || '(0
 ${pmhStr}
 
 [brief course]
-LNT: ${d.lkw}
-Onset/Found abnormal: ${d.onset}
+LNT/Onset: ${d.onset}
 ${codeStr}${neuroArrStr}
 Clinical course:
 ${d.symptoms}
@@ -864,27 +886,86 @@ ${tpaBlock}`;
             if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast}`);
             let neuroEvalLine = neuroEvalParts.length > 0 ? `\n   - 神經學評估：${neuroEvalParts.join(' / ')}` : '';
 
-            const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 最後正常(LNT)：${d.lkw}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
+            const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
             const outBox = document.getElementById('t-output'); outBox.innerText = result; outBox.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
 
         // --------------- 時鐘與主流程 ---------------
-        const sysTimeDisplay = document.getElementById('current-sys-time');
+        const sysTimeDisplay = document.getElementById('front-sys-time');
         const doorTimeInput = document.getElementById('door-time');
+        const onsetInput = document.getElementById('n_onset');
+        const lkwInput = document.getElementById('n_lkw'); // 保留供資料傳輸，但用 onset 同步
         const startBtn = document.getElementById('start-btn');
         const downloadBtn = document.getElementById('btn-download');
         const uploadBtn = document.getElementById('btn-upload');
         const syncStatus = document.getElementById('sync-status');
         let timerInterval;
 
-        toggleNeuroRtpa(); doorTimeInput.value = getLocalIsoString(new Date()); updateCustomDateDisplays(); 
-        setInterval(() => sysTimeDisplay.textContent = new Date().toLocaleString('zh-TW', { hour12: false }), 1000);
+        toggleNeuroRtpa(); doorTimeInput.value = getLocalIsoString(new Date());
+        document.getElementById('side-door-time').value = doorTimeInput.value;
+        document.getElementById('side-onset-time').value = document.getElementById('n_onset').value; 
+        
+// 取得純 24 小時制格式 (避免 AM/PM)
+        function get24hTimeStr() {
+            let d = new Date();
+            return d.getFullYear() + '/' + 
+                   String(d.getMonth() + 1).padStart(2, '0') + '/' + 
+                   String(d.getDate()).padStart(2, '0') + ' ' + 
+                   String(d.getHours()).padStart(2, '0') + ':' + 
+                   String(d.getMinutes()).padStart(2, '0') + ':' + 
+                   String(d.getSeconds()).padStart(2, '0');
+        }
 
-        document.getElementById('set-door-now').addEventListener('click', () => { doorTimeInput.value = getLocalIsoString(new Date()); updateCustomDateDisplays(); calculateAllMetrics(); });
-        ['n_onset', 'n_lkw', 'door-time'].forEach(id => document.getElementById(id).addEventListener('change', () => { updateCustomDateDisplays(); calculateAllMetrics(); }));
-        document.querySelectorAll('.sidebar-item input[type="datetime-local"]').forEach(el => { el.addEventListener('input', () => { toggleImageDesc(); calculateAllMetrics(); }); el.addEventListener('change', () => { toggleImageDesc(); calculateAllMetrics(); }); });
+        // 系統時間更新
+        setInterval(() => {
+            sysTimeDisplay.textContent = get24hTimeStr();
+            checkTimeAndUpdateUI();
+        }, 1000);
+
+        const sideOnset = document.getElementById('side-onset-time');
+        const sideDoor = document.getElementById('side-door-time');
+
+        // 按下「設為現在時間」時同步
+        document.getElementById('set-door-now').addEventListener('click', () => { 
+            let nowIso = getLocalIsoString(new Date());
+            doorTimeInput.value = nowIso; 
+            sideDoor.value = nowIso; // 同步側邊欄
+            calculateAllMetrics(); 
+            checkTimeAndUpdateUI();
+        });
+        
+        // 主畫面更改 -> 同步到側邊欄
+        ['n_onset', 'door-time'].forEach(id => document.getElementById(id).addEventListener('change', (e) => { 
+            if(id === 'n_onset') {
+                lkwInput.value = e.target.value; // 同步 onset 到 lkw
+                sideOnset.value = e.target.value;
+            }
+            if(id === 'door-time') {
+                sideDoor.value = e.target.value;
+            }
+            calculateAllMetrics(); 
+            checkTimeAndUpdateUI();
+        }));
+
+        // 側邊欄更改 -> 同步回主畫面
+        sideOnset.addEventListener('change', (e) => {
+            onsetInput.value = e.target.value;
+            lkwInput.value = e.target.value;
+            calculateAllMetrics();
+            checkTimeAndUpdateUI();
+        });
+        sideDoor.addEventListener('change', (e) => {
+            doorTimeInput.value = e.target.value;
+            calculateAllMetrics();
+            checkTimeAndUpdateUI();
+        });
+        
+        document.querySelectorAll('.sidebar-item input[type="datetime-local"]').forEach(el => { 
+            el.addEventListener('input', () => { toggleImageDesc(); calculateAllMetrics(); }); 
+            el.addEventListener('change', () => { toggleImageDesc(); calculateAllMetrics(); }); 
+        });
 
         document.querySelectorAll('.quick-log-btn').forEach(btn => {
             btn.addEventListener('click', function() {
@@ -896,6 +977,58 @@ ${tpaBlock}`;
         
         ['ncct', 'tpa', 'cta', 'puncture', 'ed-leave', 'amb-dep'].forEach(target => {
             document.getElementById(`cb-${target}`).addEventListener('change', function() { document.getElementById(`time-${target}`).value = this.checked ? getLocalIsoString(new Date()) : ""; toggleImageDesc(); calculateAllMetrics(); });
+        });
+
+        // 動態介面更新邏輯
+        function checkTimeAndUpdateUI() {
+            let onsetVal = onsetInput.value;
+            if (!onsetVal) return;
+            
+            let onsetTime = new Date(onsetVal).getTime();
+            let now = new Date().getTime();
+            let diffMs = now - onsetTime;
+            
+            // 更新 Onset 時鐘顯示
+            if (diffMs < 0) {
+                document.getElementById('onset-clock-display').textContent = "無效";
+            } else {
+                document.getElementById('onset-clock-display').textContent = `${String(Math.floor(diffMs / 3600000)).padStart(2, '0')}:${String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0')}:${String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0')}`;
+            }
+
+            // 更新按鈕與 G-FAST 邏輯
+            let hrs = diffMs / (1000 * 60 * 60);
+            let gfastContainer = document.getElementById('main-gfast-container');
+            let gfastScore = document.querySelectorAll('.main-gfast-cb:checked').length;
+            
+            if (diffMs < 0) return;
+
+            if (hrs < 3.5) {
+                startBtn.textContent = "請點選並啟動Stroke code<3.5hr";
+                startBtn.disabled = false;
+                startBtn.className = "btn-start orange-btn"; // 改成紅橘色提醒
+                gfastContainer.style.display = "none";
+            } else if (hrs >= 3.5 && hrs <= 24) {
+                gfastContainer.style.display = "block";
+                if (gfastScore >= 3) {
+                    startBtn.textContent = "請點選並啟動IA code!!!!";
+                    startBtn.disabled = false;
+                    startBtn.className = "btn-start orange-btn";
+                } else {
+                    startBtn.textContent = "請評估G-FAST";
+                    startBtn.disabled = true; // 鎖定直到勾選過關
+                    startBtn.className = "btn-start gray-btn";
+                }
+            } else {
+                startBtn.textContent = "請按一般中風評估";
+                startBtn.disabled = true;
+                startBtn.className = "btn-start gray-btn";
+                gfastContainer.style.display = "none";
+            }
+        }
+        
+        // 監聽首頁的 G-FAST 勾選以即時更新按鈕
+        document.querySelectorAll('.main-gfast-cb').forEach(cb => {
+            cb.addEventListener('change', checkTimeAndUpdateUI);
         });
 
         function calculateDiffInMinutes(endStr, startStr) {
@@ -918,28 +1051,52 @@ ${tpaBlock}`;
             document.getElementById('clock-minutes').textContent = String(Math.floor(diff / 60000)).padStart(2, '0'); document.getElementById('clock-seconds').textContent = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
         }
 
-        function updateOnsetClock() {
-            let tv = document.getElementById('n_lkw').value ? document.getElementById('n_lkw').value : document.getElementById('n_onset').value;
-            if (!tv) { document.getElementById('onset-clock-display').textContent = "未設定"; return; }
-            let diff = new Date().getTime() - new Date(tv).getTime(); if (diff < 0) { document.getElementById('onset-clock-display').textContent = "無效"; return; }
-            document.getElementById('onset-clock-display').textContent = `${String(Math.floor(diff / 3600000)).padStart(2, '0')}:${String(Math.floor((diff % 3600000) / 60000)).padStart(2, '0')}:${String(Math.floor((diff % 60000) / 1000)).padStart(2, '0')}`;
-        }
-
         function activateClockUI(id) {
             currentRecordId = id;
-            document.getElementById('init-group').style.display = 'none'; document.getElementById('active-group').style.display = 'flex';
+            document.getElementById('init-group').style.display = 'none'; // 這會同時隱藏首頁的 G-FAST
+            document.getElementById('active-group').style.display = 'flex';
+            
+            // 隱藏圖片預設區塊
+            document.getElementById('img-placeholder').style.display = 'none';
+            
+            // 變更標題文字與顏色
+            const mainTitle = document.getElementById('main-title');
+            mainTitle.innerText = "Stroke Clock: Door to Now!";
+            mainTitle.style.color = "#e74c3c"; // 紅色字體
+
             document.getElementById('btn-active-clock').textContent = `時鐘已啟用 (${id})`;
-            document.getElementById('digital-clock').style.display = 'block'; document.getElementById('onset-clock-container').style.display = 'flex'; document.getElementById('metrics-board').style.display = 'block';
+            document.getElementById('digital-clock').style.display = 'block'; 
+            document.getElementById('metrics-board').style.display = 'block';
             
             if (timerInterval) clearInterval(timerInterval);
-            updateMainClock(new Date(document.getElementById('door-time').value).getTime()); updateOnsetClock();
-            timerInterval = setInterval(() => { updateMainClock(new Date(document.getElementById('door-time').value).getTime()); updateOnsetClock(); }, 1000);
+            updateMainClock(new Date(document.getElementById('door-time').value).getTime()); 
+            timerInterval = setInterval(() => { updateMainClock(new Date(document.getElementById('door-time').value).getTime()); }, 1000);
         }
 
         // ================= 雲端連線 =================
         startBtn.addEventListener('click', function() {
+            if (this.disabled) return;
+            
             const doorValue = formatDT(doorTimeInput.value);
             if (!doorValue) { alert("請先輸入檢傷時間！"); return; }
+            
+            // 根據按鈕文字設定 Code 類別並連動側邊欄 G-FAST
+            let btnText = this.textContent;
+            let nowTime = getLocalIsoString(new Date());
+            
+            if (btnText.includes("<3.5hr")) {
+                document.getElementById('n_code_type').value = "Stroke code <3.5hr";
+                document.getElementById('n_code_time').value = nowTime;
+                document.getElementById('n_code_row').style.display = 'flex';
+                document.getElementById('n_code_label').innerText = '<3.5';
+            } else if (btnText.includes("IA code")) {
+                document.getElementById('n_code_type').value = "IA code 3.5-24hr";
+                document.getElementById('n_code_time').value = nowTime;
+                document.getElementById('n_code_row').style.display = 'flex';
+                document.getElementById('n_code_label').innerText = '3.5-24';
+            }
+            
+            document.getElementById('n_neuro_arrival').value = getLocalIsoString(new Date(new Date().getTime() + 5*60000));
             
             activateClockUI("本機模式");
 
@@ -981,6 +1138,9 @@ ${tpaBlock}`;
                 uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12";
             }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12"; });
         });
+        
+        // 觸發初始計算
+        checkTimeAndUpdateUI();
     </script>
 </body>
 </html>
