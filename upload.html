@@ -71,7 +71,27 @@
         .clock-time-wrapper { display: flex; justify-content: center; align-items: baseline; line-height: 1; gap: 5px; }
         #clock-minutes { font-size: 100px; font-weight: bold; }
         #clock-seconds { font-size: 50px; font-weight: normal; }
-        #clock-alert-message { margin-top: 15px; font-size: 24px; font-weight: bold; color: #fff; min-height: 60px; line-height: 1.3; }
+
+        /* 新增：時鐘下方的獨立紅色警示區塊 */
+        #clock-alert-message { 
+            margin-top: 5px; 
+            margin-bottom: 15px;
+            font-size: 20px; 
+            font-weight: bold; 
+            color: #fff;              /* 白色字體 */
+            background-color: #e74c3c; /* 固定紅色警示背景 */
+            min-height: 60px; 
+            line-height: 1.3; 
+            padding: 12px 15px; 
+            border-radius: 8px; 
+            display: none;            /* 預設隱藏，有訊息時才顯示 */
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); /* 紅色輕微陰影 */
+        }
         
         #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px; }
         #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; }
@@ -197,10 +217,22 @@
             <div class="sb-group">
                 <div class="sb-title">臨床資訊</div>
                 
-                <div class="sb-row" style="margin-bottom:12px; align-items:center;">
-                    <div style="flex:1;"><span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">Pre-mRS</span></div>
-                    <div style="flex:2;">
-                        <select id="n_mrs" class="sb-select">
+               <div class="sb-row" style="margin-bottom:12px; align-items:flex-end;">
+                    <div style="flex:1;">
+                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">年齡</span>
+                        <input type="number" id="side_n_age" class="sb-input" style="padding: 6px;">
+                    </div>
+                    <div style="flex:1;">
+                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">性別</span>
+                        <select id="side_n_gender" class="sb-select" style="padding: 6px;">
+                            <option value=""></option>
+                            <option value="男">男</option>
+                            <option value="女">女</option>
+                        </select>
+                    </div>
+                    <div style="flex:1.5;">
+                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">Pre-mRS</span>
+                        <select id="n_mrs" class="sb-select" style="padding: 6px;">
                             <option value=""></option>
                             <option value="0">0(無症狀)</option>
                             <option value="1">1(無顯著)</option>
@@ -278,10 +310,6 @@
 
         <div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
-            
-            <div style="padding: 0 20px;">
-                <textarea id="er_note" class="custom-textarea" placeholder="在此輸入急診交班或生命徵象..."></textarea>
-            </div>
 
             <div class="checklist-container">
                 <div class="sb-title yellow">神內-Check-list</div>
@@ -315,9 +343,7 @@
 
         <div id="panel-np" class="sidebar-panel">
             <h3 class="sidebar-header">NP紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea id="np_note" class="custom-textarea" placeholder="在此輸入專科護理師備註..."></textarea>
-            </div>
+
             <div class="checklist-container">
                 <div class="sb-title yellow">NP-Check-list</div>
                 <div class="cl-item">
@@ -347,11 +373,12 @@
 
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea id="nurse_note" class="custom-textarea" placeholder="在此輸入護理給藥或抽血紀錄..."></textarea>
-            </div>
+
             <div class="checklist-container">
-                <div class="sb-title yellow">護理-Check-list</div>
+                 <div class="sb-title yellow" style="display: flex; align-items: center; justify-content: space-between;">
+                    <span>護理-Check-list</span>
+                    <a href="ERNurse_EVTchecklist.pdf" target="_blank" class="sheet-link" style="background-color: #e74c3c;">📄 EVT表單</a>
+                </div>
                 <div class="cl-item">
                     <div class="cl-time">⏰ 時間點：找到床位</div>
                     <ul class="cl-list">
@@ -376,11 +403,11 @@
 
         <div id="panel-evt" class="sidebar-panel">
             <h3 class="sidebar-header">取栓紀錄</h3>
-            <div style="padding: 0 20px;">
-                <textarea id="evt_note" class="custom-textarea" placeholder="在此輸入取栓處置相關紀錄..."></textarea>
-            </div>
             <div class="checklist-container">
-                <div class="sb-title yellow">取栓醫師-Check-list</div>
+               <div class="sb-title yellow" style="margin-top: 20px; display: flex; align-items: center; justify-content: space-between;">
+                    <span>取栓護理師/放射師-Check-list</span>
+                    <a href="ERNurse_EVTchecklist.pdf" target="_blank" class="sheet-link" style="background-color: #e74c3c;">📄 開啟表單</a>
+                </div>
                 <div class="cl-item">
                     <div class="cl-time">⏰ 時間點：找到床位</div>
                     <ul class="cl-list">
@@ -471,8 +498,9 @@
             <span id="clock-minutes">00</span>
             <span id="clock-seconds">00</span>
         </div>
-        <div id="clock-alert-message"></div>
     </div>
+
+    <div id="clock-alert-message"></div>
     
     <div id="controls-container">
         
@@ -495,11 +523,11 @@
                 <label class="sb-cb-label" style="margin-bottom: 8px;"><input type="checkbox" class="main-gfast-cb" value="Face"> <span class="gfast-en" style="color: #e67e22;">F</span><span class="gfast-ch" style="color: #ecf0f1;">嘴角歪斜</span></label>
                 <label class="sb-cb-label" style="margin-bottom: 8px;"><input type="checkbox" class="main-gfast-cb" value="Arm"> <span class="gfast-en" style="color: #9b59b6;">A</span><span class="gfast-ch" style="color: #ecf0f1;">單側無力致無法抵抗重力</span></label>
                 <label class="sb-cb-label" style="margin-bottom: 8px;"><input type="checkbox" class="main-gfast-cb" value="Speech"> <span class="gfast-en" style="color: #f1c40f;">S</span><span class="gfast-ch" style="color: #ecf0f1;">失語症/表達理解困難</span></label>
-                <div style="margin-left: 20px; margin-bottom: 8px;"><span class="gfast-en" style="color: #2ecc71; text-align:left;">T</span><span class="gfast-ch" style="color: #2ecc71;">(最後正常時間距今&lt;24小時)</span></div>
+                <div style="margin-left: 20px; margin-bottom: 8px;"><span class="gfast-en" style="color: #2ecc71; text-align:left;">T</span><span class="gfast-ch" style="color: #2ecc71;">(後正常時間距今&lt;24小時</span></div>
                 
-                <div style="margin-top: 15px; font-size: 13px; color: #bdc3c7; line-height: 1.6; border-top: 1px dashed #7f8c8d; padding-top: 10px;">
+                <div style="margin-top: 15px; font-size: 16px; color: white; line-height: 1.6; border-top: 1px dashed #7f8c8d; padding-top: 10px;">
                     <span style="color: #e74c3c; font-weight: bold;">備註 :</span><br>
-                    1. 請排除Stroke mimic: 到院血糖 &lt; 50 mg/dL 或癲癇<br>
+                    1. 請排除Stroke mimic: 到院血糖 &lt; 60 mg/dL 或癲癇<br>
                     2. 若其他cortical signs或不典型表現請盡早通知急診/神內醫師，如: 單側視野缺損、單側忽略、到院突發性意識昏迷
                 </div>
             </div>
@@ -753,10 +781,10 @@
                 document.getElementById('t_fam_sel').value,                // [30] AF
                 document.getElementById('t_fam_text').value,               // [31] AG
                 document.getElementById('t_consent').value,                // [32] AH
-                document.getElementById('er_note').value,                  // [33] AI
-                document.getElementById('np_note').value,                  // [34] AJ
-                document.getElementById('nurse_note').value,               // [35] AK
-                document.getElementById('evt_note').value,                 // [36] AL
+                "",                  // [33] AI (急診紀錄已刪除，保留空位維持Sheet對齊)
+                "",                  // [34] AJ (NP紀錄已刪除，保留空位維持Sheet對齊)
+                "",                  // [35] AK (護理紀錄已刪除，保留空位維持Sheet對齊)
+                "",                  // [36] AL (取栓紀錄已刪除，保留空位維持Sheet對齊)
                 document.getElementById('val-dtct').innerText,             // [37] AM
                 document.getElementById('val-dtn').innerText,              // [38] AN
                 document.getElementById('val-dta').innerText,              // [39] AO
@@ -789,7 +817,8 @@
             setTime('time-ncct', row[7]); setTime('time-tpa', row[8]); setTime('time-cta', row[9]); 
             setTime('time-puncture', row[10]); setTime('time-ed-leave', row[11]); setTime('time-amb-dep', row[12]); 
             
-            document.getElementById('n_age').value = row[13] || ""; document.getElementById('n_gender').value = row[14] || "";
+            document.getElementById('n_age').value = row[13] || ""; document.getElementById('side_n_age').value = row[13] || "";
+            document.getElementById('n_gender').value = row[14] || "";document.getElementById('side_n_gender').value = row[14] || "";
             document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('n_symptoms').value = row[16] || "";
             
             let gStr = row[17] || "";
@@ -811,9 +840,7 @@
             
             document.getElementById('t_hosp_out').value = row[29] || "新竹台大"; document.getElementById('t_hosp_in').value = row[30] || "皆可";
             document.getElementById('t_fam_sel').value = row[31] || ""; document.getElementById('t_fam_text').value = row[32] || "";
-            document.getElementById('t_consent').value = row[33] || ""; document.getElementById('er_note').value = row[34] || "";
-            document.getElementById('np_note').value = row[35] || ""; document.getElementById('nurse_note').value = row[36] || "";
-            document.getElementById('evt_note').value = row[37] || "";
+            document.getElementById('t_consent').value = row[33] || ""; 
 
             toggleNeuroRtpa();
             document.getElementById('cb-ncct').checked = !!row[7]; document.getElementById('cb-tpa').checked = !!row[8];
@@ -1065,23 +1092,26 @@ ${tpaBlock}`;
         function updateClockAlert(doorDiffMinutes) {
             let alertMsg = "";
             if(doorDiffMinutes < 25) {
-                alertMsg = "請在25分鐘內做到Non-contrast Brain CT";
-                alertMessageDisplay.style.color = "#f1c40f"; // 提醒黃色
+                alertMsg = "請在25分鐘內做到Non-contrast Brain CT!";
             } else if (doorDiffMinutes >= 25 && doorDiffMinutes <= 60) {
-                alertMsg = "符合tPA適應症/無禁忌症請盡快施打, 有大血管阻塞需考慮安排CTA";
-                alertMessageDisplay.style.color = "#e67e22"; // 警告橘色
+                alertMsg = "DTN目標<60min, 無禁忌症請盡快施打tPA;懷疑大血管阻塞請盡快安排CTA!";
             } else {
                 if (currentInHouseDrAvailable) {
-                    alertMsg = "本院有取栓醫師, 請確認ICU床位及人力, 完成EVT check list事項";
-                    alertMessageDisplay.style.color = "#2ecc71"; // 綠色
+                    alertMsg = "本院有取栓醫師! 請確認ICU床位/人力/完成EVT check list事項";
                 } else {
                     let line1Str = document.getElementById('duty_line1').innerText || "無";
                     let line2Str = document.getElementById('duty_line2').innerText || "無";
-                    alertMsg = `本院無取栓人力，請至轉院群組提出轉院取栓需求\n(外院取栓第一線/第二線醫院: ${line1Str}/${line2Str})`;
-                    alertMessageDisplay.style.color = "#e74c3c"; // 紅色
+                    alertMsg = `本院無取栓人力!請至轉院群組提出轉院取栓需求\n(外院取栓第一線/第二線醫院: ${line1Str}/${line2Str})`;
                 }
             }
             alertMessageDisplay.innerText = alertMsg;
+
+        // 控管警示框的顯示與隱藏（在網頁白底上呈現獨立紅框）
+            if (alertMsg) {
+                alertMessageDisplay.style.display = "flex"; // 顯示紅色警示框
+            } else {
+                alertMessageDisplay.style.display = "none"; // 隱藏
+            }
         }
 
         function updateMainClock(doorTs) {
@@ -1090,7 +1120,8 @@ ${tpaBlock}`;
                 document.getElementById('clock-minutes').textContent = "00"; 
                 document.getElementById('clock-seconds').textContent = ":00"; 
                 alertMessageDisplay.innerText = "";
-                return; 
+               alertMessageDisplay.style.display = "none"; // 確保無效時間時隱藏紅框
+                return;
             }
             
             let totalMinutes = Math.floor(diff / 60000);
@@ -1191,6 +1222,21 @@ ${tpaBlock}`;
             }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12"; });
         });
         
+        // ================= 年齡與性別 雙向連動 =================
+        const frontAge = document.getElementById('n_age');
+        const sideAge = document.getElementById('side_n_age');
+        const frontGender = document.getElementById('n_gender');
+        const sideGender = document.getElementById('side_n_gender');
+
+        // 首頁改動 -> 同步到側邊欄
+        frontAge.addEventListener('input', (e) => sideAge.value = e.target.value);
+        frontGender.addEventListener('change', (e) => sideGender.value = e.target.value);
+
+        // 側邊欄改動 -> 同步回首頁
+        sideAge.addEventListener('input', (e) => frontAge.value = e.target.value);
+        sideGender.addEventListener('change', (e) => frontGender.value = e.target.value);
+
+
         // 觸發初始計算
         checkTimeAndUpdateUI();
     </script>
