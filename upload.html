@@ -1095,8 +1095,14 @@ ${tpaBlock}`;
             // 更新 Onset 時鐘顯示
             if (diffMs < 0) {
                 document.getElementById('onset-clock-display').textContent = "無效";
-            } else {
-                document.getElementById('onset-clock-display').textContent = `${String(Math.floor(diffMs / 3600000)).padStart(2, '0')}:${String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0')}:${String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0')}`;
+           } else {
+                // 將時間計算拆分出來，讓程式碼更乾淨
+                let h = String(Math.floor(diffMs / 3600000)).padStart(2, '0');
+                let m = String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0');
+                let s = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0');
+                
+                // 替換成您想要的格式 (加了一點空白與 s 讓視覺更好看)
+                document.getElementById('onset-clock-display').textContent = `${h}hr ${m}min ${s}s`;
             }
 
             // 更新按鈕與 G-FAST 邏輯
