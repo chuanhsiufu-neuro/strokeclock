@@ -67,30 +67,47 @@
         .output-box { margin: 15px 15px 0 15px; padding: 10px; background: #1a252f; border-left: 3px solid #2ecc71; white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #ecf0f1; border-radius: 4px; display: none; line-height: 1.4; }
 
         /* 主畫面 UI */
-        #digital-clock { font-family: 'Courier New', Courier, monospace; background-color: #000; color: #00ff00; text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; display: none; padding: 15px 20px 10px 20px; border-radius: 12px; border: 4px solid #444; box-shadow: 0 4px 8px rgba(0,0,0,0.3); width: 90%; max-width: 500px; box-sizing: border-box; text-align: center; margin-bottom: 15px; }
+       #digital-clock { 
+            font-family: 'Courier New', Courier, monospace; 
+            background-color: #000; 
+            color: #00ff00; 
+            text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; 
+            display: none; 
+            padding: 30px 20px; /* 原為 15px 20px，改為 30px 增加整體高度 */
+            border-radius: 12px; 
+            border: 4px solid #444; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
+            width: calc(90% - 68px); 
+            max-width: 432px; 
+            margin-right: 68px; 
+            box-sizing: border-box; 
+            text-align: center; 
+            margin-bottom: 15px; 
+        }
         .clock-time-wrapper { display: flex; justify-content: center; align-items: baseline; line-height: 1; gap: 5px; }
         #clock-minutes { font-size: 100px; font-weight: bold; }
         #clock-seconds { font-size: 50px; font-weight: normal; }
 
         /* 新增：時鐘下方的獨立紅色警示區塊 */
-        #clock-alert-message { 
+       #clock-alert-message { 
             margin-top: 5px; 
             margin-bottom: 15px;
-            font-size: 20px; 
+            font-size: 16px; /* 原為 20px，縮小為 16px */
             font-weight: bold; 
-            color: #fff;              /* 白色字體 */
-            background-color: #e74c3c; /* 固定紅色警示背景 */
+            color: #fff; 
+            background-color: #e74c3c; 
             min-height: 60px; 
-            line-height: 1.3; 
+            line-height: 1.4; /* 稍微放寬行高讓多行文字更好閱讀 */
             padding: 12px 15px; 
             border-radius: 8px; 
-            display: none;            /* 預設隱藏，有訊息時才顯示 */
+            display: none; 
             align-items: center;
             justify-content: center;
             box-sizing: border-box;
-            width: 90%;
-            max-width: 500px;
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); /* 紅色輕微陰影 */
+            width: calc(90% - 68px); 
+            max-width: 432px; 
+            margin-right: 68px; 
+            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); 
         }
         
         #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px; }
@@ -493,7 +510,7 @@
         目前時間：<span id="front-sys-time">載入中...</span>
     </div>
 
-    <div id="digital-clock" style="max-width: 500px;">
+    <div id="digital-clock">
         <div class="clock-time-wrapper">
             <span id="clock-minutes">00</span>
             <span id="clock-seconds">00</span>
@@ -964,6 +981,7 @@ ${tpaBlock}`;
         setInterval(() => {
             sysTimeDisplay.textContent = get24hTimeStr();
             checkTimeAndUpdateUI();
+           updateLiveDIDO(); // <--- 加入這行，讓 DIDO 每一秒都會跟著跳動
         }, 1000);
 
         const sideOnset = document.getElementById('side-onset-time');
@@ -1020,6 +1038,36 @@ ${tpaBlock}`;
         ['ncct', 'tpa', 'cta', 'puncture', 'ed-leave', 'amb-dep'].forEach(target => {
             document.getElementById(`cb-${target}`).addEventListener('change', function() { document.getElementById(`time-${target}`).value = this.checked ? getLocalIsoString(new Date()) : ""; toggleImageDesc(); calculateAllMetrics(); });
         });
+
+
+       // 專門處理 DIDO 動態讀秒的函式
+        function updateLiveDIDO() {
+            const door = document.getElementById('door-time').value;
+            const edLeave = document.getElementById('time-ed-leave').value;
+            const didoDisplay = document.getElementById('val-dido');
+            
+            if (!door) { 
+                didoDisplay.textContent = '--'; 
+                return; 
+            }
+
+            if (!edLeave) {
+                // 狀態 1：尚未按下「急診離部」時鐘鍵 -> 動態讀秒
+                let diffMs = new Date().getTime() - new Date(door).getTime();
+                if (diffMs >= 0) {
+                    let m = Math.floor(diffMs / 60000);
+                    let s = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0');
+                    // 用紅色字體顯示秒數跳動，增加急迫感
+                    didoDisplay.innerHTML = `<span style="color:#e74c3c;">${m} 分 ${s} 秒</span>`;
+                } else {
+                    didoDisplay.textContent = '--';
+                }
+            } else {
+                // 狀態 2：已按下「急診離部」時鐘鍵 -> 停止讀秒，顯示固定靜態分鐘數
+                let diffMs = new Date(edLeave).getTime() - new Date(door).getTime();
+                didoDisplay.innerHTML = `<span style="color:#0056b3;">${Math.floor(diffMs / 60000)} 分鐘</span>`;
+            }
+        }
 
         // 動態介面更新邏輯
         function checkTimeAndUpdateUI() {
@@ -1085,30 +1133,37 @@ ${tpaBlock}`;
             document.getElementById('val-dtn').textContent = diff(document.getElementById('time-tpa').value, door);
             document.getElementById('val-dta').textContent = diff(document.getElementById('time-cta').value, door);
             document.getElementById('val-dtp').textContent = diff(document.getElementById('time-puncture').value, door);
-            document.getElementById('val-dido').textContent = diff(document.getElementById('time-ed-leave').value, door);
         }
 
         // 動態警語更新功能
-        function updateClockAlert(doorDiffMinutes) {
+          function updateClockAlert(doorDiffMinutes) {
             let alertMsg = "";
+            let bgColor = "transparent";
+            let textColor = "#fff";
+
             if(doorDiffMinutes < 25) {
                 alertMsg = "請在25分鐘內做到Non-contrast Brain CT!";
+               bgColor = "#e67e22"; // 修改為橘色
             } else if (doorDiffMinutes >= 25 && doorDiffMinutes <= 60) {
                 alertMsg = "DTN目標<60min, 無禁忌症請盡快施打tPA;懷疑大血管阻塞請盡快安排CTA!";
+               bgColor = "#e74c3c"; // 修改為紅色
             } else {
                 if (currentInHouseDrAvailable) {
                     alertMsg = "本院有取栓醫師! 請確認ICU床位/人力/完成EVT check list事項";
+                    bgColor = "#27ae60"; // 綠色
                 } else {
                     let line1Str = document.getElementById('duty_line1').innerText || "無";
                     let line2Str = document.getElementById('duty_line2').innerText || "無";
                     alertMsg = `本院無取栓人力!請至轉院群組提出轉院取栓需求\n(外院取栓第一線/第二線醫院: ${line1Str}/${line2Str})`;
+                   bgColor = "#e74c3c"; // 紅色
                 }
             }
             alertMessageDisplay.innerText = alertMsg;
 
-        // 控管警示框的顯示與隱藏（在網頁白底上呈現獨立紅框）
+        // 控管警示框的顯示與隱藏 
             if (alertMsg) {
-                alertMessageDisplay.style.display = "flex"; // 顯示紅色警示框
+                alertMessageDisplay.style.display = "flex"; 
+               alertMessageDisplay.style.backgroundColor = bgColor;
             } else {
                 alertMessageDisplay.style.display = "none"; // 隱藏
             }
