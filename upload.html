@@ -192,9 +192,9 @@
     <div id="panel-guide" class="sidebar-panel">
             <h3 class="sidebar-header">系統使用說明</h3>
             
-            <div style="padding: 15px 20px; margin: 0 15px; background-color: #fdf5e6; color: #333; font-size: 14px; line-height: 1.6; border-radius: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
+            <div style="padding: 12px 15px; margin: 0 15px; background-color: #fdf5e6; color: #333; font-size: 12px; line-height: 1.5; border-radius: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
                 
-                <ul style="padding-left: 20px; margin-bottom: 10px;">
+                <ul style="padding-left: 20px; margin-top: 0; margin-bottom: 10px;">
                     <li>起始頁面請輸入年齡 / 性別 / 檢傷時間 / 最後正常 / 發作時間</li>
                     <li><span style="color: #c0392b; font-weight: bold;">紅色數字鐘</span>為當下時間距離 Onset/LNT 時間</li>
                     <li>若 &lt; 3.5hr，啟動鈕呈現建議啟動 stroke code &lt; 3.5hr</li>
@@ -217,7 +217,7 @@
                     <li>主頁面依 CT / tPA / CTA / Puncture / 救護車出發，可按時鐘鈕紀錄當下時間 (側頁時鐘可編輯時間)</li>
                 </ul>
                 
-                <div style="font-weight: bold; color: #d35400; margin-top: 15px;">側頁神內編輯臨床資訊:</div>
+                <div style="font-weight: bold; color: #d35400; margin-top: 12px;">側頁神內編輯臨床資訊:</div>
                 <ul style="padding-left: 20px; margin-bottom: 10px;">
                     <li>CT/CTA 欄位有紀錄時間才會跳出欄位寫 finding</li>
                     <li>NIHSS 輸入數字可自動計算總分，插管可輸入 X</li>
@@ -225,8 +225,8 @@
                     <li>按「📝 生成格式」&gt;「📋 複製內容」可轉貼至 Line / 照會單</li>
                 </ul>
                 
-                <div style="margin-top: 20px; font-weight: bold; color: #c0392b; background: #fadbd8; padding: 10px; border-radius: 5px; text-align: center; border: 1px solid #e74c3c;">
-                    編輯結束後，請記得按主頁面上傳鈕 ⬆️
+                <div style="margin-top: 15px; font-weight: bold; color: #c0392b; text-align: center; white-space: nowrap;">
+                    編輯結束後，請記得按主頁面上傳鈕 <span style="font-size: 20px; vertical-align: middle;">⬆️</span>
                 </div>
                 
             </div>
@@ -256,23 +256,21 @@
                 <div class="sb-title">臨床資訊</div>
                 
                <div class="sb-row" style="margin-bottom:12px; align-items:flex-end;">
-                    <div style="flex:1;">
-                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">年齡</span>
+                    <div style="flex:1; min-width: 0;">
+                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1; white-space:nowrap;">年齡</span>
                         <input type="number" id="side_n_age" class="sb-input" style="padding: 6px;">
                     </div>
-                    <div style="flex:1;">
-                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">性別</span>
+                    <div style="flex:1; min-width: 0;">
+                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1; white-space:nowrap;">性別</span>
                         <select id="side_n_gender" class="sb-select" style="padding: 6px;">
-                            <option value=""></option>
-                            <option value="男">男</option>
+                            <option value="男" selected>男</option>
                             <option value="女">女</option>
                         </select>
                     </div>
-                    <div style="flex:1.5;">
-                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1;">Pre-mRS</span>
+                    <div style="flex:1.5; min-width: 0;">
+                        <span class="sb-label" style="margin:0; font-weight:bold; color:#ecf0f1; white-space:nowrap;">Pre-mRS</span>
                         <select id="n_mrs" class="sb-select" style="padding: 6px;">
-                            <option value=""></option>
-                            <option value="0">0(無症狀)</option>
+                            <option value="0" selected>0(無症狀)</option>
                             <option value="1">1(無顯著)</option>
                             <option value="2">2(輕度)</option>
                             <option value="3">3(中度)</option>
@@ -565,16 +563,24 @@
                 </div>
             </div>
 
-            <div class="front-row" style="margin-bottom: 12px; flex-wrap: wrap; justify-content: space-between;">
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    年齡 <input type="number" id="n_age" class="front-input" style="width: 55px; text-align: center; padding: 6px 2px;">
+            <div class="front-row" style="margin-bottom: 12px; display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 6px; width: 100%;">
+                <div style="flex: 0.8; display: flex; flex-direction: column; align-items: flex-start; min-width: 0;">
+                    <span style="font-size: 13px; color: #34495e; margin-bottom: 4px; white-space: nowrap;">年齡</span>
+                    <input type="number" id="n_age" class="front-input" style="width: 100%; text-align: center; padding: 6px 2px; box-sizing: border-box;">
                 </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    性別 <select id="n_gender" class="front-input" style="width: 65px; padding: 6px 2px;"><option value="男">男</option><option value="女">女</option></select>
+                <div style="flex: 0.8; display: flex; flex-direction: column; align-items: flex-start; min-width: 0;">
+                    <span style="font-size: 13px; color: #34495e; margin-bottom: 4px; white-space: nowrap;">性別</span>
+                    <select id="n_gender" class="front-input" style="width: 100%; padding: 6px 2px; box-sizing: border-box;">
+                        <option value="男" selected>男</option>
+                        <option value="女">女</option>
+                    </select>
                 </div>
-                <div style="display: flex; align-items: center; gap: 5px;">
-                    <input type="number" id="sync-id" class="front-input" style="width: 70px; text-align: center; padding: 6px 2px;" placeholder="輸入ID">
-                    <button id="btn-download" class="btn-download" style="width: 40px; height: 35px; font-size: 18px; padding: 0; display: flex; align-items: center; justify-content: center; flex-shrink: 0;" title="下載資料">⬇️</button>
+                <div style="flex: 1.4; display: flex; flex-direction: column; align-items: flex-start; min-width: 0;">
+                    <span style="font-size: 13px; color: #34495e; margin-bottom: 4px; white-space: nowrap;">雲端 ID</span>
+                    <div style="display: flex; width: 100%; gap: 4px; align-items: center;">
+                        <input type="number" id="sync-id" class="front-input" style="width: 100%; text-align: center; padding: 6px 2px; box-sizing: border-box;" placeholder="輸入ID">
+                        <button id="btn-download" class="btn-download" style="flex: 0 0 36px; height: 32px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center;" title="下載資料">⬇️</button>
+                    </div>
                 </div>
             </div>
             
