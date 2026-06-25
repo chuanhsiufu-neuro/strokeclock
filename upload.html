@@ -1454,7 +1454,7 @@ ${tpaBlock}`;
             }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12"; });
         });
 
-        // ================= 臨床影像上傳邏輯 =================
+// ================= 臨床影像上傳邏輯 (除錯防呆版) =================
         const dropzone = document.getElementById('uploadDropzone');
         const fileInput = document.getElementById('fileInput');
         const filePreviewList = document.getElementById('filePreviewList');
@@ -1467,59 +1467,60 @@ ${tpaBlock}`;
 
             fileInput.addEventListener('change', (event) => {
                 const newFiles = Array.from(event.target.files);
-                
                 newFiles.forEach(file => {
                     filesToUpload.push(file);
                     const li = document.createElement('li');
                     li.innerHTML = `<span>📎 ${file.name}</span> <span style="color: #95a5a6;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>`;
                     filePreviewList.appendChild(li);
                 });
-                
                 fileInput.value = ''; 
                 if (filesToUpload.length > 0) btnDriveUpload.style.display = 'block';
             });
 
             btnDriveUpload.addEventListener('click', async () => {
-                // 讀取主畫面的編號，用來建立雲端資料夾
                 let caseId = document.getElementById('sync-id').value || currentRecordId;
                 if (!caseId || caseId === "本機模式") {
-                    alert("⚠️ 請先在主畫面【輸入ID】或取得雲端編號，系統才能幫您建立專屬資料夾！");
+                    alert("⚠️ 請先在主畫面【輸入ID】或取得雲端編號，才能進行影像關聯。");
                     return;
                 }
 
-                btnDriveUpload.innerText = "⏳ 上傳中，請勿關閉網頁...";
+                btnDriveUpload.innerText = "⏳ 影像傳輸中，請勿關閉網頁...";
                 btnDriveUpload.disabled = true;
                 btnDriveUpload.style.backgroundColor = "#e67e22";
 
                 let uploadCount = 0;
+                let errorMessages = [];
 
-                // 序列傳輸檔案
                 for (let i = 0; i < filesToUpload.length; i++) {
                     const file = filesToUpload[i];
-                    const reader = new FileReader();
-                    
                     await new Promise((resolve) => {
+                        const reader = new FileReader();
                         reader.onload = async function(e) {
                             const base64Data = e.target.result.split(',')[1];
                             const payload = {
-                                action: "uploadImage", // 若要在後端 GAS 區分上傳圖片功能
+                                action: "uploadImage",
                                 fileName: file.name,
                                 mimeType: file.type,
-                                base64: base64Data,
-                                folderName: `Case_${caseId}`
+                                base64: base64Data
                             };
 
                             try {
-                                // 呼叫 GAS (使用原本的 GAS_URL)
                                 const response = await fetch(GAS_URL, {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'text/plain' },
                                     body: JSON.stringify(payload)
                                 });
                                 const result = await response.json();
-                                if(result.status === "success") uploadCount++;
+                                
+                                if (result.status === "success") {
+                                    uploadCount++;
+                                } else {
+                                    // 抓取 GAS 內 catch 到的錯誤
+                                    errorMessages.push(`【後端錯誤】${file.name}: ${result.error || JSON.stringify(result)}`);
+                                }
                             } catch (error) {
-                                console.error("上傳失敗:", error);
+                                // 抓取連線或 URL 錯誤
+                                errorMessages.push(`【連線失敗】${file.name}: 請檢查 GAS_URL 是否正確。詳情: ${error.toString()}`);
                             }
                             resolve();
                         };
@@ -1527,15 +1528,19 @@ ${tpaBlock}`;
                     });
                 }
 
-                alert(`✅ 完成！成功上傳了 ${uploadCount} 個影像檔案`);
+                // 彈出最終報告
+                if (errorMessages.length > 0) {
+                    alert(`⚠️ 上傳失敗！\n成功：${uploadCount} 個檔案\n\n錯誤詳情如下：\n${errorMessages.join('\n')}`);
+                } else {
+                    alert(`✅ 影像提供成功！已成功上傳 ${uploadCount} 個影像檔案至指定資料夾。`);
+                    filesToUpload = [];
+                    filePreviewList.innerHTML = '';
+                    btnDriveUpload.style.display = 'none';
+                }
+
                 btnDriveUpload.innerText = "☁️ 開始上傳至雲端資料夾";
                 btnDriveUpload.style.backgroundColor = "#27ae60";
                 btnDriveUpload.disabled = false;
-                
-                // 清空預覽列
-                filesToUpload = [];
-                filePreviewList.innerHTML = '';
-                btnDriveUpload.style.display = 'none';
             });
         }
         
