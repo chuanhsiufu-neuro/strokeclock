@@ -781,6 +781,34 @@
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
         const GAS_URL = "https://script.google.com/macros/s/AKfycbyCck1cfHmV_rwjcFXNN-LomQ92FG9G1A-RKnrUJvQ6q5rDeNlbXyZIZtaFSQd7wr6K/exec"; 
+
+        // 🌟 新增：專門解析 Excel/Google 試算表中文「上下午」時間格式的函數
+function parseExcelDateTime(str) {
+    if (!str) return new Date(NaN);
+    let clean = str.replace(/-/g, '/').replace('T', ' ').trim();
+    
+    // 檢查是否包含台灣中文的「上午」或「下午」
+    if (clean.includes('上午') || clean.includes('下午')) {
+        // 使用正規表示法精準拆解 年/月/日 上下午 時:分:秒
+        let match = clean.match(/^(\d+)[/\\](\d+)[/\\](\d+)\s+(上午|下午)\s+(\d+):(\d+)(?::(\d+))?/);
+        if (match) {
+            let year = parseInt(match[1], 10);
+            let month = parseInt(match[2], 10) - 1; // JS 月份從 0 開始
+            let day = parseInt(match[3], 10);
+            let ampm = match[4];
+            let hour = parseInt(match[5], 10);
+            let minute = parseInt(match[6], 10);
+            let second = match[7] ? parseInt(match[7], 10) : 0;
+            
+            // 關鍵：將 12 小時制手動換算為 24 小時制
+            if (ampm === '下午' && hour < 12) hour += 12;
+            if (ampm === '上午' && hour === 12) hour = 0;
+            
+            return new Date(year, month, day, hour, minute, second);
+        }
+    }
+    return new Date(clean); // 若為不含上下午的標準格式則走原生解析
+}
         
         let currentRecordId = null; 
         
@@ -968,11 +996,13 @@
         }
 
         function populateDataArray(row) {
-            const setTime = (id, val) => { 
-                if(!val) { document.getElementById(id).value = ""; return; }
-                let d = new Date(val.replace(/\//g, '-'));
-                document.getElementById(id).value = !isNaN(d.getTime()) ? getLocalIsoString(d) : val.replace(' ', 'T');
-            };
+    const setTime = (id, val) => { 
+        if(!val) { document.getElementById(id).value = ""; return; }
+        
+        // 🌟 修正：改用自訂的安全解析函數，完美相容中文上下午
+        let d = parseExcelDateTime(val);
+        document.getElementById(id).value = !isNaN(d.getTime()) ? getLocalIsoString(d) : "";
+    };
             
             setTime('door-time', row[1]); setTime('n_onset', row[2]); setTime('n_lkw', row[3]); 
             
@@ -1642,12 +1672,16 @@ function startBackgroundPolling() {
         .then(data => {
             if (data.status === "success") {
                 const serverLatestId = data.latestId;
-                const serverTime = new Date(data.timestamp.replace(/\//g, '-'));
+                
+                // 🌟 修正：改用自訂的安全解析函數
+                const serverTime = parseExcelDateTime(data.timestamp);
                 const nowTime = new Date();
                 
-                // 首次執行時，先對齊最新的 ID，避免一開網頁就把舊資料當新案件彈出
-                if (lastKnownMaxId === 0) {
-                    lastKnownMaxId = serverLatestId;
+                // 輸出偵測日誌
+                console.log(`[背景輪詢檢查] 雲端最新ID: ${serverLatestId} | 本地最大ID: ${lastKnownMaxId} | 個案時間: ${data.timestamp}`);
+
+                if (isNaN(serverTime.getTime())) {
+                    console.error("❌ 時間解析失敗，請檢查格式:", data.timestamp);
                     return;
                 }
 
