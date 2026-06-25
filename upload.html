@@ -77,22 +77,17 @@
             border-radius: 12px; 
             border: 4px solid #444; 
             box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
-            /* 置中修正：還原為 500px 寬度並設定 margin 置中 */
             width: 90%; 
             max-width: 500px; 
             margin: 0 auto 15px auto; 
             box-sizing: border-box; 
             text-align: center; 
         }
-        /* 增加一點間距來取代冒號的位置 */
         .clock-time-wrapper { display: flex; justify-content: center; align-items: baseline; line-height: 1; gap: 15px; } 
-        /* 字體放大 +6 */
         #clock-minutes { font-size: 106px; font-weight: bold; } 
         #clock-seconds { font-size: 56px; font-weight: normal; } 
 
-        /* 時鐘下方的獨立紅色警示區塊 */
         #clock-alert-message { 
-            /* 置中修正 */
             margin: 5px auto 15px auto; 
             font-size: 16px; 
             font-weight: bold; 
@@ -124,7 +119,6 @@
 
         #init-group { width: 90%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; text-align: left; }
         
-         /* 初始頁面專屬輸入框樣式 (黑框白底對齊) */
         .front-row { display: flex; align-items: center; gap: 8px; font-size: 16px; font-weight: bold; color: #34495e; }
         .front-input { padding: 6px; border: 1px solid #aaa; border-radius: 4px; font-size: 15px; flex: 1; }
         
@@ -133,15 +127,13 @@
         .time-content { display: flex; align-items: center; gap: 8px; width: 100%; box-sizing: border-box; }
         .time-content input[type="datetime-local"] { border: 1px solid #aaa; padding: 8px; border-radius: 4px; font-size: 15px; flex: 1; min-width: 0; width: 100%; box-sizing: border-box; }
 
-        /* G-FAST 樣式 (字體放大 +2) */
-        .gfast-en { font-size: 26px; font-weight: bold; display: inline-block; width: 25px; text-align: center; } /* 原 24px 改 26px */
-        .gfast-ch { font-size: 20px; margin-left: 5px; } /* 原 18px 改 20px */
+        .gfast-en { font-size: 26px; font-weight: bold; display: inline-block; width: 25px; text-align: center; } 
+        .gfast-ch { font-size: 20px; margin-left: 5px; } 
 
         .btn-start { font-size: 20px; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
         .green-btn { background-color: #27ae60; }
         .green-btn:hover { background-color: #2ecc71; }
         .gray-btn { background-color: #95a5a6; cursor: not-allowed; }
-       /* 新增：綠色且不可點選的按鈕樣式 */
         .green-disabled-btn { background-color: #27ae60; cursor: not-allowed; opacity: 0.8; }
         
         .orange-btn { background-color: #e74c3c; animation: pulse 1.5s infinite; }
@@ -172,6 +164,55 @@
         @keyframes zoomIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
         .edu-img { cursor: pointer; transition: transform 0.2s; }
         .edu-img:hover { transform: scale(1.02); box-shadow: 0 0 8px rgba(255,255,255,0.3); }
+
+        /* --- 新增：臨床影像上傳區塊樣式 (深色主題) --- */
+        .image-upload-section {
+            background-color: #1a252f;
+            border: 1px solid #34495e;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 20px 15px 15px 15px;
+            color: #ecf0f1;
+        }
+        .image-upload-section h4 {
+            margin: 0 0 12px 0;
+            font-size: 15px;
+            color: #f1c40f; 
+        }
+        .upload-method { margin-bottom: 15px; }
+        .method-title { font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #bdc3c7; }
+        .dropzone {
+            border: 2px dashed #7f8c8d;
+            border-radius: 6px;
+            background-color: #2c3e50;
+            padding: 15px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+        .dropzone:hover { background-color: #34495e; border-color: #bdc3c7; }
+        .dropzone-content .icon { font-size: 24px; display: block; margin-bottom: 5px; }
+        .dropzone-content strong { font-size: 13px; color: #ecf0f1; display: block;}
+        .hint-text { font-size: 11px; color: #95a5a6; margin-top: 4px; }
+        .file-list { list-style: none; padding: 0; margin-top: 10px; }
+        .file-list li {
+            font-size: 12px;
+            background: #34495e;
+            padding: 6px 10px;
+            border-radius: 4px;
+            margin-bottom: 6px;
+            display: flex;
+            justify-content: space-between;
+            color: #ecf0f1;
+        }
+        .upload-divider { text-align: center; margin: 15px 0; position: relative; }
+        .upload-divider::before {
+            content: ""; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #34495e; z-index: 1;
+        }
+        .upload-divider span {
+            background-color: #1a252f; padding: 0 10px; color: #7f8c8d; position: relative; z-index: 2; font-size: 12px; font-weight: bold;
+        }
+
     </style>
 </head>
 <body>
@@ -487,9 +528,35 @@
                 <span class="sb-label">同意轉院取栓</span><select id="t_consent" class="sb-select"><option value=""></option><option value="是">是</option><option value="考慮中">考慮中</option></select>
             </div>
             <div class="sb-btn-group"><button class="sb-btn sb-btn-gen" onclick="genTransferText()" style="background-color:#e67e22;">📝 生成轉診單</button><button class="sb-btn sb-btn-copy" onclick="copyBoxText('t-output')">📋 複製內容</button></div>
+            
             <div id="t-output" class="output-box" style="border-left-color: #e67e22;"></div>
 
-           <div class="checklist-container" style="margin-top: 25px;">
+            <div class="image-upload-section">
+                <h4>📁 臨床影像提供 (支援檔案/照相/錄影)</h4>
+                
+                <div class="upload-method">
+                    <p class="method-title">【方式一】開啟相機/檔案上傳</p>
+                    <div class="dropzone" id="uploadDropzone">
+                        <input type="file" id="fileInput" accept="image/*,video/*" multiple style="display: none;">
+                        <div class="dropzone-content">
+                            <span class="icon">📷</span>
+                            <strong>點擊開啟相機 (可重覆追加拍攝)</strong>
+                            <p class="hint-text">(照片將顯示於下方，點擊上傳按鈕才會發送)</p>
+                        </div>
+                    </div>
+                    <ul id="filePreviewList" class="file-list"></ul>
+                    <button id="btn-drive-upload" class="sb-btn sb-btn-gen" style="width: 100%; margin-top: 10px; background-color: #27ae60; display: none;">☁️ 開始上傳至雲端資料夾</button>
+                </div>
+
+                <div class="upload-divider"><span>— OR —</span></div>
+
+                <div class="upload-method">
+                    <p class="method-title">【方式二】貼上既有的影像分享連結</p>
+                    <input type="text" id="cloudLinkInput" class="sb-input" placeholder="請在此貼上其他雲端分享網址">
+                </div>
+            </div>
+
+            <div class="checklist-container" style="margin-top: 25px;">
                 <div class="sb-title yellow">本院無取栓人力-轉院提醒</div>
 
                 <div class="cl-item">
@@ -713,7 +780,7 @@
 
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbwE23GUN6TzIPYwdmjl4xl94bfxdo1dCbsIwIGukNB1K4Vj1M7_AamOhPQUbuWx0A5o/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzPLVy71QheNsykk5gglKLinzNwFscVxYGnf-c-0Y03cY7iVzu_QQGjkgtPpqHjaOGh/exec"; 
         
         let currentRecordId = null; 
         
@@ -1028,6 +1095,11 @@ ${tpaBlock}`;
             if (d.ncctChecked || document.getElementById('time-ncct').value) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
             if (d.ctaChecked || document.getElementById('time-cta').value) imageLine += `\n   - brain CTA: ${d.ctaDesc}`;
             
+            // --- 新增：抓取雲端影像連結 ---
+            let cloudLink = document.getElementById('cloudLinkInput').value;
+            if (cloudLink) imageLine += `\n   - 雲端影像連結: ${cloudLink}`;
+            // -----------------------------
+
             let neuroEvalParts = [];
             if (d.nihssRaw) neuroEvalParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore}`);
             if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast}`);
@@ -1037,6 +1109,7 @@ ${tpaBlock}`;
             const outBox = document.getElementById('t-output'); outBox.innerText = result; outBox.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
+
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
 
         // --------------- 時鐘與主流程 ---------------
@@ -1289,7 +1362,7 @@ ${tpaBlock}`;
             updateClockAlert(totalMinutes);
         }
 
-function activateClockUI(id) {
+        function activateClockUI(id) {
             currentRecordId = id;
             document.getElementById('init-group').style.display = 'none'; 
             document.getElementById('active-group').style.display = 'flex';
@@ -1380,6 +1453,91 @@ function activateClockUI(id) {
                 uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12";
             }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12"; });
         });
+
+        // ================= 臨床影像上傳邏輯 =================
+        const dropzone = document.getElementById('uploadDropzone');
+        const fileInput = document.getElementById('fileInput');
+        const filePreviewList = document.getElementById('filePreviewList');
+        const btnDriveUpload = document.getElementById('btn-drive-upload');
+
+        let filesToUpload = [];
+
+        if (dropzone) {
+            dropzone.addEventListener('click', () => { fileInput.click(); });
+
+            fileInput.addEventListener('change', (event) => {
+                const newFiles = Array.from(event.target.files);
+                
+                newFiles.forEach(file => {
+                    filesToUpload.push(file);
+                    const li = document.createElement('li');
+                    li.innerHTML = `<span>📎 ${file.name}</span> <span style="color: #95a5a6;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>`;
+                    filePreviewList.appendChild(li);
+                });
+                
+                fileInput.value = ''; 
+                if (filesToUpload.length > 0) btnDriveUpload.style.display = 'block';
+            });
+
+            btnDriveUpload.addEventListener('click', async () => {
+                // 讀取主畫面的編號，用來建立雲端資料夾
+                let caseId = document.getElementById('sync-id').value || currentRecordId;
+                if (!caseId || caseId === "本機模式") {
+                    alert("⚠️ 請先在主畫面【輸入ID】或取得雲端編號，系統才能幫您建立專屬資料夾！");
+                    return;
+                }
+
+                btnDriveUpload.innerText = "⏳ 上傳中，請勿關閉網頁...";
+                btnDriveUpload.disabled = true;
+                btnDriveUpload.style.backgroundColor = "#e67e22";
+
+                let uploadCount = 0;
+
+                // 序列傳輸檔案
+                for (let i = 0; i < filesToUpload.length; i++) {
+                    const file = filesToUpload[i];
+                    const reader = new FileReader();
+                    
+                    await new Promise((resolve) => {
+                        reader.onload = async function(e) {
+                            const base64Data = e.target.result.split(',')[1];
+                            const payload = {
+                                action: "uploadImage", // 若要在後端 GAS 區分上傳圖片功能
+                                fileName: file.name,
+                                mimeType: file.type,
+                                base64: base64Data,
+                                folderName: `Case_${caseId}`
+                            };
+
+                            try {
+                                // 呼叫 GAS (使用原本的 GAS_URL)
+                                const response = await fetch(GAS_URL, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'text/plain' },
+                                    body: JSON.stringify(payload)
+                                });
+                                const result = await response.json();
+                                if(result.status === "success") uploadCount++;
+                            } catch (error) {
+                                console.error("上傳失敗:", error);
+                            }
+                            resolve();
+                        };
+                        reader.readAsDataURL(file);
+                    });
+                }
+
+                alert(`✅ 完成！成功上傳了 ${uploadCount} 個影像檔案`);
+                btnDriveUpload.innerText = "☁️ 開始上傳至雲端資料夾";
+                btnDriveUpload.style.backgroundColor = "#27ae60";
+                btnDriveUpload.disabled = false;
+                
+                // 清空預覽列
+                filesToUpload = [];
+                filePreviewList.innerHTML = '';
+                btnDriveUpload.style.display = 'none';
+            });
+        }
         
         // ================= 年齡與性別 雙向連動 =================
         const frontAge = document.getElementById('n_age');
@@ -1394,7 +1552,6 @@ function activateClockUI(id) {
         // 側邊欄改動 -> 同步回首頁
         sideAge.addEventListener('input', (e) => frontAge.value = e.target.value);
         sideGender.addEventListener('change', (e) => frontGender.value = e.target.value);
-
 
         // 觸發初始計算
         checkTimeAndUpdateUI();
