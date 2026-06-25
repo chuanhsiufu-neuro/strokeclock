@@ -1454,7 +1454,7 @@ ${tpaBlock}`;
             }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12"; });
         });
 
-// ================= 臨床影像上傳邏輯 (除錯防呆版) =================
+// ================= 臨床影像上傳邏輯 (支援點擊 ✕ 刪除功能) =================
         const dropzone = document.getElementById('uploadDropzone');
         const fileInput = document.getElementById('fileInput');
         const filePreviewList = document.getElementById('filePreviewList');
@@ -1462,19 +1462,57 @@ ${tpaBlock}`;
 
         let filesToUpload = [];
 
+        // 📝 新增：專門用來刷新畫面上檔案列表的設置
+        function renderFileList() {
+            filePreviewList.innerHTML = ''; // 先清空舊列表
+            
+            filesToUpload.forEach((file, index) => {
+                const li = document.createElement('li');
+                li.style.display = 'flex';
+                li.style.justifyContent = 'space-between';
+                li.style.alignItems = 'center';
+                
+                // 加上 ✕ 的點擊元素，並利用 data-index 記錄它是第幾個檔案
+                li.innerHTML = `
+                    <span style="flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">📎 ${file.name}</span> 
+                    <span style="color: #95a5a6; margin-right: 15px; font-size: 11px;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+                    <span class="btn-delete-file" data-index="${index}" style="color: #e74c3c; cursor: pointer; font-weight: bold; padding: 0 5px; font-size: 14px;" title="刪除此檔案">✕</span>
+                `;
+                filePreviewList.appendChild(li);
+            });
+            
+            // 如果沒檔案了，就把上傳按鈕隱藏
+            if (filesToUpload.length > 0) {
+                btnDriveUpload.style.display = 'block';
+            } else {
+                btnDriveUpload.style.display = 'none';
+            }
+        }
+
         if (dropzone) {
             dropzone.addEventListener('click', () => { fileInput.click(); });
 
             fileInput.addEventListener('change', (event) => {
                 const newFiles = Array.from(event.target.files);
                 newFiles.forEach(file => {
-                    filesToUpload.push(file);
-                    const li = document.createElement('li');
-                    li.innerHTML = `<span>📎 ${file.name}</span> <span style="color: #95a5a6;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>`;
-                    filePreviewList.appendChild(li);
+                    filesToUpload.push(file); // 追加檔案到陣列
                 });
-                fileInput.value = ''; 
-                if (filesToUpload.length > 0) btnDriveUpload.style.display = 'block';
+                fileInput.value = ''; // 清空以利重複選取同檔名
+                renderFileList();     // 刷新列表顯示
+            });
+
+            // 📝 新增：監聽列表中「✕」的點擊事件 (事件代理機制)
+            filePreviewList.addEventListener('click', (event) => {
+                if (event.target.classList.contains('btn-delete-file')) {
+                    // 取得被點擊檔案的索引編號
+                    const indexToRemove = parseInt(event.target.getAttribute('data-index'), 10);
+                    
+                    // 從待上傳陣列中剔除該檔案
+                    filesToUpload.splice(indexToRemove, 1);
+                    
+                    // 重新渲染畫面
+                    renderFileList();
+                }
             });
 
             btnDriveUpload.addEventListener('click', async () => {
@@ -1499,7 +1537,7 @@ ${tpaBlock}`;
                             const base64Data = e.target.result.split(',')[1];
                             const payload = {
                                 action: "uploadImage",
-                                caseId: caseId, // 🌟 務必加上這行，把目前個案 ID 傳給後端
+                                caseId: caseId,
                                 fileName: file.name,
                                 mimeType: file.type,
                                 base64: base64Data
@@ -1516,12 +1554,10 @@ ${tpaBlock}`;
                                 if (result.status === "success") {
                                     uploadCount++;
                                 } else {
-                                    // 抓取 GAS 內 catch 到的錯誤
                                     errorMessages.push(`【後端錯誤】${file.name}: ${result.error || JSON.stringify(result)}`);
                                 }
                             } catch (error) {
-                                // 抓取連線或 URL 錯誤
-                                errorMessages.push(`【連線失敗】${file.name}: 請檢查 GAS_URL 是否正確。詳情: ${error.toString()}`);
+                                errorMessages.push(`【連線失敗】${file.name}: 請檢查 GAS_URL。詳情: ${error.toString()}`);
                             }
                             resolve();
                         };
@@ -1529,14 +1565,12 @@ ${tpaBlock}`;
                     });
                 }
 
-                // 彈出最終報告
                 if (errorMessages.length > 0) {
                     alert(`⚠️ 上傳失敗！\n成功：${uploadCount} 個檔案\n\n錯誤詳情如下：\n${errorMessages.join('\n')}`);
                 } else {
                     alert(`✅ 影像提供成功！已成功上傳 ${uploadCount} 個影像檔案至指定資料夾。`);
                     filesToUpload = [];
-                    filePreviewList.innerHTML = '';
-                    btnDriveUpload.style.display = 'none';
+                    renderFileList(); // 📝 上傳成功後清空並刷新介面
                 }
 
                 btnDriveUpload.innerText = "☁️ 開始上傳至雲端資料夾";
