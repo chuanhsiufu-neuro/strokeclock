@@ -1626,39 +1626,72 @@ ${tpaBlock}`;
         // 觸發初始計算
         checkTimeAndUpdateUI();
 
-// ================= 🔔 多裝置即時新個案偵測與警示系統 =================
+// ================= 🔔 多裝置即時新個案偵測與警示系統 (5秒輪詢+音效強效解鎖版) =================
 let lastKnownMaxId = 0; // 紀錄本地已知的最大編號
+let globalAudioCtx = null; // 全域音效上下文
 
-// 1. 瀏覽器內建音效合成器 (免加載外部MP3，防止醫院網路阻擋)
-function playAlertSound() {
-    try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        // 播放兩聲高頻嗶嗶聲
-        [0, 0.2].forEach(delay => {
-            const oscillator = audioCtx.createOscillator();
-            const gainNode = audioCtx.createGain();
-            oscillator.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            oscillator.type = 'sine';
-            oscillator.frequency.value = 880; // 高音 A5 頻率
-            gainNode.gain.setValueAtTime(0.5, audioCtx.currentTime + delay);
-            gainNode.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + delay + 0.15);
-            
-            oscillator.start(audioCtx.currentTime + delay);
-            oscillator.stop(audioCtx.currentTime + delay + 0.15);
+// 📝 建立並解鎖音效上下文
+function initAudioContext() {
+    if (!globalAudioCtx) {
+        globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        console.log("🎵 音效系統初始化完成，目前狀態:", globalAudioCtx.state);
+    }
+    if (globalAudioCtx && globalAudioCtx.state === 'suspended') {
+        globalAudioCtx.resume().then(() => {
+            console.log("🔓 瀏覽器音效限制已成功解鎖！");
         });
-    } catch (e) {
-        console.error("音效播放失敗，可能需要使用者先與網頁互動點選過畫面: ", e);
     }
 }
 
-// 2. 背景輪詢主邏輯
+// 📝 監聽全網頁的點擊與觸控動作，只要使用者觸碰過畫面，立刻解鎖音效
+['click', 'touchstart', 'keydown'].forEach(eventType => {
+    document.addEventListener(eventType, initAudioContext, { once: true });
+});
+
+// 1. 產生高頻機警鈴聲
+function playAlertSound() {
+    try {
+        // 防呆：如果尚未初始化則嘗試建立
+        if (!globalAudioCtx) {
+            globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+        
+        // 強制確認狀態
+        if (globalAudioCtx.state === 'suspended') {
+            globalAudioCtx.resume();
+        }
+
+        // 播放連續三聲高頻短音 (嗶！嗶！嗶！) 提高急診環境識別度
+        [0, 0.15, 0.3].forEach(delay => {
+            const oscillator = globalAudioCtx.createOscillator();
+            const gainNode = globalAudioCtx.createGain();
+            
+            oscillator.connect(gainNode);
+            gainNode.connect(globalAudioCtx.destination);
+            
+            oscillator.type = 'sine';
+            oscillator.frequency.value = 988; // 高音 B5 頻率，穿透力更強
+            
+            gainNode.gain.setValueAtTime(0.6, globalAudioCtx.currentTime + delay);
+            gainNode.gain.exponentialRampToValueAtTime(0.01, globalAudioCtx.currentTime + delay + 0.12);
+            
+            oscillator.start(globalAudioCtx.currentTime + delay);
+            oscillator.stop(globalAudioCtx.currentTime + delay + 0.12);
+        });
+        console.log("🔊 警示音效已成功發送至擴音器");
+    } catch (e) {
+        console.error("❌ 音效發送失敗，原因: ", e);
+    }
+}
+
+// 2. 背景輪詢主邏輯 (已修正為 5 秒)
 function startBackgroundPolling() {
+    console.log("🚀 背景即時新個案偵測系統已啟動 (每 5 秒檢查一次)...");
+    
     setInterval(() => {
-        // 安全防呆：只有當「沒有啟動時鐘（currentRecordId為空）」且「不是本機模式」時，才在首頁自動偵測跳轉
+        // 安全防呆：如果使用者已經在處理個案或非首頁狀態，則不打擾
         if (currentRecordId !== null && currentRecordId !== "本機模式") {
-            return; // 使用者已經在處理某個案，不進行打擾與自動跳轉
+            return; 
         }
 
         if (!GAS_URL || GAS_URL.includes("請在此貼上")) return;
@@ -1672,44 +1705,44 @@ function startBackgroundPolling() {
         .then(data => {
             if (data.status === "success") {
                 const serverLatestId = data.latestId;
-                
-                // 🌟 修正：改用自訂的安全解析函數
                 const serverTime = parseExcelDateTime(data.timestamp);
                 const nowTime = new Date();
                 
-                // 輸出偵測日誌
-                console.log(`[背景輪詢檢查] 雲端最新ID: ${serverLatestId} | 本地最大ID: ${lastKnownMaxId} | 個案時間: ${data.timestamp}`);
-
-                if (isNaN(serverTime.getTime())) {
-                    console.error("❌ 時間解析失敗，請檢查格式:", data.timestamp);
+                // 首次執行：對齊雲端現有最大 ID，避免開啟網頁時誤觸歷史資料
+                if (lastKnownMaxId === 0) {
+                    lastKnownMaxId = serverLatestId;
+                    console.log(`[輪詢初始化] 目前基準 ID 為: ${lastKnownMaxId}`);
                     return;
                 }
 
                 // 條件一：發現雲端有更大（新）的編號
                 if (serverLatestId > lastKnownMaxId) {
                     
-                    // 條件二：計算時間差，確認是否在一小時之內 (3600000 毫秒)
+                    // 條件二：計算時間差，確認是否在 1 小時（3600000 毫秒）之內
                     const timeDiff = Math.abs(nowTime.getTime() - serverTime.getTime());
                     
                     if (timeDiff <= 3600000) {
-                        lastKnownMaxId = serverLatestId; // 更新本地最大編號
+                        lastKnownMaxId = serverLatestId; // 更新本地紀錄
                         
-                        // 執行警報與自動載入
-                        playAlertSound();
-                        alert(`🔔 偵測到跨裝置新增急性中風個案！自動導入編號: ${serverLatestId}`);
+                        // 先播放音效再彈出視窗（防止 alert 阻斷 JavaScript 執行緒導致聲音延遲）
+                        playAlertSound(); 
                         
-                        // 自動將編號填入輸入框並模擬點擊下載導入資料
-                        document.getElementById('sync-id').value = serverLatestId;
-                        document.getElementById('btn-download').click();
+                        setTimeout(() => {
+                            alert(`🔔 偵測到跨裝置新增急性中風個案！\n系統將自動導入編號: ${serverLatestId}`);
+                            
+                            // 自動填入編號並下載資料
+                            document.getElementById('sync-id').value = serverLatestId;
+                            document.getElementById('btn-download').click();
+                        }, 50);
                     } else {
-                        // 雖然是新 ID 但已經超過一小時（可能是補登舊資料），則只更新編號不強制跳轉
+                        // 超過一小時的舊案件只更新基準，不跳轉打擾
                         lastKnownMaxId = serverLatestId;
                     }
                 }
             }
         })
-        .catch(err => console.error("背景輪詢異常: ", err));
-    }, 12000); // 每 12 秒輪詢一次，既能兼顧即時性，又不會讓試算表超出每日流量限制
+        .catch(err => console.error("[背景輪詢] 連線異常: ", err));
+    }, 5000); // ⏱️ 已成功修改為 5000 毫秒 (5 秒)
 }
 
 // 啟動輪詢
