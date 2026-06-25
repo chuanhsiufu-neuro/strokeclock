@@ -780,7 +780,7 @@
 
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyDk0v_lMoJr1TTKJHZb_XNJsluyVLc-R0yeTB391tdFTpMDE8QP-6eqF6p4oRf2lMA/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbxrLb2C2oxFoDLjxEKvsGV43uhoC-uepEmRvhMr0F__hLMue7OxRy7pooVRyZsp6Yd5/exec"; 
         
         let currentRecordId = null; 
         
@@ -1499,6 +1499,7 @@ ${tpaBlock}`;
                             const base64Data = e.target.result.split(',')[1];
                             const payload = {
                                 action: "uploadImage",
+                                caseId: caseId, // 🌟 務必加上這行，把目前個案 ID 傳給後端
                                 fileName: file.name,
                                 mimeType: file.type,
                                 base64: base64Data
