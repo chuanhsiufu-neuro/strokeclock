@@ -798,7 +798,7 @@
 
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
-        const GAS_URL = "https://script.google.com/macros/s/AKfycbyCck1cfHmV_rwjcFXNN-LomQ92FG9G1A-RKnrUJvQ6q5rDeNlbXyZIZtaFSQd7wr6K/exec"; 
+        const GAS_URL = "https://script.google.com/macros/s/AKfycbzyDYbc8t7KWiZGpYOWvdpBm7ExoQlu9dCJI6MDptmQTVFSirxAW3e3tUeF94SPqHZx/exec"; 
 
         // 🌟 新增：專門解析 Excel/Google 試算表中文「上下午」時間格式的函數
 function parseExcelDateTime(str) {
@@ -1675,12 +1675,25 @@ ${tpaBlock}`;
         // 觸發初始計算
         checkTimeAndUpdateUI();
 
-// ================= 🔔 多裝置即時新個案偵測與警示系統 (含動態幾分鐘前呈現) =================
+// ================= 🔔 多裝置即時新個案偵測與警示系統 (電腦右下角彈窗 + 手機系統橫幅通知版) =================
 let lastKnownMaxId = 0;    // 紀錄本地已知的最大編號
 let globalAudioCtx = null; // 全域音效上下文
 let rejectedCaseIds = [];  // 紀錄使用者按過「否」不願跳轉的個案 ID 陣列
 
-// 建立並解鎖瀏覽器音效限制
+// 1. 頁面啟動時，主動向作業系統索取「通知推播權限」
+function requestNotificationPermission() {
+    if ("Notification" in window) {
+        // 如果尚未決定權限，主動跳出瀏覽器提示要求允許
+        if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+            Notification.requestPermission().then(permission => {
+                console.log("🖥️ 作業系統推播權限狀態變更為:", permission);
+            });
+        }
+    }
+}
+requestNotificationPermission(); // 立即執行
+
+// 2. 建立並解鎖瀏覽器音效限制
 function initAudioContext() {
     if (!globalAudioCtx) {
         globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1690,12 +1703,12 @@ function initAudioContext() {
     }
 }
 
-// 監聽觸控與點擊動作以解鎖音效
+// 監聽第一次點擊以解除靜音鎖定
 ['click', 'touchstart', 'keydown'].forEach(eventType => {
     document.addEventListener(eventType, initAudioContext, { once: true });
 });
 
-// 產生高頻穿透鈴聲
+// 產生高頻穿透鈴聲 (嗶！嗶！嗶！)
 function playAlertSound() {
     try {
         if (!globalAudioCtx) globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1722,7 +1735,31 @@ function playAlertSound() {
     }
 }
 
-// 背景輪詢主邏輯 (5秒)
+// 3. 核心推播控制：觸發電腦右下角或手機頂端橫幅
+function triggerSystemNotification(caseId, minutesAgoStr) {
+    if ("Notification" in window && Notification.permission === "granted") {
+        
+        // 建立系統通知物件 (電腦會跳在右下角，手機會顯示在頂端通知橫幅)
+        const notification = new Notification("🚨 院內新增急性中風個案！", {
+            body: `個案編號: ${caseId} (${minutesAgoStr})\n請點選此處立即導入時間軸。`,
+            icon: "https://cdn-icons-png.flaticon.com/512/179/179313.png", // 可自行替換為時鐘或警示圖示
+            requireInteraction: true // 🌟 強迫通知保持停留在螢幕上，直到醫護同仁點選為止
+        });
+
+        // 當醫護人員「點選」手機橫幅或電腦右下角通知時的行為
+        notification.onclick = function() {
+            window.focus(); // 強制將網頁視窗拉回最前台取得焦點
+            
+            // 自動載入該個案資料
+            document.getElementById('sync-id').value = caseId;
+            document.getElementById('btn-download').click();
+            
+            this.close(); // 關閉通知
+        };
+    }
+}
+
+// 4. 背景輪詢主邏輯 (固定 5 秒)
 function startBackgroundPolling() {
     console.log("🚀 背景即時新個案偵測系統已啟動 (每 5 秒檢查一次)...");
     
@@ -1741,77 +1778,93 @@ function startBackgroundPolling() {
                 const serverTime = parseExcelDateTime(data.timestamp);
                 const nowTime = new Date();
                 
-                // 🌟 核心計算：算出檢傷時間距離現在幾分鐘前
+                // 動態計算距離檢傷時間幾分鐘前
                 let timeAgoStr = "";
+                let minutesText = "新進件";
                 if (!isNaN(serverTime.getTime())) {
                     const diffMs = nowTime.getTime() - serverTime.getTime();
                     const diffMins = Math.floor(diffMs / 60000);
-                    
                     if (diffMins < 0) {
                         timeAgoStr = " (系統時間微差)";
                     } else if (diffMins === 0) {
                         timeAgoStr = " (剛剛)";
+                        minutesText = "剛剛檢傷";
                     } else if (diffMins < 60) {
                         timeAgoStr = ` (<span style="color: #e74c3c; font-weight: bold;">${diffMins} 分鐘前</span>)`;
+                        minutesText = `${diffMins}分鐘前檢傷`;
                     } else {
-                        const diffHrs = Math.floor(diffMins / 60);
-                        const remainingMins = diffMins % 60;
-                        timeAgoStr = ` (${diffHrs} 小時 ${remainingMins} 分鐘前)`;
+                        const h = Math.floor(diffMins / 60);
+                        const m = diffMins % 60;
+                        timeAgoStr = ` (${h} 小時 ${m} 分鐘前)`;
+                        minutesText = `${h}小時${m}分鐘前檢傷`;
                     }
                 }
                 
-                // 🌟 更新 UI 狀態板（帶入動態計算的幾分鐘前，並將分鐘數以紅色加粗醒目呈現）
+                // 無條件靜默更新 DIDO 下方的雲端個案狀態板
                 document.getElementById('lbl-latest-id').textContent = serverLatestId;
                 document.getElementById('lbl-latest-door').innerHTML = (data.timestamp || "-") + timeAgoStr;
 
                 if (isNaN(serverTime.getTime())) return;
 
-                // 計算該案與目前時間差是否在 1 小時之內
+                // 檢查是否在一小時之內
                 const timeDiff = Math.abs(nowTime.getTime() - serverTime.getTime());
                 const isWithinOneHour = (timeDiff <= 3600000);
 
+                // 🌟 檢查網頁當前是否被縮小、切換到背景，或者滑鼠不在該視窗
+                const isPageBackground = document.hidden || !document.hasFocus();
+
                 // 1. 【第一次打開網頁/重新整理】的初始檢查
                 if (lastKnownMaxId === 0) {
-                    lastKnownMaxId = serverLatestId; // 先對齊最新的雲端編號基準線
+                    lastKnownMaxId = serverLatestId; // 對齊基準線
                     
-                    // 如果符合一小時內、目前網頁處於閒置首頁、且此 ID 沒被拒絕過
                     if (isWithinOneHour && !rejectedCaseIds.includes(serverLatestId) && currentRecordId === null) {
                         playAlertSound();
-                        setTimeout(() => {
-                            let choice = confirm(`🔔 偵測到 1 小時內有雲端個案 (編號: ${serverLatestId})！\n是否要立即載入此案件並開啟時鐘？`);
-                            if (choice) {
-                                document.getElementById('sync-id').value = serverLatestId;
-                                document.getElementById('btn-download').click();
-                            } else {
-                                rejectedCaseIds.push(serverLatestId); // 記憶此 ID 拒絕狀態，本次不再打擾
-                            }
-                        }, 50);
+                        
+                        // 網頁在背景/滑鼠移開時，直接發射系統推播通知
+                        if (isPageBackground) {
+                            triggerSystemNotification(serverLatestId, minutesText);
+                        } else {
+                            setTimeout(() => {
+                                let choice = confirm(`🔔 偵測到 1 小時內有雲端個案 (編號: ${serverLatestId})！\n是否要立即載入此案件並開啟時鐘？`);
+                                if (choice) {
+                                    document.getElementById('sync-id').value = serverLatestId;
+                                    document.getElementById('btn-download').click();
+                                } else {
+                                    rejectedCaseIds.push(serverLatestId);
+                                }
+                            }, 50);
+                        }
                     }
                     return;
                 }
 
-                // 2. 【網頁開著待命時】後續有全新的個案進件 (serverLatestId 大於已知最大 ID)
+                // 2. 【網頁開著待命時】後續有全新的個案進件
                 if (serverLatestId > lastKnownMaxId) {
-                    lastKnownMaxId = serverLatestId; // 更新本地最新編號紀錄
+                    lastKnownMaxId = serverLatestId; // 更新最大 ID 紀錄
                     
-                    // 只有當網頁處於「閒置首頁狀態」且該全新 ID 未被拒絕過、且在一小時內才彈窗跳轉
                     if (isWithinOneHour && !rejectedCaseIds.includes(serverLatestId) && currentRecordId === null) {
                         playAlertSound();
-                        setTimeout(() => {
-                            let choice = confirm(`🔔 雲端新增急性中風個案 (編號: ${serverLatestId})！\n是否要立即導入此新案件？`);
-                            if (choice) {
-                                document.getElementById('sync-id').value = serverLatestId;
-                                document.getElementById('btn-download').click();
-                            } else {
-                                rejectedCaseIds.push(serverLatestId); // 記憶此全新 ID 的拒絕狀態
-                            }
-                        }, 50);
+                        
+                        // 如果網頁在背景/使用者在看其他視窗，強行發射橫幅/彈窗通知
+                        if (isPageBackground) {
+                            triggerSystemNotification(serverLatestId, minutesText);
+                        } else {
+                            setTimeout(() => {
+                                let choice = confirm(`🔔 雲端新增急性中風個案 (編號: ${serverLatestId})！\n是否要立即導入此新案件？`);
+                                if (choice) {
+                                    document.getElementById('sync-id').value = serverLatestId;
+                                    document.getElementById('btn-download').click();
+                                } else {
+                                    rejectedCaseIds.push(serverLatestId);
+                                }
+                            }, 50);
+                        }
                     }
                 }
             }
         })
         .catch(err => console.error("[背景輪詢] 連線異常: ", err));
-    }, 5000); // ⏱️ 固定 5 秒輪詢一次
+    }, 5000); // ⏱️ 固定 5 秒輪詢檢查一次
 }
 
 // 啟動輪詢
