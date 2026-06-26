@@ -1675,10 +1675,10 @@ ${tpaBlock}`;
         // 觸發初始計算
         checkTimeAndUpdateUI();
 
-// ================= 🔔 多裝置即時新個案偵測與警示系統 (5秒輪詢+精準詢問防打擾版) =================
+// ================= 🔔 多裝置即時新個案偵測與警示系統 (含動態幾分鐘前呈現) =================
 let lastKnownMaxId = 0;    // 紀錄本地已知的最大編號
 let globalAudioCtx = null; // 全域音效上下文
-let rejectedCaseIds = [];  // 🌟 紀錄使用者按過「否」不願跳轉的個案 ID 陣列
+let rejectedCaseIds = [];  // 紀錄使用者按過「否」不願跳轉的個案 ID 陣列
 
 // 建立並解鎖瀏覽器音效限制
 function initAudioContext() {
@@ -1741,9 +1741,28 @@ function startBackgroundPolling() {
                 const serverTime = parseExcelDateTime(data.timestamp);
                 const nowTime = new Date();
                 
-                // 🌟 無條件更新 UI 狀態板（無論是在首頁還是計時頁面，眼角餘光皆可看見）
+                // 🌟 核心計算：算出檢傷時間距離現在幾分鐘前
+                let timeAgoStr = "";
+                if (!isNaN(serverTime.getTime())) {
+                    const diffMs = nowTime.getTime() - serverTime.getTime();
+                    const diffMins = Math.floor(diffMs / 60000);
+                    
+                    if (diffMins < 0) {
+                        timeAgoStr = " (系統時間微差)";
+                    } else if (diffMins === 0) {
+                        timeAgoStr = " (剛剛)";
+                    } else if (diffMins < 60) {
+                        timeAgoStr = ` (<span style="color: #e74c3c; font-weight: bold;">${diffMins} 分鐘前</span>)`;
+                    } else {
+                        const diffHrs = Math.floor(diffMins / 60);
+                        const remainingMins = diffMins % 60;
+                        timeAgoStr = ` (${diffHrs} 小時 ${remainingMins} 分鐘前)`;
+                    }
+                }
+                
+                // 🌟 更新 UI 狀態板（帶入動態計算的幾分鐘前，並將分鐘數以紅色加粗醒目呈現）
                 document.getElementById('lbl-latest-id').textContent = serverLatestId;
-                document.getElementById('lbl-latest-door').textContent = data.timestamp || "-";
+                document.getElementById('lbl-latest-door').innerHTML = (data.timestamp || "-") + timeAgoStr;
 
                 if (isNaN(serverTime.getTime())) return;
 
