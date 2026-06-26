@@ -735,9 +735,17 @@
             </div>
         </div>
 
-        <div id="active-group" style="width: 90%; max-width: 500px; display: none; gap: 8px; margin-bottom: 10px;">
-            <button id="btn-active-clock" class="btn-active-clock">時鐘已啟用</button>
-            <button id="btn-upload" class="btn-upload-icon" title="上傳更新至目前編號">⬆️</button>
+        <div id="active-group" style="width: 90%; max-width: 500px; display: none; flex-direction: column; gap: 8px; margin-bottom: 10px;">
+            <div style="display: flex; gap: 8px; width: 100%;">
+                <button id="btn-active-clock" class="btn-active-clock" style="flex: 1;">時鐘已啟用</button>
+                <button id="btn-upload" class="btn-upload-icon" title="上傳更新至目前編號">⬆️</button>
+            </div>
+            
+            <div style="display: flex; gap: 8px; width: 100%; align-items: center; background: #1a252f; border: 1px solid #34495e; padding: 6px 10px; border-radius: 8px; box-sizing: border-box;">
+                <span style="color: #f1c40f; font-size: 13px; font-weight: bold; white-space: nowrap;">切換雲端 ID:</span>
+                <input type="number" id="active-sync-id" class="front-input" style="flex: 1; text-align: center; padding: 6px 2px; background-color: #fff; color: #333;" placeholder="輸入ID">
+                <button id="btn-active-download" class="btn-download" style="flex: 0 0 40px; height: 32px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; background-color: #3498db; border-radius: 4px;" title="下載並切換個案">🔄</button>
+            </div>
         </div>
 
         <span id="sync-status">歡迎使用雲端系統</span>
@@ -1407,6 +1415,12 @@ ${tpaBlock}`;
 
             document.getElementById('btn-active-clock').textContent = `時鐘已啟用 (${id})`;
             
+            // 🌟 新增：同步將目前編號填入 Clock 頁面的新輸入框與首頁輸入框中
+            if (id && id !== "本機模式") {
+                document.getElementById('active-sync-id').value = id;
+                document.getElementById('sync-id').value = id;
+            }
+
             // --- 新增這行：顯示 Time from Door 標題 ---
             document.getElementById('door-clock-title').style.display = 'block'; 
             
@@ -1457,20 +1471,45 @@ ${tpaBlock}`;
             }).catch(err => { syncStatus.textContent = "❌ 雲端連線失敗 (可繼續離線使用)"; syncStatus.style.color = "#e74c3c"; document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (離線)"; });
         });
 
-        downloadBtn.addEventListener('click', function() {
+        // 🌟 修正：精簡化並共用的下載與切換個案核心邏輯
+        function executeDownloadByID(idVal, triggeringBtn) {
             if(!GAS_URL || GAS_URL.includes("請在此貼上")) { alert("尚未設定 Web App URL"); return; }
-            const idVal = document.getElementById('sync-id').value; if (!idVal) { alert("請先輸入編號！"); return; }
-            syncStatus.textContent = "⏳ 下載中..."; downloadBtn.disabled = true;
+            if (!idVal) { alert("請先輸入編號！"); return; }
+            
+            syncStatus.textContent = "⏳ 下載中...";
+            if (triggeringBtn) triggeringBtn.disabled = true;
+
             fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "download", id: idVal }) })
             .then(res => res.json()).then(data => {
+                if (triggeringBtn) triggeringBtn.disabled = false;
                 if(data.status === "found") { 
                     populateDataArray(data.data); 
                     let lastEdit = data.data[43] ? ` (最近編輯：${data.data[43]})` : "";
                     syncStatus.textContent = `✅ 已下載編號 ${idVal}${lastEdit}`; 
-                    syncStatus.style.color = "#2ecc71"; activateClockUI(idVal); 
+                    syncStatus.style.color = "#2ecc71"; 
+                    activateClockUI(idVal); 
                 } 
-                else { syncStatus.textContent = "❌ " + (data.error || "找不到此編號"); syncStatus.style.color = "#e74c3c"; downloadBtn.disabled = false; }
-            }).catch(err => { syncStatus.textContent = "❌ 下載失敗"; syncStatus.style.color = "#e74c3c"; downloadBtn.disabled = false; });
+                else { 
+                    syncStatus.textContent = "❌ " + (data.error || "找不到此編號"); 
+                    syncStatus.style.color = "#e74c3c"; 
+                }
+            }).catch(err => { 
+                if (triggeringBtn) triggeringBtn.disabled = false;
+                syncStatus.textContent = "❌ 下載失敗"; 
+                syncStatus.style.color = "#e74c3c"; 
+            });
+        }
+
+        // 【首頁】下載按鈕監聽
+        downloadBtn.addEventListener('click', function() {
+            const idVal = document.getElementById('sync-id').value;
+            executeDownloadByID(idVal, downloadBtn);
+        });
+
+        // 🌟 新增：【計時頁面】快速切換 ID 按鈕監聽
+        document.getElementById('btn-active-download').addEventListener('click', function() {
+            const idVal = document.getElementById('active-sync-id').value;
+            executeDownloadByID(idVal, this);
         });
 
         uploadBtn.addEventListener('click', function() {
