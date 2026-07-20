@@ -558,7 +558,7 @@
                 <h4>📁 臨床影像提供 (支援檔案/照相/錄影)</h4>
                 
                 <div class="upload-method">
-                    <p class="method-title">【方式一】開啟相機/檔案上傳</p>
+                    <p class="method-title"> 開啟相機/檔案上傳</p>
                     <div class="dropzone" id="uploadDropzone">
                         <input type="file" id="fileInput" accept="image/*,video/*" multiple style="display: none;">
                         <div class="dropzone-content">
@@ -1215,35 +1215,34 @@ ${tpaBlock}`;
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
 
-        function genTransferText() {
+       function genTransferText() {
             const d = getGenData(); 
-            let pmhStr = d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
-            let rtpa_final = d.rtpaSel;
+            let pmhStr = d.pmhList && d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
+            
+            let rtpa_final = d.rtpaSel || "未評估";
             if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') {
                 if (d.tpaBolusTime) rtpa_final += ` (${d.tpaBolusTime})`; 
-                rtpa_final += ` Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
+                rtpa_final += ` Bolus: ${d.tpaBolusDose || "--"}, cIF: ${d.tpaCifDose || "--"}`;
             } else if (d.rtpaSel === '未施打') { 
-                rtpa_final += ` (${d.rtpaText})`; 
+                rtpa_final += ` (${d.rtpaText || "未填原因"})`; 
             }
 
             let imageLine = '';
-            // 📝 修復點 2：確保留有時間紀錄或有手動勾選時，會把神內資訊帶過來
+            // 檢查 NCCT 是否有勾選或有時間紀錄
             if (d.ncctChecked || document.getElementById('time-ncct').value) {
-                imageLine += `\n   - brain NCCT: ${d.ncctDesc || "未輸入描述"}`;
+                imageLine += `\n   - brain NCCT: ${d.ncctDesc || "no ICH"}`;
             }
+            // 檢查 CTA 是否有勾選或有時間紀錄
             if (d.ctaChecked || document.getElementById('time-cta').value) {
                 imageLine += `\n   - brain CTA: ${d.ctaDesc || "未輸入描述"}`;
             }
             
             // --- 雲端影像連結抓取 ---
-            // 優先抓取手動貼上的雲端連結
-            let cloudLink = document.getElementById('cloudLinkInput').value;
+            let cloudLink = document.getElementById('cloudLinkInput') ? document.getElementById('cloudLinkInput').value : '';
             if (cloudLink) {
                 imageLine += `\n   - 雲端影像預覽: ${cloudLink}`;
             } 
-            // 📝 修復點 3：若沒有手動貼連結，但我們剛才有用系統上傳成功(存在 currentCaseImages 中)
-            // 就自動把它串進去轉診單中，讓外院醫師可以直接點！
-            else if (currentCaseImages && currentCaseImages.length > 0) {
+            else if (typeof currentCaseImages !== 'undefined' && currentCaseImages && currentCaseImages.length > 0) {
                 imageLine += `\n   - 雲端影像預覽:`;
                 currentCaseImages.forEach(img => {
                     if(img.url) imageLine += `\n     🔗 ${img.name}: ${img.url}`;
@@ -1252,16 +1251,40 @@ ${tpaBlock}`;
             // -----------------------------
 
             let neuroEvalParts = [];
-            if (d.nihssRaw) neuroEvalParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore}`);
-            if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast}`);
+            if (d.nihssRaw) neuroEvalParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore || ""}`);
+            if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast || 0}`);
             let neuroEvalLine = neuroEvalParts.length > 0 ? `\n   - 神經學評估：${neuroEvalParts.join(' / ')}` : '';
 
-            const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
+            // 安全防護：確保症狀有值時才進行 replace，避免 undefined 報錯
+            let cleanSymptoms = d.symptoms ? d.symptoms.replace(/\n/g, '\n     ') : "未填寫臨床病程";
+
+            const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}
+預轉入醫院: ${d.hospIn || "皆可"}
+0. 基本資料：年齡：${d.age || "--"}，性別：${d.gender || "--"}
+1. 時間資訊：
+   - 症狀發生/發現異常：${d.onset || "--"}
+   - 急診檢傷(Door)：${d.door || "--"}
+2. 臨床資訊：
+   - Pre-mRS(0~5)：${d.mrs || "0"}
+   - 簡述症狀與肌力：
+     ${cleanSymptoms}${neuroEvalLine}
+   - 過去病史：${pmhStr}${imageLine}
+3. 檢驗與處置：
+   - Cre: ${d.cre || "--"}，其他: ${d.labOther || "--"}
+   - 是否施打 tPA：${rtpa_final.trim()}
+4. 家屬同意取栓風險及轉院：
+   - 決策家屬：${((d.famSel || "") + " " + (d.famText || "")).trim() || "--"}
+   - 是否同意轉院取栓：${d.consent || "--"}`;
             
             const outBox = document.getElementById('t-output'); 
-            outBox.innerText = result; 
-            outBox.style.display = 'block';
-            document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
+            if (outBox) {
+                outBox.innerText = result; 
+                outBox.style.display = 'block';
+            }
+            
+            if (document.getElementById('sidebar')) {
+                document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
+            }
         }
 
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
