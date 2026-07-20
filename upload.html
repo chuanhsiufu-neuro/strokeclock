@@ -857,6 +857,28 @@ function parseExcelDateTime(str) {
 }
         
         let currentRecordId = null; 
+
+        // 【新增 1】儲存當前個案的所有影像連結資料
+        let currentCaseImages = []; 
+
+        // 【新增 2】專門用來把 currentCaseImages 畫到畫面上的函數
+        function renderUploadedLinks() {
+            const linksContainer = document.getElementById('uploaded-links-container');
+            const linksList = document.getElementById('uploaded-links-list');
+            linksList.innerHTML = ''; // 清空畫面重畫
+            
+            if (currentCaseImages && currentCaseImages.length > 0) {
+                linksContainer.style.display = 'block';
+                currentCaseImages.forEach((item, index) => {
+                    const href = item.url ? item.url : "#";
+                    const target = item.url ? 'target="_blank"' : '';
+                    const hint = item.url ? '' : ' (⚠️ 未回傳網址)';
+                    linksList.innerHTML += `<a href="${href}" ${target} class="uploaded-link-item">🔗 ${item.name} ${hint}</a>`;
+                });
+            } else {
+                linksContainer.style.display = 'none';
+            }
+        }
         
         // 保存抓取到的排班資訊供警示邏輯使用
         let currentInHouseDrAvailable = false; 
@@ -1028,7 +1050,8 @@ function parseExcelDateTime(str) {
                 document.getElementById('t_fam_sel').value,                // [30] AF
                 document.getElementById('t_fam_text').value,               // [31] AG
                 document.getElementById('t_consent').value,                // [32] AH
-                "",                  // [33] AI (急診紀錄已刪除，保留空位維持Sheet對齊)
+                // 【修改 4】將當前個案的影像陣列轉成文字存入資料庫
+                JSON.stringify(currentCaseImages),                         // [33] AI (原本的空位，現在用來存影像連結)
                 "",                  // [34] AJ (NP紀錄已刪除，保留空位維持Sheet對齊)
                 "",                  // [35] AK (護理紀錄已刪除，保留空位維持Sheet對齊)
                 "",                  // [36] AL (取栓紀錄已刪除，保留空位維持Sheet對齊)
@@ -1091,6 +1114,19 @@ function parseExcelDateTime(str) {
             document.getElementById('t_fam_sel').value = row[31] || ""; document.getElementById('t_fam_text').value = row[32] || "";
             document.getElementById('t_consent').value = row[33] || ""; 
 
+            // 【新增 3】下載時，讀取並解析欄位 [33] 裡面的影像連結資料
+            let imgDataStr = row[34] || ""; // 注意：因為 row 的 index 從 0 開始，您的表單 [33] AI 實際上對應到 Google sheet 的 row[34] 或程式碼裡的某個空位，我們依照您的 collectDataArray，它原本放在註解的 [33]
+            // 更正：我們統一抓 row[34] (對應原 array 的 index 33)
+            currentCaseImages = [];
+            try {
+                if (row[34]) {
+                    currentCaseImages = JSON.parse(row[34]);
+                }
+            } catch (e) {
+                console.log("解析雲端影像資料失敗或無資料");
+            }
+            renderUploadedLinks(); // 把讀到的連結畫到畫面上
+          
             toggleNeuroRtpa();
             document.getElementById('cb-ncct').checked = !!row[7]; document.getElementById('cb-tpa').checked = !!row[8];
             document.getElementById('cb-cta').checked = !!row[9]; document.getElementById('cb-puncture').checked = !!row[10];
@@ -1666,11 +1702,12 @@ ${tpaBlock}`;
                                     
                                     // 只要狀態是 success 就判定成功
                                     if (result.status === "success") {
-                                        uploadCount++;
-                                        // 確保能抓到網址，若無則留空字串
-                                        let fileUrl = result.fileUrl || result.url || ""; 
-                                        uploadedLinksData.push({ name: file.name, url: fileUrl });
-                                    } else {
+                                    uploadCount++;
+                                    let fileUrl = result.fileUrl || result.url || ""; 
+                                    
+                                    // 【修改 5】把成功的連結推入全域陣列中
+                                    currentCaseImages.push({ name: file.name, url: fileUrl });
+                                } else {
                                         errorMessages.push(`【後端錯誤】${file.name}: ${result.error || "未知錯誤"}`);
                                     }
                                 } catch (parseErr) {
@@ -1693,29 +1730,22 @@ ${tpaBlock}`;
                     alert(`✅ 影像提供成功！已成功上傳 ${uploadCount} 個影像檔案至指定資料夾。`);
                 }
 
-               // 成功後先清空待上傳陣列並刷新介面 (避免被後續邏輯影響)
+                // 成功後先清空待上傳陣列 (左側欄的預覽)
                 if(uploadCount === filesToUpload.length) {
                     filesToUpload = [];
                     renderFileList();
                 }
 
-                // 【新增】無論是否全部成功，只要有成功的檔案就把它們顯示成連結
-                if (uploadedLinksData.length > 0) {
-                    const linksContainer = document.getElementById('uploaded-links-container');
-                    const linksList = document.getElementById('uploaded-links-list');
+                // 【修改 6】畫出所有的連結，並「自動觸發」主畫面的上傳更新，確保存進 Google Sheet
+                if (currentCaseImages.length > 0) {
+                    renderUploadedLinks();
                     
-                    linksContainer.style.display = 'block';
-                    // 每次上傳都清空之前的連結，只顯示最新上傳的 (若想保留所有歷史紀錄，請刪除這行)
-                    // linksList.innerHTML = ''; 
-                    
-                    uploadedLinksData.forEach(item => {
-                        const href = item.url ? item.url : "#";
-                        const target = item.url ? 'target="_blank"' : '';
-                        const hint = item.url ? '' : ' (⚠️ 後端未回傳網址)';
-                        
-                        // 動態將新上傳的連結加到列表中
-                        linksList.innerHTML += `<a href="${href}" ${target} class="uploaded-link-item">🔗 ${item.name} ${hint}</a>`;
-                    });
+                    // 神奇的魔法：程式自動幫使用者按右上角的「上傳更新」按鈕
+                    // 這樣剛剛放入 array [33] 的網址就會瞬間寫進 Google Sheet 裡
+                    const mainUploadBtn = document.getElementById('btn-upload');
+                    if (mainUploadBtn && !mainUploadBtn.disabled) {
+                        mainUploadBtn.click();
+                    }
                 }
 
                 btnDriveUpload.innerText = "☁️ 開始上傳至雲端資料夾";
