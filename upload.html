@@ -213,6 +213,29 @@
             background-color: #1a252f; padding: 0 10px; color: #7f8c8d; position: relative; z-index: 2; font-size: 12px; font-weight: bold;
         }
 
+        /* --- 新增：已上傳成功檔案的連結樣式 --- */
+        .uploaded-link-item {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #2c3e50;
+            color: #3498db;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 13px;
+            margin-bottom: 8px;
+            border: 1px solid #34495e;
+            transition: 0.2s;
+            word-break: break-all;
+        }
+        .uploaded-link-item:hover {
+            background-color: #34495e;
+            border-color: #3498db;
+            color: #2ecc71;
+        }
+
+        
     </style>
 </head>
 <body>
@@ -546,6 +569,11 @@
                     </div>
                     <ul id="filePreviewList" class="file-list"></ul>
                     <button id="btn-drive-upload" class="sb-btn sb-btn-gen" style="width: 100%; margin-top: 10px; background-color: #27ae60; display: none;">☁️ 開始上傳至雲端資料夾</button>
+                    <!-- 【新增】上傳成功後顯示連結的區塊 -->
+                    <div id="uploaded-links-container" style="display: none; margin-top: 15px; padding-top: 12px; border-top: 1px dashed #7f8c8d; text-align: left;">
+                        <div style="font-size: 13px; color: #2ecc71; margin-bottom: 8px; font-weight: bold;">✅ 上傳成功 (點擊可直接預覽)：</div>
+                        <div id="uploaded-links-list"></div>
+                    </div>
                 </div>
 
                 <div class="upload-divider"><span>— OR —</span></div>
@@ -1607,6 +1635,7 @@ ${tpaBlock}`;
 
                 let uploadCount = 0;
                 let errorMessages = [];
+                let uploadedLinksData = []; // 【新增】用來存放成功上傳的檔案名稱與網址
 
                 for (let i = 0; i < filesToUpload.length; i++) {
                     const file = filesToUpload[i];
@@ -1632,6 +1661,9 @@ ${tpaBlock}`;
                                 
                                 if (result.status === "success") {
                                     uploadCount++;
+                                    // 【新增】如果後端有回傳 url (Google Drive網址)，將其存起來
+                                    let fileUrl = result.url || result.fileUrl || ""; 
+                                    uploadedLinksData.push({ name: file.name, url: fileUrl });
                                 } else {
                                     errorMessages.push(`【後端錯誤】${file.name}: ${result.error || JSON.stringify(result)}`);
                                 }
@@ -1645,11 +1677,31 @@ ${tpaBlock}`;
                 }
 
                 if (errorMessages.length > 0) {
-                    alert(`⚠️ 上傳失敗！\n成功：${uploadCount} 個檔案\n\n錯誤詳情如下：\n${errorMessages.join('\n')}`);
+                    alert(`⚠️ 上傳結果\n成功：${uploadCount} 個檔案\n\n錯誤詳情如下：\n${errorMessages.join('\n')}`);
                 } else {
                     alert(`✅ 影像提供成功！已成功上傳 ${uploadCount} 個影像檔案至指定資料夾。`);
+                }
+
+                // 【新增】無論是否全部成功，只要有成功的檔案就把它們顯示成連結
+                if (uploadedLinksData.length > 0) {
+                    const linksContainer = document.getElementById('uploaded-links-container');
+                    const linksList = document.getElementById('uploaded-links-list');
+                    
+                    linksContainer.style.display = 'block';
+                    uploadedLinksData.forEach(item => {
+                        const href = item.url ? item.url : "#";
+                        const target = item.url ? 'target="_blank"' : '';
+                        const hint = item.url ? '' : ' (⚠️ 後端未回傳網址)';
+                        
+                        // 動態將新上傳的連結加到列表中
+                        linksList.innerHTML += `<a href="${href}" ${target} class="uploaded-link-item">🔗 ${item.name} ${hint}</a>`;
+                    });
+                }
+
+                // 成功後清空待上傳陣列並刷新介面
+                if(uploadCount === filesToUpload.length) {
                     filesToUpload = [];
-                    renderFileList(); // 📝 上傳成功後清空並刷新介面
+                    renderFileList();
                 }
 
                 btnDriveUpload.innerText = "☁️ 開始上傳至雲端資料夾";
