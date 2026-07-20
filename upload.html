@@ -1651,24 +1651,35 @@ ${tpaBlock}`;
                                 base64: base64Data
                             };
 
-                            try {
+                           try {
                                 const response = await fetch(GAS_URL, {
                                     method: 'POST',
                                     headers: { 'Content-Type': 'text/plain' },
                                     body: JSON.stringify(payload)
                                 });
-                                const result = await response.json();
                                 
-                                if (result.status === "success") {
-                                    uploadCount++;
-                                    // 【新增】如果後端有回傳 url (Google Drive網址)，將其存起來
-                                    let fileUrl = result.url || result.fileUrl || ""; 
-                                    uploadedLinksData.push({ name: file.name, url: fileUrl });
-                                } else {
-                                    errorMessages.push(`【後端錯誤】${file.name}: ${result.error || JSON.stringify(result)}`);
+                                // 先取得純文字，方便除錯
+                                const textResult = await response.text(); 
+                                
+                                try {
+                                    const result = JSON.parse(textResult);
+                                    
+                                    // 只要狀態是 success 就判定成功
+                                    if (result.status === "success") {
+                                        uploadCount++;
+                                        // 確保能抓到網址，若無則留空字串
+                                        let fileUrl = result.fileUrl || result.url || ""; 
+                                        uploadedLinksData.push({ name: file.name, url: fileUrl });
+                                    } else {
+                                        errorMessages.push(`【後端錯誤】${file.name}: ${result.error || "未知錯誤"}`);
+                                    }
+                                } catch (parseErr) {
+                                     // 如果回傳的不是 JSON，代表 GAS 回傳了 HTML 錯誤頁面
+                                     errorMessages.push(`【解析失敗】${file.name}: 後端回傳非預期格式。內容: ${textResult.substring(0, 50)}...`);
                                 }
+
                             } catch (error) {
-                                errorMessages.push(`【連線失敗】${file.name}: 請檢查 GAS_URL。詳情: ${error.toString()}`);
+                                errorMessages.push(`【連線失敗】${file.name}: 詳情: ${error.toString()}`);
                             }
                             resolve();
                         };
@@ -1682,12 +1693,21 @@ ${tpaBlock}`;
                     alert(`✅ 影像提供成功！已成功上傳 ${uploadCount} 個影像檔案至指定資料夾。`);
                 }
 
+               // 成功後先清空待上傳陣列並刷新介面 (避免被後續邏輯影響)
+                if(uploadCount === filesToUpload.length) {
+                    filesToUpload = [];
+                    renderFileList();
+                }
+
                 // 【新增】無論是否全部成功，只要有成功的檔案就把它們顯示成連結
                 if (uploadedLinksData.length > 0) {
                     const linksContainer = document.getElementById('uploaded-links-container');
                     const linksList = document.getElementById('uploaded-links-list');
                     
                     linksContainer.style.display = 'block';
+                    // 每次上傳都清空之前的連結，只顯示最新上傳的 (若想保留所有歷史紀錄，請刪除這行)
+                    // linksList.innerHTML = ''; 
+                    
                     uploadedLinksData.forEach(item => {
                         const href = item.url ? item.url : "#";
                         const target = item.url ? 'target="_blank"' : '';
@@ -1696,12 +1716,6 @@ ${tpaBlock}`;
                         // 動態將新上傳的連結加到列表中
                         linksList.innerHTML += `<a href="${href}" ${target} class="uploaded-link-item">🔗 ${item.name} ${hint}</a>`;
                     });
-                }
-
-                // 成功後清空待上傳陣列並刷新介面
-                if(uploadCount === filesToUpload.length) {
-                    filesToUpload = [];
-                    renderFileList();
                 }
 
                 btnDriveUpload.innerText = "☁️ 開始上傳至雲端資料夾";
