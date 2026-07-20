@@ -1130,23 +1130,49 @@ function parseExcelDateTime(str) {
         }
 
         function getGenData() {
-            let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
+            let pmhArr = []; 
+            document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
 
-            let gfastArr = []; document.querySelectorAll('.main-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
+            let gfastArr = []; 
+            document.querySelectorAll('.main-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
 
             return {
-
-                age: document.getElementById('n_age').value, gender: document.getElementById('n_gender').value,
-                onset: formatDT(document.getElementById('n_onset').value), lkw: formatDT(document.getElementById('n_lkw').value), door: formatDT(document.getElementById('door-time').value),
-                mrs: document.getElementById('n_mrs').value, symptoms: document.getElementById('n_symptoms').value, nihssRaw: document.getElementById('n_nihss').value, nihssScore: document.getElementById('n_nihss_display').innerText,
-                enableGfast: document.getElementById('main-gfast-container').style.display !== 'none', erGfast: gfastArr.length, pmhList: pmhArr,
-                cre: document.getElementById('n_cre').value, labOther: document.getElementById('n_lab_other').value,
-                rtpaSel: document.getElementById('n_rtpa_sel').value, rtpaText: document.getElementById('n_rtpa_text').value, tpaBolusDose: document.getElementById('n_tpa_bolus').value, tpaCifDose: document.getElementById('n_tpa_cif').value, tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
-                ncctChecked: document.getElementById('cb-ncct').checked, ncctDesc: document.getElementById('n_ncct_desc').value, ctaChecked: document.getElementById('cb-cta').checked, ctaDesc: document.getElementById('n_cta_desc').value,
-                famSel: document.getElementById('t_fam_sel').value, famText: document.getElementById('t_fam_text').value, consent: document.getElementById('t_consent').value, hospOut: document.getElementById('t_hosp_out').value, hospIn: document.getElementById('t_hosp_in').value,
-                codeType: document.getElementById('n_code_type').value, codeTime: formatDT(document.getElementById('n_code_time').value),
-                neuroArrival: formatDT(document.getElementById('n_neuro_arrival').value), neText: document.getElementById('n_ne_text').value
+                age: document.getElementById('n_age').value, 
+                gender: document.getElementById('n_gender').value,
+                onset: formatDT(document.getElementById('n_onset').value), 
+                lkw: formatDT(document.getElementById('n_lkw').value), 
+                door: formatDT(document.getElementById('door-time').value),
+                mrs: document.getElementById('n_mrs').value, 
+                symptoms: document.getElementById('n_symptoms').value, 
+                nihssRaw: document.getElementById('n_nihss').value, 
+                nihssScore: document.getElementById('n_nihss_display').innerText,
+                enableGfast: document.getElementById('main-gfast-container').style.display !== 'none', 
+                erGfast: gfastArr.length, 
+                pmhList: pmhArr,
+                cre: document.getElementById('n_cre').value, 
+                labOther: document.getElementById('n_lab_other').value,
+                rtpaSel: document.getElementById('n_rtpa_sel').value, 
+                rtpaText: document.getElementById('n_rtpa_text').value, 
+                tpaBolusDose: document.getElementById('n_tpa_bolus').value, 
+                tpaCifDose: document.getElementById('n_tpa_cif').value, 
+                tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
+                
+                // 📝 修復點 1：確保正確抓取神內側欄的影像 checkbox 與 finding
+                ncctChecked: document.getElementById('cb-ncct').checked, 
+                ncctDesc: document.getElementById('n_ncct_desc').value, 
+                ctaChecked: document.getElementById('cb-cta').checked, 
+                ctaDesc: document.getElementById('n_cta_desc').value,
+                
+                famSel: document.getElementById('t_fam_sel').value, 
+                famText: document.getElementById('t_fam_text').value, 
+                consent: document.getElementById('t_consent').value, 
+                hospOut: document.getElementById('t_hosp_out').value, 
+                hospIn: document.getElementById('t_hosp_in').value,
+                codeType: document.getElementById('n_code_type').value, 
+                codeTime: formatDT(document.getElementById('n_code_time').value),
+                neuroArrival: formatDT(document.getElementById('n_neuro_arrival').value), 
+                neText: document.getElementById('n_ne_text').value
             };
         }
 
@@ -1190,19 +1216,39 @@ ${tpaBlock}`;
         }
 
         function genTransferText() {
-            const d = getGenData(); let pmhStr = d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
+            const d = getGenData(); 
+            let pmhStr = d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
             let rtpa_final = d.rtpaSel;
             if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') {
-                if (d.tpaBolusTime) rtpa_final += ` (${d.tpaBolusTime})`; rtpa_final += ` Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
-            } else if (d.rtpaSel === '未施打') { rtpa_final += ` (${d.rtpaText})`; }
+                if (d.tpaBolusTime) rtpa_final += ` (${d.tpaBolusTime})`; 
+                rtpa_final += ` Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
+            } else if (d.rtpaSel === '未施打') { 
+                rtpa_final += ` (${d.rtpaText})`; 
+            }
 
             let imageLine = '';
-            if (d.ncctChecked || document.getElementById('time-ncct').value) imageLine += `\n   - brain NCCT: ${d.ncctDesc}`;
-            if (d.ctaChecked || document.getElementById('time-cta').value) imageLine += `\n   - brain CTA: ${d.ctaDesc}`;
+            // 📝 修復點 2：確保留有時間紀錄或有手動勾選時，會把神內資訊帶過來
+            if (d.ncctChecked || document.getElementById('time-ncct').value) {
+                imageLine += `\n   - brain NCCT: ${d.ncctDesc || "未輸入描述"}`;
+            }
+            if (d.ctaChecked || document.getElementById('time-cta').value) {
+                imageLine += `\n   - brain CTA: ${d.ctaDesc || "未輸入描述"}`;
+            }
             
-            // --- 新增：抓取雲端影像連結 ---
+            // --- 雲端影像連結抓取 ---
+            // 優先抓取手動貼上的雲端連結
             let cloudLink = document.getElementById('cloudLinkInput').value;
-            if (cloudLink) imageLine += `\n   - 雲端影像連結: ${cloudLink}`;
+            if (cloudLink) {
+                imageLine += `\n   - 雲端影像預覽: ${cloudLink}`;
+            } 
+            // 📝 修復點 3：若沒有手動貼連結，但我們剛才有用系統上傳成功(存在 currentCaseImages 中)
+            // 就自動把它串進去轉診單中，讓外院醫師可以直接點！
+            else if (currentCaseImages && currentCaseImages.length > 0) {
+                imageLine += `\n   - 雲端影像預覽:`;
+                currentCaseImages.forEach(img => {
+                    if(img.url) imageLine += `\n     🔗 ${img.name}: ${img.url}`;
+                });
+            }
             // -----------------------------
 
             let neuroEvalParts = [];
@@ -1211,7 +1257,10 @@ ${tpaBlock}`;
             let neuroEvalLine = neuroEvalParts.length > 0 ? `\n   - 神經學評估：${neuroEvalParts.join(' / ')}` : '';
 
             const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}\n預轉入醫院: ${d.hospIn}\n0. 基本資料：年齡：${d.age}，性別：${d.gender}\n1. 時間資訊：\n   - 症狀發生/發現異常：${d.onset}\n   - 急診檢傷(Door)：${d.door}\n2. 臨床資訊：\n   - Pre-mRS(0~5)：${d.mrs}\n   - 簡述症狀與肌力：\n     ${d.symptoms.replace(/\n/g, '\n     ')}${neuroEvalLine}\n   - 過去病史：${pmhStr}${imageLine}\n3. 檢驗與處置：\n   - Cre: ${d.cre}，其他: ${d.labOther}\n   - 是否施打 tPA：${rtpa_final.trim()}\n4. 家屬同意取栓風險及轉院：\n   - 決策家屬：${(d.famSel + " " + d.famText).trim()}\n   - 是否同意轉院取栓：${d.consent}`;
-            const outBox = document.getElementById('t-output'); outBox.innerText = result; outBox.style.display = 'block';
+            
+            const outBox = document.getElementById('t-output'); 
+            outBox.innerText = result; 
+            outBox.style.display = 'block';
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
 
