@@ -1277,10 +1277,13 @@ ${tpaBlock}`;
                 slideData[4].slogans = [...angioSlogans4];
                 updateImageDOM(4, 'CTAtoAngio.jpg');
 
-                // 👇 就是這一段：如果有取栓醫師，則把最後一張圖 (救護車) 刪掉不顯示
+                // 👇 修正：分開判斷資料庫與畫面，避免隱藏狀態導致移除失敗
                 if (slideData.length === 6) {
-                    slideData.pop();
-                    swiper.removeSlide(5);
+                    slideData.pop(); // 移除資料
+                }
+                if (swiper.slides && swiper.slides.length === 6) {
+                    swiper.removeSlide(5); // 移除畫面元件
+                    swiper.update();       // 強制刷新 Swiper
                 }
             } else {
                 slideData[3].img = isTpaSkipped ? 'CTtoCTA_transfer.jpg' : 'tPAtoCTA_transfer.jpg';
@@ -1291,13 +1294,18 @@ ${tpaBlock}`;
                 slideData[4].slogans = [...transferSlogans4];
                 updateImageDOM(4, 'CTAtoTransfer.jpg');
 
-                // 👇 如果無取栓醫師，則把救護車圖補回來
+                // 👇 修正：分開判斷資料庫與畫面
                 if (slideData.length === 5) {
-                    slideData.push(originalSlide5);
+                    slideData.push(originalSlide5); // 加回資料
+                }
+                if (swiper.slides && swiper.slides.length === 5) {
                     const newSlide = `<div class="swiper-slide"><img id="slide-img-5" src="${originalSlide5.img}" alt="${originalSlide5.img}" onerror="this.outerHTML='<div class=\\'image-placeholder\\'>缺少圖片: ${originalSlide5.img}</div>'"></div>`;
-                    swiper.appendSlide(newSlide);
+                    swiper.appendSlide(newSlide);   // 加回畫面元件
+                    swiper.update();                // 強制刷新 Swiper
                 }
             }
+            
+            // 刷新標語顯示
             if (swiper.activeIndex === 3 || swiper.activeIndex === 4) {
                 currentSloganIndex = 0;
                 updateSloganUI();
