@@ -2,8 +2,10 @@
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>中風個案檢傷篩檢工具</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>中風個案檢傷篩檢工具 V7</title>
+    <!-- 引入 Swiper CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
         /* 整體設計 */
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f4f4f9; color: #333; padding: 20px 10px 20px 55px; text-align: center; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; overflow-x: hidden; }
@@ -14,7 +16,6 @@
         .tab-btn { writing-mode: vertical-rl; text-orientation: upright; color: #bdc3c7; background: none; border: none; padding: 20px 0; font-size: 17px; font-weight: bold; cursor: pointer; width: 100%; display: flex; align-items: center; justify-content: center; letter-spacing: 2px; border-left: 4px solid transparent; transition: all 0.2s; flex-shrink: 0; }
         .tab-btn:hover { color: white; background-color: #2c3e50; }
         .tab-btn.active { color: white; background-color: #2c3e50; border-left: 4px solid #d32f2f; }
-        
         .tab-btn.icon-tab { font-size: 22px; writing-mode: horizontal-tb; padding: 15px 0; }
 
         /* 側邊隱藏式分頁 */
@@ -28,13 +29,13 @@
         .sidebar-item-header { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; font-size: 18px; font-weight: bold; cursor: pointer; }
         .sidebar-item input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; }
         .sidebar-item input[type="datetime-local"] { width: 100%; font-size: 16px; padding: 6px; background-color: #ecf0f1; color: #333; border: none; border-radius: 4px; box-sizing: border-box; }
-        .custom-textarea { width: 100%; height: 150px; border-radius: 5px; padding: 10px; font-size: 14px; background-color: #ecf0f1; border: none; box-sizing: border-box; resize: vertical; margin-bottom: 15px; line-height: 1.5; }
-
+        
         .sb-group { padding: 0 15px; margin-bottom: 12px; }
         .sb-title { background: #34495e; padding: 5px 10px; border-radius: 4px; font-size: 14px; font-weight: bold; color: #3498db; margin-bottom: 8px; border-left: 3px solid #3498db; }
         .sb-title.orange { color: #e67e22; border-left-color: #e67e22; }
         .sb-title.yellow { color: #f1c40f; border-left-color: #f1c40f; } 
         
+        /* 恢復 Checklist 相關樣式 */
         .checklist-container { padding: 0 15px; text-align: left; margin-bottom: 15px; }
         .cl-item { margin-bottom: 12px; }
         .cl-time { font-weight: bold; color: #1abc9c; font-size: 15px; margin-bottom: 4px; display: flex; align-items: center; gap: 5px; }
@@ -66,48 +67,27 @@
         .sb-btn-copy:hover { background-color: #27ae60; }
         .output-box { margin: 15px 15px 0 15px; padding: 10px; background: #1a252f; border-left: 3px solid #2ecc71; white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #ecf0f1; border-radius: 4px; display: none; line-height: 1.4; }
     
-      /* 主畫面 UI */
-        #digital-clock { 
-            font-family: 'Courier New', Courier, monospace; 
-            background-color: #000; 
-            color: #00ff00; 
-            text-shadow: 0 0 15px #00ff00, 0 0 30px #00ff00; 
-            display: none; 
-            padding: 30px 20px; 
-            border-radius: 12px; 
-            border: 4px solid #444; 
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3); 
-            width: 90%; 
-            max-width: 500px; 
-            margin: 0 auto 15px auto; 
-            box-sizing: border-box; 
-            text-align: center; 
-        }
-        .clock-time-wrapper { display: flex; justify-content: center; align-items: baseline; line-height: 1; gap: 15px; } 
-        #clock-minutes { font-size: 106px; font-weight: bold; } 
-        #clock-seconds { font-size: 56px; font-weight: normal; } 
-
-        #clock-alert-message { 
-            margin: 5px auto 15px auto; 
-            font-size: 16px; 
-            font-weight: bold; 
-            color: #fff; 
-            background-color: #e74c3c; 
-            min-height: 60px; 
-            line-height: 1.4; 
-            padding: 12px 15px; 
-            border-radius: 8px; 
-            display: none; 
-            align-items: center;
-            justify-content: center;
+        /* 新版 Time from Door 數字鐘 */
+        .timer-display {
+            background-color: #000;
+            color: #0f0;
+            text-align: center;
+            padding: 15px 10px;
+            border-radius: 10px;
+            margin: 0 auto 15px auto;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 50px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+            width: 90%;
+            max-width: 500px;
             box-sizing: border-box;
-            width: 90%; 
-            max-width: 500px; 
-            box-shadow: 0 4px 10px rgba(231, 76, 60, 0.3); 
         }
+        .timer-display span { font-size: 30px; }
         
         #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px; }
-        #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; }
+        #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 32px; font-weight: bold; padding: 8px 20px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box; text-align: center; }
 
         #controls-container { width: 100%; max-width: 500px; padding-top: 10px; margin-top: auto; display: flex; flex-direction: column; align-items: center;}
@@ -131,32 +111,42 @@
         .gfast-ch { font-size: 20px; margin-left: 5px; } 
 
         .btn-start { font-size: 20px; font-weight: bold; padding: 14px; border: none; border-radius: 8px; cursor: pointer; width: 100%; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; color: white; }
-        .green-btn { background-color: #27ae60; }
-        .green-btn:hover { background-color: #2ecc71; }
         .gray-btn { background-color: #95a5a6; cursor: not-allowed; }
         .green-disabled-btn { background-color: #27ae60; cursor: not-allowed; opacity: 0.8; }
-        
         .orange-btn { background-color: #e74c3c; animation: pulse 1.5s infinite; }
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.02); background-color: #c0392b; } 100% { transform: scale(1); } }
 
-        .download-row { display: flex; gap: 8px; width: 100%; margin-top: 15px; }
-        .id-input { flex: 1; font-size: 16px; padding: 8px; border: 1px solid #aaa; border-radius: 8px; text-align: center; font-weight: bold; }
-        .btn-download { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
+        .btn-download { font-size: 24px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-download:hover { background-color: #2980b9; }
-
-        #active-group { width: 90%; max-width: 500px; display: none; gap: 8px; margin-bottom: 10px; }
-        .btn-active-clock { flex: 1; font-size: 22px; font-weight: bold; padding: 12px; background-color: #27ae60; color: white; border: none; border-radius: 8px; cursor: default; box-shadow: 0 4px 6px rgba(0,0,0,0.2); }
-        .btn-upload-icon { flex: 0 0 60px; font-size: 24px; font-weight: bold; background-color: #f39c12; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 4px 6px rgba(0,0,0,0.2); transition: 0.2s; }
-        .btn-upload-icon:hover { background-color: #e67e22; }
 
         #sync-status { font-size: 14px; font-weight: bold; color: #7f8c8d; margin-bottom: 15px; display: block; min-height: 20px; line-height: 1.4;}
 
-        #metrics-board { background-color: #fff; border: 2px solid #ddd; border-radius: 8px; padding: 15px; width: 90%; margin: 0 auto; text-align: left; box-shadow: 0 2px 4px rgba(0,0,0,0.05); display: none; }
-        .metric-row { display: flex; align-items: center; padding: 10px 0; border-bottom: 1px dashed #eee; font-size: 18px; font-weight: bold; }
-        .metric-row:last-child { border-bottom: none; }
-        .metric-label { color: #333; margin-left: 10px; flex-grow: 1; }
-        .metric-label span.sub-text { font-size: 14px; color: #7f8c8d; font-weight: normal; }
-        .metric-value { color: #0056b3; min-width: 60px; text-align: right; }
+        /* --- 新增：Swiper與新版時鐘介面樣式 --- */
+        .swiper-container-wrapper { background-color: #ffffff; padding: 5px 0 15px 0; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); width: 90%; max-width: 500px; border-radius: 8px; }
+        .swiper { width: 100%; height: 200px; }
+        .swiper-slide { display: flex; justify-content: center; align-items: center; background-color: #fff; }
+        .swiper-slide img { max-width: 90%; max-height: 100%; object-fit: contain; }
+        .image-placeholder { width: 90%; height: 180px; background-color: #eee; display: flex; justify-content: center; align-items: center; color: #888; border: 2px dashed #ccc; border-radius: 10px; }
+        
+        .slogan-container { display: flex; width: 90%; max-width: 500px; margin: 0 auto 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; min-height: 80px; }
+        .baton-btn { flex: 0 0 80px; background-color: #ff9800; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; padding: 10px 5px; transition: background-color 0.2s; }
+        .baton-btn:active { background-color: #e68a00; }
+        .baton-btn .icon { font-size: 28px; margin-bottom: 2px; }
+        .slogan-indicator { font-size: 16px; font-weight: bold; }
+        .slogan-text-area { flex: 1; display: flex; flex-direction: column; justify-content: center; padding: 15px 20px; cursor: pointer; transition: background-color 0.2s; }
+        .slogan-text-area:active { background-color: #f9f9f9; }
+        .slogan-text { font-size: 20px; font-weight: bold; color: #b33a3a; line-height: 1.4; text-align: left; }
+
+        .special-action-btn { align-items: center; justify-content: center; padding: 15px; width: 90%; max-width: 500px; box-sizing: border-box; margin: 0 auto 15px; background-color: #ffebee; border: 2px solid #ffcdd2; border-radius: 8px; color: #d32f2f; font-weight: bold; font-size: 18px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: background-color 0.2s; text-align: center; }
+        .special-action-btn:active { background-color: #ffcdd2; }
+
+        .record-btn { display: flex; align-items: center; justify-content: space-between; padding: 15px 20px; width: 90%; max-width: 500px; box-sizing: border-box; margin: 0 auto 15px; background-color: #fff; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.05); transition: all 0.2s ease; border: 2px solid transparent; }
+        .record-btn:active { transform: scale(0.98); }
+        .record-btn.recorded-state { background-color: #e8f5e9; border-color: #28a745; }
+        .record-left { display: flex; align-items: center; font-size: 16px; font-weight: bold; color: #333; }
+        .record-left .icon { margin-right: 10px; font-size: 24px; }
+        .record-right { font-size: 18px; color: #0056b3; font-weight: bold; text-align: right; }
+        .record-hint { display: block; font-size: 12px; color: #666; font-weight: normal; margin-top: 4px; }
 
         /* 圖片放大 Modal 樣式 */
         #img-modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.85); justify-content: center; align-items: center; }
@@ -165,83 +155,27 @@
         .edu-img { cursor: pointer; transition: transform 0.2s; }
         .edu-img:hover { transform: scale(1.02); box-shadow: 0 0 8px rgba(255,255,255,0.3); }
 
-        /* --- 新增：臨床影像上傳區塊樣式 (深色主題) --- */
-        .image-upload-section {
-            background-color: #1a252f;
-            border: 1px solid #34495e;
-            border-radius: 8px;
-            padding: 15px;
-            margin: 20px 15px 15px 15px;
-            color: #ecf0f1;
-        }
-        .image-upload-section h4 {
-            margin: 0 0 12px 0;
-            font-size: 15px;
-            color: #f1c40f; 
-        }
+        /* 臨床影像上傳區塊樣式 */
+        .image-upload-section { background-color: #1a252f; border: 1px solid #34495e; border-radius: 8px; padding: 15px; margin: 20px 15px 15px 15px; color: #ecf0f1; }
+        .image-upload-section h4 { margin: 0 0 12px 0; font-size: 15px; color: #f1c40f; }
         .upload-method { margin-bottom: 15px; }
         .method-title { font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #bdc3c7; }
-        .dropzone {
-            border: 2px dashed #7f8c8d;
-            border-radius: 6px;
-            background-color: #2c3e50;
-            padding: 15px 10px;
-            text-align: center;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        .dropzone { border: 2px dashed #7f8c8d; border-radius: 6px; background-color: #2c3e50; padding: 15px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
         .dropzone:hover { background-color: #34495e; border-color: #bdc3c7; }
         .dropzone-content .icon { font-size: 24px; display: block; margin-bottom: 5px; }
         .dropzone-content strong { font-size: 13px; color: #ecf0f1; display: block;}
         .hint-text { font-size: 11px; color: #95a5a6; margin-top: 4px; }
         .file-list { list-style: none; padding: 0; margin-top: 10px; }
-        .file-list li {
-            font-size: 12px;
-            background: #34495e;
-            padding: 6px 10px;
-            border-radius: 4px;
-            margin-bottom: 6px;
-            display: flex;
-            justify-content: space-between;
-            color: #ecf0f1;
-        }
-        .upload-divider { text-align: center; margin: 15px 0; position: relative; }
-        .upload-divider::before {
-            content: ""; position: absolute; top: 50%; left: 0; right: 0; border-top: 1px solid #34495e; z-index: 1;
-        }
-        .upload-divider span {
-            background-color: #1a252f; padding: 0 10px; color: #7f8c8d; position: relative; z-index: 2; font-size: 12px; font-weight: bold;
-        }
-
-        /* --- 新增：已上傳成功檔案的連結樣式 --- */
-        .uploaded-link-item {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            background-color: #2c3e50;
-            color: #3498db;
-            text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 6px;
-            font-size: 13px;
-            margin-bottom: 8px;
-            border: 1px solid #34495e;
-            transition: 0.2s;
-            word-break: break-all;
-        }
-        .uploaded-link-item:hover {
-            background-color: #34495e;
-            border-color: #3498db;
-            color: #2ecc71;
-        }
-
-        
+        .file-list li { font-size: 12px; background: #34495e; padding: 6px 10px; border-radius: 4px; margin-bottom: 6px; display: flex; justify-content: space-between; color: #ecf0f1; }
+        .uploaded-link-item { display: flex; align-items: center; gap: 6px; background-color: #2c3e50; color: #3498db; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; border: 1px solid #34495e; transition: 0.2s; word-break: break-all; }
+        .uploaded-link-item:hover { background-color: #34495e; border-color: #3498db; color: #2ecc71; }
     </style>
 </head>
 <body>
 
     <div id="tab-bar">
         <button class="tab-btn" data-target="panel-neuro">神內</button>
+        <!-- 恢復原順序與項目 -->
         <button class="tab-btn" data-target="panel-transfer">轉診</button>
         <button class="tab-btn" data-target="panel-edu">病解</button>
         <button class="tab-btn" data-target="panel-er">急診</button>
@@ -257,28 +191,16 @@
             <h3 class="sidebar-header">系統使用說明</h3>
             
             <div style="padding: 12px 15px; margin: 0 15px; background-color: #fdf5e6; color: #333; font-size: 12px; line-height: 1.5; border-radius: 8px; box-shadow: inset 0 1px 3px rgba(0,0,0,0.1);">
-                
                 <ul style="padding-left: 20px; margin-top: 0; margin-bottom: 10px;">
                     <li>起始頁面請輸入年齡 / 性別 / 檢傷時間 / 最後正常 / 發作時間</li>
                     <li><span style="color: #c0392b; font-weight: bold;">紅色數字鐘</span>為當下時間距離 Onset/LNT 時間</li>
                     <li>若 &lt; 3.5hr，啟動鈕呈現建議啟動 stroke code &lt; 3.5hr</li>
-                    <li>若 3.5-24hr，會跳出 GFAST 頁面供填寫：
-                        <ul style="padding-left: 18px; margin-top: 4px; color: #555; list-style-type: circle;">
-                            <li>若勾選分數 &lt; 3分，不考慮 tPA/EVT，建議一般中風處置</li>
-                            <li>若勾選分數 ≥ 3分，建議啟動 IA code 並安排 CTA</li>
-                        </ul>
-                    </li>
-                    <li>若有啟動 Stroke code / IA code 進入的頁面將呈現<span style="color: #27ae60; font-weight: bold;">綠色數字鐘</span><br>(Time from Door 距離檢傷時間)：
-                        <ul style="padding-left: 18px; margin-top: 4px; color: #555; list-style-type: circle;">
-                            <li>若 &lt; 25min，盡早完成NCCT/懷疑LVO則盡早執行CTA</li>
-                            <li>若 25-60min，無tPA禁忌症建議盡早施打/懷疑LVO則盡早執行CTA</li>
-                            <li>若 &gt; 60min，有LVO，則依取栓人力安排後續</li>
-                        </ul>
-                    </li>
-                    <li>若本院無取栓，至轉診頁面輸入欲轉至外院，主要決策者，生成格式 &gt; 複製資訊<br><span style="color: #7f8c8d;">(側頁神內的臨床資訊可帶入轉診資訊，方便轉傳至外院群組)</span></li>
+                    <li>若 3.5-24hr，會跳出 GFAST 頁面供填寫</li>
+                    <li>若有啟動 Stroke code / IA code 進入的頁面將呈現<span style="color: #27ae60; font-weight: bold;">綠色數字鐘</span> (Time from Door 距離檢傷時間)</li>
+                    <li>若本院無取栓，至轉診頁面輸入欲轉至外院，主要決策者，生成格式 &gt; 複製資訊</li>
                     <li>病解頁面提供 tPA/EVT 相關資訊</li>
                     <li>主畫面最下面可查詢新竹台大分院及桃竹苗區域聯防取栓班表</li>
-                    <li>主頁面依 NCCT/tPA/CTA/Puncture/救護車出發，可按時鐘鈕紀錄當下時間 (側頁⏰可編輯時間)</li>
+                    <li>主頁面依據流程可按時鐘鈕紀錄當下時間 (側頁⏰可補登時間)</li>
                 </ul>
                 
                 <div style="font-weight: bold; color: #d35400; margin-top: 12px;">側頁神內編輯臨床資訊:</div>
@@ -290,9 +212,8 @@
                 </ul>
                 
                 <div style="margin-top: 15px; font-weight: bold; color: #c0392b; text-align: center; white-space: nowrap;">
-                    編輯結束後，請記得按主頁面上傳鈕 <span style="font-size: 24px; vertical-align: middle;">⬆️</span>
+                    編輯結束後，請記得按主頁面上傳鈕 <span style="font-size: 20px; vertical-align: middle;">💾</span>
                 </div>
-                
             </div>
         </div>
 
@@ -307,10 +228,10 @@
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ncct">NCCT time</label><input type="datetime-local" id="time-ncct" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-tpa">tPA Bolus time</label><input type="datetime-local" id="time-tpa" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-cta">CTA time</label><input type="datetime-local" id="time-cta" step="1"></div>
-            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-puncture">Puncture time</label><input type="datetime-local" id="time-puncture" step="1"></div>
-            <hr style="border: 0; border-top: 1px solid #34495e; margin: 15px 20px;">
-            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ed-leave">急診離部</label><input type="datetime-local" id="time-ed-leave" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-puncture">同意轉院/Puncture</label><input type="datetime-local" id="time-puncture" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-amb-dep">救護車出發</label><input type="datetime-local" id="time-amb-dep" step="1"></div>
+            
+            <div class="sidebar-item" style="display:none;"><label class="sidebar-item-header"><input type="checkbox" id="cb-ed-leave">急診離部(保留)</label><input type="datetime-local" id="time-ed-leave" step="1"></div>
         </div>
 
         <div id="panel-neuro" class="sidebar-panel">
@@ -408,6 +329,7 @@
             <div id="c-output" class="output-box"></div>
         </div>
 
+        <!-- 🌟 還原：急診紀錄 -->
         <div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
 
@@ -439,7 +361,7 @@
                     </ul>
                 </div>
 
-              <div class="sb-title yellow" style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
+                <div class="sb-title yellow" style="display: flex; align-items: center; justify-content: space-between; margin-top: 20px;">
                     <span>NP-Check-list</span>
                     <a href="ERNurse_EVTchecklist.pdf" target="_blank" class="sheet-link" style="background-color: #e74c3c;">📄 EVT checklist</a>
                 </div>
@@ -468,6 +390,7 @@
             </div>
         </div>
 
+        <!-- 🌟 還原：護理紀錄 -->
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
 
@@ -498,6 +421,7 @@
             </div>
         </div>
 
+        <!-- 🌟 還原：取栓紀錄 -->
         <div id="panel-evt" class="sidebar-panel">
             <h3 class="sidebar-header">取栓紀錄</h3>
             <div class="checklist-container">
@@ -537,7 +461,7 @@
             </div>
         </div>
 
-       <div id="panel-transfer" class="sidebar-panel">
+        <div id="panel-transfer" class="sidebar-panel">
             <h3 class="sidebar-header">轉診資訊生成</h3>
             
             <div class="sb-group">
@@ -569,7 +493,7 @@
                     </div>
                     <ul id="filePreviewList" class="file-list"></ul>
                     <button id="btn-drive-upload" class="sb-btn sb-btn-gen" style="width: 100%; margin-top: 10px; background-color: #27ae60; display: none;">☁️ 開始上傳至雲端資料夾</button>
-                    <!-- 【新增】上傳成功後顯示連結的區塊 -->
+                    <!-- 上傳成功後顯示連結的區塊 -->
                     <div id="uploaded-links-container" style="display: none; margin-top: 15px; padding-top: 12px; border-top: 1px dashed #7f8c8d; text-align: left;">
                         <div style="font-size: 13px; color: #2ecc71; margin-bottom: 8px; font-weight: bold;">✅ 上傳成功 (點擊可直接預覽)：</div>
                         <div id="uploaded-links-list"></div>
@@ -577,6 +501,7 @@
                 </div>
             </div>
 
+            <!-- 🌟 還原：轉院提醒文字 -->
             <div class="checklist-container" style="margin-top: 25px;">
                 <div class="sb-title yellow">本院無取栓人力-轉院提醒</div>
 
@@ -650,6 +575,7 @@
             <div class="sb-group">
                 <div class="sb-title orange">血栓溶解劑</div>
                 <div style="padding: 10px; background: #1a252f; border-radius: 4px; text-align: center;">
+                    <!-- 依據您的需求，衛教圖檔名稱仍維持 tPA.jpg -->
                     <img src="tPA.jpg" alt="血栓溶解劑衛教" class="edu-img" style="max-width: 100%; border-radius: 4px;" onclick="openImgModal(this.src)">
                 </div>
             </div>
@@ -677,16 +603,46 @@
     <div style="color: #666; font-size: 16px; font-weight: bold; margin-bottom: 20px; text-align: center;">
         目前時間：<span id="front-sys-time">載入中...</span>
     </div>
-   <div id="door-clock-title" style="display: none; font-size: 18px; font-weight: bold; color: #333; margin: 0 auto 5px auto; text-align: center; width: 90%; max-width: 500px;">Time from Door</div>
 
-    <div id="digital-clock">
-        <div class="clock-time-wrapper">
-            <span id="clock-minutes">00</span>
-            <span id="clock-seconds">00</span>
-        </div>
+    <!-- 🌟 新版時間紀錄器與 Swiper 區域 (初始隱藏，點擊啟動後顯示) -->
+    <div id="door-clock-title" style="display: none; font-size: 18px; font-weight: bold; color: #333; margin: 0 auto 5px auto; text-align: center; width: 90%; max-width: 500px;">Time from Door</div>
+    <div class="timer-display" id="door-timer" style="display: none;">
+      00:00<span>00</span>
     </div>
 
-    <div id="clock-alert-message"></div>
+    <div class="swiper-container-wrapper" id="swiper-section" style="display: none;">
+      <div class="swiper mySwiper">
+        <div class="swiper-wrapper" id="swiper-wrapper">
+          <!-- 圖片由 JavaScript 動態產生 -->
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+    </div>
+
+    <div class="slogan-container" id="slogan-section" style="display: none;">
+      <div class="baton-btn" onclick="goToNextGroup()">
+        <div class="icon">🏃‍♂️</div>
+        <div class="slogan-indicator" id="slogan-indicator">1/1</div>
+      </div>
+      <div class="slogan-text-area" onclick="nextSloganInGroup()">
+        <div class="slogan-text" id="slogan-text">載入中...</div>
+      </div>
+    </div>
+
+    <div class="special-action-btn" id="skip-tpa-btn" style="display: none;" onclick="handleSkipTpa()">
+      ⚠️ 有 tPA 禁忌症，請評估是否安排 CTA 及取栓
+    </div>
+
+    <div class="record-btn" id="record-btn-section" style="display: none;" onclick="handleTimeRecord()">
+      <div class="record-left">
+        <span class="icon">⏰</span>
+        <span id="record-label">載入中...</span>
+      </div>
+      <div class="record-right">
+        <span id="record-value">--</span>
+        <span class="record-hint" id="record-hint">點擊紀錄時間</span>
+      </div>
+    </div>
     
     <div id="controls-container">
         
@@ -694,13 +650,16 @@
             <img src="GFAST.jpg" alt="GFAST圖示" class="edu-img" onclick="openImgModal(this.src)" style="max-width: 100%; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
         </div>
 
-        <div id="onset-clock-container" style="display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px;">
-            <div id="onset-clock-title">Time from LNT/Onset</div>
+        <div id="onset-clock-container">
+            <div id="onset-clock-title">
+                Time from LNT/Onset
+                <!-- 💾 上傳按鈕被移到這裡 -->
+                <button id="btn-upload" class="icon-btn small" title="儲存/上傳更新" style="font-size: 24px; margin-left: 10px; color: #3498db; vertical-align: middle;">💾</button>
+            </div>
             <div id="onset-clock" style="width: 100%; max-width: 500px;"><span id="onset-clock-display">00:00:00</span></div>
         </div>
 
-        <div id="init-group" style="width: 90%; max-width: 500px; display: flex; flex-direction: column; gap: 12px; margin-bottom: 10px; text-align: left;">
-            
+        <div id="init-group">
             <button id="start-btn" class="btn-start orange-btn">請點選並啟動Stroke code<3.5hr</button>
             
             <div id="main-gfast-container" style="display: none; background: #1a252f; color: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; text-align: left; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
@@ -756,36 +715,22 @@
             </div>
         </div>
 
-        <div id="active-group" style="width: 90%; max-width: 500px; display: none; flex-direction: column; gap: 8px; margin-bottom: 10px;">
-            <div style="display: flex; gap: 8px; width: 100%;">
-                <button id="btn-active-clock" class="btn-active-clock" style="flex: 1;">時鐘已啟用</button>
-                <button id="btn-upload" class="btn-upload-icon" title="上傳更新至目前編號">⬆️</button>
-            </div>
-            
-            <div style="display: flex; gap: 8px; width: 100%; align-items: center; background: #1a252f; border: 1px solid #34495e; padding: 6px 10px; border-radius: 8px; box-sizing: border-box;">
-                <span style="color: #f1c40f; font-size: 13px; font-weight: bold; white-space: nowrap;">切換雲端 ID:</span>
-                <input type="number" id="active-sync-id" class="front-input" style="flex: 1; text-align: center; padding: 6px 2px; background-color: #fff; color: #333;" placeholder="輸入ID">
-                <button id="btn-active-download" class="btn-download" style="flex: 0 0 40px; height: 32px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; background-color: #3498db; border-radius: 4px;" title="下載並切換個案">🔄</button>
-            </div>
-        </div>
-
         <span id="sync-status">歡迎使用雲端系統</span>
 
-        <div id="metrics-board" style="max-width: 500px; box-sizing: border-box;">
-            <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="ncct" title="記錄 NCCT 時間">⏰</button><div class="metric-label">DTCT <span class="sub-text">(NCCT)</span></div><div class="metric-value" id="val-dtct">--</div></div>
-            <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="tpa" title="記錄 tPA Bolus 時間">⏰</button><div class="metric-label">DTN <span class="sub-text">(tPA)</span></div><div class="metric-value" id="val-dtn">--</div></div>
-            <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="cta" title="記錄 CTA 時間">⏰</button><div class="metric-label">DTA <span class="sub-text">(CTA)</span></div><div class="metric-value" id="val-dta">--</div></div>
-            <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="puncture" title="記錄 Puncture 時間">⏰</button><div class="metric-label">DTP <span class="sub-text">(Puncture)</span></div><div class="metric-value" id="val-dtp">--</div></div>
-           <div class="metric-row"><button class="icon-btn quick-log-btn" data-target="amb-dep" title="記錄救護車出發時間">⏰</button><div class="metric-label">DIDO <span class="sub-text">(救護車出發)</span></div><div class="metric-value" id="val-dido">--</div></div>
-        </div>
-
-        <div id="latest-cloud-board" style="width: 90%; max-width: 500px; margin: 15px auto 0 auto; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left;">
+        <!-- 🌟 新版：雲端最新狀態整合區域 -->
+        <div id="latest-cloud-board" style="width: 90%; max-width: 500px; margin: 10px auto 0 auto; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left;">
             <div style="font-weight: bold; color: #f1c40f; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
                 <span>🔔</span> 雲端最新個案狀態 (5秒即時同步)
             </div>
             <div style="font-size: 14px; color: #ecf0f1; padding-left: 22px; line-height: 1.5;">
-                最新編號：<span id="lbl-latest-id" style="font-weight: bold; color: #2ecc71; font-size: 16px;">-</span><br>
+                最新編號：<span id="lbl-latest-id" style="font-weight: bold; color: #2ecc71; font-size: 16px;">-</span> | 目前編號：<span id="lbl-current-id" style="color: #3498db; font-weight: bold; font-size: 16px;">未建立</span><br>
                 檢傷時間：<span id="lbl-latest-door" style="color: #bdc3c7;">-</span>
+            </div>
+            <!-- 將切換編號功能併入此處 -->
+            <div style="display: flex; gap: 8px; margin-top: 10px; align-items: center; background: #2c3e50; padding: 6px 10px; border-radius: 6px;">
+                <span style="color: #f1c40f; font-size: 13px; font-weight: bold; white-space: nowrap;">切換雲端 ID:</span>
+                <input type="number" id="active-sync-id" class="front-input" style="flex: 1; text-align: center; padding: 6px 2px; background-color: #fff; color: #333;" placeholder="輸入ID">
+                <button id="btn-active-download" class="btn-download" style="flex: 0 0 40px; height: 32px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; background-color: #3498db; border-radius: 4px;" title="下載並切換個案">🔄</button>
             </div>
         </div>
                 
@@ -817,49 +762,36 @@
         </div>
     </div>
 
+    <!-- 引入 Swiper JS -->
+    <script src="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.js"></script>
+
     <script>
         // 【重要】請把部署得到的「全新網址」貼在這裡
         const GAS_URL = "https://script.google.com/macros/s/AKfycbx8uIExvofYi5B9dSUBYsKa8TL_i096dd6vyUgAE_DmPrD5svq6tFSEM3SgX5oS1H3e/exec"; 
 
-        // 🌟 新增：專門解析 Excel/Google 試算表中文「上下午」時間格式的函數
-function parseExcelDateTime(str) {
-    if (!str) return new Date(NaN);
-    let clean = str.replace(/-/g, '/').replace('T', ' ').trim();
-    
-    // 檢查是否包含台灣中文的「上午」或「下午」
-    if (clean.includes('上午') || clean.includes('下午')) {
-        // 使用正規表示法精準拆解 年/月/日 上下午 時:分:秒
-        let match = clean.match(/^(\d+)[/\\](\d+)[/\\](\d+)\s+(上午|下午)\s+(\d+):(\d+)(?::(\d+))?/);
-        if (match) {
-            let year = parseInt(match[1], 10);
-            let month = parseInt(match[2], 10) - 1; // JS 月份從 0 開始
-            let day = parseInt(match[3], 10);
-            let ampm = match[4];
-            let hour = parseInt(match[5], 10);
-            let minute = parseInt(match[6], 10);
-            let second = match[7] ? parseInt(match[7], 10) : 0;
-            
-            // 關鍵：將 12 小時制手動換算為 24 小時制
-            if (ampm === '下午' && hour < 12) hour += 12;
-            if (ampm === '上午' && hour === 12) hour = 0;
-            
-            return new Date(year, month, day, hour, minute, second);
+        function parseExcelDateTime(str) {
+            if (!str) return new Date(NaN);
+            let clean = str.replace(/-/g, '/').replace('T', ' ').trim();
+            if (clean.includes('上午') || clean.includes('下午')) {
+                let match = clean.match(/^(\d+)[/\\](\d+)[/\\](\d+)\s+(上午|下午)\s+(\d+):(\d+)(?::(\d+))?/);
+                if (match) {
+                    let year = parseInt(match[1], 10), month = parseInt(match[2], 10) - 1, day = parseInt(match[3], 10);
+                    let ampm = match[4], hour = parseInt(match[5], 10), minute = parseInt(match[6], 10), second = match[7] ? parseInt(match[7], 10) : 0;
+                    if (ampm === '下午' && hour < 12) hour += 12;
+                    if (ampm === '上午' && hour === 12) hour = 0;
+                    return new Date(year, month, day, hour, minute, second);
+                }
+            }
+            return new Date(clean); 
         }
-    }
-    return new Date(clean); // 若為不含上下午的標準格式則走原生解析
-}
         
         let currentRecordId = null; 
-
-        // 【新增 1】儲存當前個案的所有影像連結資料
         let currentCaseImages = []; 
 
-        // 【新增 2】專門用來把 currentCaseImages 畫到畫面上的函數
         function renderUploadedLinks() {
             const linksContainer = document.getElementById('uploaded-links-container');
             const linksList = document.getElementById('uploaded-links-list');
-            linksList.innerHTML = ''; // 清空畫面重畫
-            
+            linksList.innerHTML = ''; 
             if (currentCaseImages && currentCaseImages.length > 0) {
                 linksContainer.style.display = 'block';
                 currentCaseImages.forEach((item, index) => {
@@ -873,10 +805,8 @@ function parseExcelDateTime(str) {
             }
         }
         
-        // 保存抓取到的排班資訊供警示邏輯使用
         let currentInHouseDrAvailable = false; 
         
-        // --- 圖片放大功能 ---
         function openImgModal(src) {
             const modal = document.getElementById('img-modal');
             const modalImg = document.getElementById('img-modal-content');
@@ -886,10 +816,8 @@ function parseExcelDateTime(str) {
             modal.style.zIndex = '100000';
             modal.innerHTML = `<img id="img-modal-content" src="${src}" style="max-width: 95%; max-height: 95vh; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.5);"><div style="position:absolute; top:20px; right:20px; color:white; font-size:30px; font-weight:bold; cursor:pointer;">×</div>`;
         }
-        function closeImgModal() {
-            document.getElementById('img-modal').style.display = 'none';
-        }
-        // -------------------
+        function closeImgModal() { document.getElementById('img-modal').style.display = 'none'; }
+
         function getLocalIsoString(date) { const offset = date.getTimezoneOffset() * 60000; return (new Date(date - offset)).toISOString().slice(0, 16); }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
 
@@ -921,7 +849,6 @@ function parseExcelDateTime(str) {
                     document.getElementById('neuro_nur').innerText = fr[7] || "-";
                     statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
                     
-                    // 根據目前時間判斷哪個班別，並更新 currentInHouseDrAvailable
                     const currentHour = new Date().getHours();
                     let activeDr = "-";
                     if(currentHour >= 8 && currentHour < 12) activeDr = fr[3];
@@ -935,6 +862,7 @@ function parseExcelDateTime(str) {
                     }
                 } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
             } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
+            setCapability(currentInHouseDrAvailable);
         }
         
         async function fetchTransferSchedule() {
@@ -970,9 +898,7 @@ function parseExcelDateTime(str) {
             document.getElementById('n_image_block').style.display = (nc || htNc || ct || htCt) ? 'block' : 'none';
         }
 
-        // NE 範本邏輯
         const neTemplateL = `[NE]\nGCS   E3M5V2\nLanguage: mute, failed in naming/repetition\nNeglect: not demonstratable\nCN:\nPupil 3/3, light reflex +/+, right hemianopia to threatening\nEOM: forced deviation to the left, could not be corrected by VOR\nFace: right central facial palsy\n\nMP:\nRUL/LUL 2(to pain) / >4\nRLL/LLL  2~3 可踩床/>4\n\nBabinski R/L +/-\nSensation: right limbs hypesthesia to pain\nFNF, HKS: could not cooperate`;
-
         const neTemplateR = `[NE]\nGCS   E3M6V3\nLanguage: fluent, could follow 1 step order\nNeglect: left neglect to auditory stimuli\n\nPupil 3/3, light reflex +/+, left hemianopia to threatening\nEOM: forced deviation to his right, not be corrected by VOR\nFace: left central facial palsy\n\nMP:\nRUL/LUL 5/ 2(to pain)\nRLL/LLL 5/ 2~3 可踩床\n\nBabinski R/L flexor/extensor\nSensation: nearly loss over left limbs to pain\nFNF, HKS: could not cooperate`;
 
         document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
@@ -1001,70 +927,59 @@ function parseExcelDateTime(str) {
             return score;
         }
 
-        // --------------- 雲端資料收集與還原 ---------------
         function collectDataArray() {
             let pmhArr = []; document.querySelectorAll('.n-pmh-cb:checked').forEach(cb => pmhArr.push(cb.value));
             if(document.getElementById('n_pmh_other').value) pmhArr.push(document.getElementById('n_pmh_other').value);
             let gfastArr = []; document.querySelectorAll('.main-gfast-cb:checked').forEach(cb => gfastArr.push(cb.value));
 
             return [
-                formatDT(document.getElementById('door-time').value),      // [0] B
-                formatDT(document.getElementById('n_onset').value),        // [1] C
-                formatDT(document.getElementById('n_lkw').value),          // [2] D
-                document.getElementById('n_code_type').value,              // [3] E
-                formatDT(document.getElementById('n_code_time').value),    // [4] F
-                formatDT(document.getElementById('n_neuro_arrival').value),// [5] G
-                formatDT(document.getElementById('time-ncct').value),      // [6] H
-                formatDT(document.getElementById('time-tpa').value),       // [7] I
-                formatDT(document.getElementById('time-cta').value),       // [8] J
-                formatDT(document.getElementById('time-puncture').value),  // [9] K
-                formatDT(document.getElementById('time-ed-leave').value),  // [10] L
-                formatDT(document.getElementById('time-amb-dep').value),   // [11] M
-                document.getElementById('n_age').value,                    // [12] N
-                document.getElementById('n_gender').value,                 // [13] O
-                document.getElementById('n_mrs').value,                    // [14] P
-                document.getElementById('n_symptoms').value,               // [15] Q
+                formatDT(document.getElementById('door-time').value),      
+                formatDT(document.getElementById('n_onset').value),        
+                formatDT(document.getElementById('n_lkw').value),          
+                document.getElementById('n_code_type').value,              
+                formatDT(document.getElementById('n_code_time').value),    
+                formatDT(document.getElementById('n_neuro_arrival').value),
+                formatDT(document.getElementById('time-ncct').value),      
+                formatDT(document.getElementById('time-tpa').value),       
+                formatDT(document.getElementById('time-cta').value),       
+                formatDT(document.getElementById('time-puncture').value),  
+                formatDT(document.getElementById('time-ed-leave').value),  
+                formatDT(document.getElementById('time-amb-dep').value),   
+                document.getElementById('n_age').value,                    
+                document.getElementById('n_gender').value,                 
+                document.getElementById('n_mrs').value,                    
+                document.getElementById('n_symptoms').value,               
                 
-                document.getElementById('main-gfast-container').style.display !== 'none' ? gfastArr.join(',') : "", // [16] R
+                document.getElementById('main-gfast-container').style.display !== 'none' ? gfastArr.join(',') : "", 
                 
-                document.getElementById('n_nihss').value,                  // [17] S
-                document.getElementById('n_ne_text').value,                // [18] T
-                pmhArr.join(','),                                          // [19] U
-                document.getElementById('n_cre').value,                    // [20] V
-                document.getElementById('n_lab_other').value,              // [21] W
-                document.getElementById('n_rtpa_sel').value,               // [22] X
-                document.getElementById('n_tpa_bolus').value,              // [23] Y
-                document.getElementById('n_tpa_cif').value,                // [24] Z
-                document.getElementById('n_rtpa_text').value,              // [25] AA
-                document.getElementById('n_ncct_desc').value,              // [26] AB
-                document.getElementById('n_cta_desc').value,               // [27] AC
-                document.getElementById('t_hosp_out').value,               // [28] AD
-                document.getElementById('t_hosp_in').value,                // [29] AE
-                document.getElementById('t_fam_sel').value,                // [30] AF
-                document.getElementById('t_fam_text').value,               // [31] AG
-                document.getElementById('t_consent').value,                // [32] AH
-                // 【修改 4】將當前個案的影像陣列轉成文字存入資料庫
-                JSON.stringify(currentCaseImages),                         // [33] AI (原本的空位，現在用來存影像連結)
-                "",                  // [34] AJ (NP紀錄已刪除，保留空位維持Sheet對齊)
-                "",                  // [35] AK (護理紀錄已刪除，保留空位維持Sheet對齊)
-                "",                  // [36] AL (取栓紀錄已刪除，保留空位維持Sheet對齊)
-                document.getElementById('val-dtct').innerText,             // [37] AM
-                document.getElementById('val-dtn').innerText,              // [38] AN
-                document.getElementById('val-dta').innerText,              // [39] AO
-                document.getElementById('val-dtp').innerText,              // [40] AP
-                document.getElementById('val-dido').innerText,             // [41] AQ
-                get24hTimeStr()                                            // [42] AR
+                document.getElementById('n_nihss').value,                  
+                document.getElementById('n_ne_text').value,                
+                pmhArr.join(','),                                          
+                document.getElementById('n_cre').value,                    
+                document.getElementById('n_lab_other').value,              
+                document.getElementById('n_rtpa_sel').value,               
+                document.getElementById('n_tpa_bolus').value,              
+                document.getElementById('n_tpa_cif').value,                
+                document.getElementById('n_rtpa_text').value,              
+                document.getElementById('n_ncct_desc').value,              
+                document.getElementById('n_cta_desc').value,               
+                document.getElementById('t_hosp_out').value,               
+                document.getElementById('t_hosp_in').value,                
+                document.getElementById('t_fam_sel').value,                
+                document.getElementById('t_fam_text').value,               
+                document.getElementById('t_consent').value,                
+                JSON.stringify(currentCaseImages),                         
+                "", "", "", "", "", "", "", "",
+                get24hTimeStr()                                            
             ];
         }
 
         function populateDataArray(row) {
-    const setTime = (id, val) => { 
-        if(!val) { document.getElementById(id).value = ""; return; }
-        
-        // 🌟 修正：改用自訂的安全解析函數，完美相容中文上下午
-        let d = parseExcelDateTime(val);
-        document.getElementById(id).value = !isNaN(d.getTime()) ? getLocalIsoString(d) : "";
-    };
+            const setTime = (id, val) => { 
+                if(!val) { document.getElementById(id).value = ""; return; }
+                let d = parseExcelDateTime(val);
+                document.getElementById(id).value = !isNaN(d.getTime()) ? getLocalIsoString(d) : "";
+            };
             
             setTime('door-time', row[1]); setTime('n_onset', row[2]); setTime('n_lkw', row[3]); 
             
@@ -1087,9 +1002,7 @@ function parseExcelDateTime(str) {
             document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('n_symptoms').value = row[16] || "";
             
             let gStr = row[17] || "";
-            document.querySelectorAll('.main-gfast-cb').forEach(cb => {
-                cb.checked = gStr.includes(cb.value);
-            });
+            document.querySelectorAll('.main-gfast-cb').forEach(cb => { cb.checked = gStr.includes(cb.value); });
             
             document.getElementById('n_nihss').value = row[18] || "";
             document.getElementById('n_ne_text').value = row[19] || "";
@@ -1107,18 +1020,10 @@ function parseExcelDateTime(str) {
             document.getElementById('t_fam_sel').value = row[31] || ""; document.getElementById('t_fam_text').value = row[32] || "";
             document.getElementById('t_consent').value = row[33] || ""; 
 
-            // 【新增 3】下載時，讀取並解析欄位 [33] 裡面的影像連結資料
-            let imgDataStr = row[34] || ""; // 注意：因為 row 的 index 從 0 開始，您的表單 [33] AI 實際上對應到 Google sheet 的 row[34] 或程式碼裡的某個空位，我們依照您的 collectDataArray，它原本放在註解的 [33]
-            // 更正：我們統一抓 row[34] (對應原 array 的 index 33)
+            let imgDataStr = row[34] || ""; 
             currentCaseImages = [];
-            try {
-                if (row[34]) {
-                    currentCaseImages = JSON.parse(row[34]);
-                }
-            } catch (e) {
-                console.log("解析雲端影像資料失敗或無資料");
-            }
-            renderUploadedLinks(); // 把讀到的連結畫到畫面上
+            try { if (row[34]) { currentCaseImages = JSON.parse(row[34]); } } catch (e) { console.log("解析雲端影像資料失敗或無資料"); }
+            renderUploadedLinks(); 
           
             toggleNeuroRtpa();
             document.getElementById('cb-ncct').checked = !!row[7]; document.getElementById('cb-tpa').checked = !!row[8];
@@ -1126,7 +1031,9 @@ function parseExcelDateTime(str) {
             document.getElementById('cb-ed-leave').checked = !!row[11]; document.getElementById('cb-amb-dep').checked = !!row[12];
             document.getElementById('side-door-time').value = document.getElementById('door-time').value;
             document.getElementById('side-onset-time').value = document.getElementById('n_onset').value;
-            toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); calculateAllMetrics();
+            toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); 
+            
+            syncFromSidePanel();
         }
 
         function getGenData() {
@@ -1158,7 +1065,6 @@ function parseExcelDateTime(str) {
                 tpaCifDose: document.getElementById('n_tpa_cif').value, 
                 tpaBolusTime: formatDT(document.getElementById('time-tpa').value),
                 
-                // 📝 修復點 1：確保正確抓取神內側欄的影像 checkbox 與 finding
                 ncctChecked: document.getElementById('cb-ncct').checked, 
                 ncctDesc: document.getElementById('n_ncct_desc').value, 
                 ctaChecked: document.getElementById('cb-cta').checked, 
@@ -1228,34 +1134,25 @@ ${tpaBlock}`;
             }
 
             let imageLine = '';
-            // 檢查 NCCT 是否有勾選或有時間紀錄
             if (d.ncctChecked || document.getElementById('time-ncct').value) {
                 imageLine += `\n   - brain NCCT: ${d.ncctDesc || "no ICH"}`;
             }
-            // 檢查 CTA 是否有勾選或有時間紀錄
             if (d.ctaChecked || document.getElementById('time-cta').value) {
                 imageLine += `\n   - brain CTA: ${d.ctaDesc || "未輸入描述"}`;
             }
             
-            // --- 雲端影像連結抓取 ---
-            let cloudLink = document.getElementById('cloudLinkInput') ? document.getElementById('cloudLinkInput').value : '';
-            if (cloudLink) {
-                imageLine += `\n   - 雲端影像預覽: ${cloudLink}`;
-            } 
-            else if (typeof currentCaseImages !== 'undefined' && currentCaseImages && currentCaseImages.length > 0) {
+            if (typeof currentCaseImages !== 'undefined' && currentCaseImages && currentCaseImages.length > 0) {
                 imageLine += `\n   - 雲端影像預覽:`;
                 currentCaseImages.forEach(img => {
                     if(img.url) imageLine += `\n     🔗 ${img.name}: ${img.url}`;
                 });
             }
-            // -----------------------------
 
             let neuroEvalParts = [];
             if (d.nihssRaw) neuroEvalParts.push(`NIHSS=${d.nihssRaw}${d.nihssScore || ""}`);
             if (d.enableGfast) neuroEvalParts.push(`GFAST=${d.erGfast || 0}`);
             let neuroEvalLine = neuroEvalParts.length > 0 ? `\n   - 神經學評估：${neuroEvalParts.join(' / ')}` : '';
 
-            // 安全防護：確保症狀有值時才進行 replace，避免 undefined 報錯
             let cleanSymptoms = d.symptoms ? d.symptoms.replace(/\n/g, '\n     ') : "未填寫臨床病程";
 
             const result = `${d.hospOut ? `您好，我這邊是${d.hospOut}，有懷疑大血管阻塞個案想評估取栓:` : `您好，我這邊有懷疑大血管阻塞個案想評估取栓:`}
@@ -1281,7 +1178,6 @@ ${tpaBlock}`;
                 outBox.innerText = result; 
                 outBox.style.display = 'block';
             }
-            
             if (document.getElementById('sidebar')) {
                 document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
             }
@@ -1289,23 +1185,276 @@ ${tpaBlock}`;
 
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
 
-        // --------------- 時鐘與主流程 ---------------
+        // =======================
+        // 🌟 Swiper 相關時間節點邏輯設定
+        // =======================
+        let hasEVTDoctor = false; 
+        let isTpaSkipped = false;
+
+        const transferSlogans3 = [
+            '確認無CKD/Cre>2.0，開立CTA/CTP並簽署同意書', 
+            '本院無取栓團隊，請盡早提供取栓資訊給外院評估轉院', 
+            'CTA完成請盡早評估血管阻塞位置，提供影像給外院', 
+            '提前與家屬解釋取栓及轉院並取得同意'
+        ];
+        const transferSlogans4 = [
+            '等候外院回復可否轉院', 
+            '家屬同意取栓且外院同意轉院，請NP盡速連絡救護車', 
+            '請NP通知護理師進行出院準備', 
+            '放置尿管/左手20G cath/更換病人服/家屬辦出院/病歷與光碟', 
+            '後循環中風/呼吸窘迫病人須考慮預防性插管', 
+            '請NP與取栓醫院急診交班'
+        ];
+        const angioSlogans3 = [
+            '確認無CKD/Cre>2.0，開立CTA/CTP並簽署同意書',
+            '本院有取栓團隊，CTA完成請盡早提供取栓資訊至本院取栓群組',
+            '請神內醫師/急診NP確定有無ICU床位',
+            '提前與家屬解釋取栓並取得同意',
+            '等候取栓醫師回覆是否符合適應症'
+        ];
+        const angioSlogans4 = [
+            '確定有ICU床位請NP請住院中心配床',
+            '取栓醫師請與家屬解釋風險/需全麻請盡早聯絡麻醉科醫師',
+            '後循環中風/呼吸窘迫病人須考慮預防性插管',
+            '請NP/護理師依EVT Check list 開藥及更換手術衣',
+            '請NP開不穩定單——一路設定到 CCU',
+            'Call 傳送，送病人到血攝室',
+            '辦住院後請開立影像照會-Angio Neurogroup'
+        ];
+
+        // 🌟 此處將主畫面的 tPA.jpg 更新為 rtPA.jpg
+        let slideData = [
+            { img: 'ER.jpg', slogans: ['電腦斷層開立及完成同意書簽屬', '聯絡放射師有急性中風個案', '聯絡神內醫師有急性中風個案'] },
+            { img: 'NCCT.jpg', slogans: ['神內醫師判讀CT是否出血', 'CT沒出血請評估是否施打tPA', 'GFAST≥3則評估是否安排CTA/CTP', '提供家屬tPA/取栓衛教單張'] },
+            { img: 'rtPA.jpg', slogans: ['確認病史/Lab 是否有tPA禁忌症', '取得家屬同意並簽署tPA同意書'] },
+            { img: 'tPAtoCTA_transfer.jpg', slogans: [...transferSlogans3] },
+            { img: 'CTAtoTransfer.jpg', slogans: [...transferSlogans4] },
+            { img: 'TransfertoAmbulance.jpg', slogans: ['救護車抵達後與隨車護理師交班', '救護車出發請告知神內醫師/取栓群組'] }
+        ];
+
+        const originalSlide5 = { img: 'TransfertoAmbulance.jpg', slogans: ['救護車抵達後與隨車護理師交班', '救護車出發請告知神內醫師/取栓群組'] };
+
+        const timeStepMap = [
+            { label: 'DTCT (NCCT)', id: 'time-ncct', cb: 'cb-ncct' },
+            { label: 'DTN (tPA)', id: 'time-tpa', cb: 'cb-tpa' },
+            { label: 'DTCTA (CTA/CTP)', id: 'time-cta', cb: 'cb-cta' },
+            { label: 'DTAccept (外院同意轉院/Puncture)', id: 'time-puncture', cb: 'cb-puncture' },
+            { label: 'DIDO (救護車離部)', id: 'time-amb-dep', cb: 'cb-amb-dep' }
+        ];
+        
+        const timeRecords = new Array(timeStepMap.length).fill(null);
+        let currentTimeIndex = 0;       
+        let timeRecordState = 'waiting'; 
+        let currentSloganIndex = 0; 
+        
+        const swiperWrapper = document.getElementById('swiper-wrapper');
+        slideData.forEach((slide, index) => {
+            const div = document.createElement('div');
+            div.className = 'swiper-slide';
+            div.innerHTML = `<img id="slide-img-${index}" src="${slide.img}" alt="${slide.img}" onerror="this.outerHTML='<div class=\\'image-placeholder\\'>缺少圖片: ${slide.img}</div>'">`;
+            swiperWrapper.appendChild(div);
+        });
+
+        const swiper = new Swiper(".mySwiper", {
+            pagination: { el: ".swiper-pagination", clickable: true },
+            on: {
+                slideChange: function () {
+                    currentSloganIndex = 0;
+                    updateSloganUI();
+                    updateDynamicUI();
+                }
+            }
+        });
+
+        function setCapability(hasDoctor) {
+            hasEVTDoctor = hasDoctor;
+            if (hasDoctor) {
+                slideData[3].img = isTpaSkipped ? 'CTtoCTA_Angio.jpg' : 'tPAtoCTA_Angio.jpg';
+                slideData[3].slogans = [...angioSlogans3]; 
+                updateImageDOM(3, slideData[3].img);
+
+                slideData[4].img = 'CTAtoAngio.jpg';
+                slideData[4].slogans = [...angioSlogans4];
+                updateImageDOM(4, 'CTAtoAngio.jpg');
+
+                if (slideData.length === 6) {
+                    slideData.pop();
+                    swiper.removeSlide(5);
+                }
+            } else {
+                slideData[3].img = isTpaSkipped ? 'CTtoCTA_transfer.jpg' : 'tPAtoCTA_transfer.jpg';
+                slideData[3].slogans = [...transferSlogans3];
+                updateImageDOM(3, slideData[3].img);
+
+                slideData[4].img = 'CTAtoTransfer.jpg';
+                slideData[4].slogans = [...transferSlogans4];
+                updateImageDOM(4, 'CTAtoTransfer.jpg');
+
+                if (slideData.length === 5) {
+                    slideData.push(originalSlide5);
+                    const newSlide = `<div class="swiper-slide"><img id="slide-img-5" src="${originalSlide5.img}" alt="${originalSlide5.img}" onerror="this.outerHTML='<div class=\\'image-placeholder\\'>缺少圖片: ${originalSlide5.img}</div>'"></div>`;
+                    swiper.appendSlide(newSlide);
+                }
+            }
+            if (swiper.activeIndex === 3 || swiper.activeIndex === 4) {
+                currentSloganIndex = 0;
+                updateSloganUI();
+            }
+        }
+
+        function updateImageDOM(index, newImgName) {
+            const imgEl = document.getElementById(`slide-img-${index}`);
+            if (imgEl) {
+                imgEl.src = newImgName;
+                imgEl.alt = newImgName;
+            }
+        }
+        
+        function updateDynamicUI() {
+            const skipBtn = document.getElementById('skip-tpa-btn');
+            if ((swiper && swiper.activeIndex === 2) || currentTimeIndex === 1) {
+                skipBtn.style.display = 'flex';
+            } else {
+                skipBtn.style.display = 'none';
+            }
+        }
+
+        function handleSkipTpa() {
+            if (currentTimeIndex <= 1) {
+                currentTimeIndex = 2; 
+                timeRecordState = 'waiting';
+                updateTimeUI();
+            }
+
+            isTpaSkipped = true; 
+            const targetImg = hasEVTDoctor ? 'CTtoCTA_Angio.jpg' : 'CTtoCTA_transfer.jpg';
+            slideData[3].img = targetImg;
+            updateImageDOM(3, targetImg);
+            swiper.slideTo(3);
+        }
+
+        function updateSloganUI() {
+            if (!swiper || !slideData[swiper.activeIndex]) return;
+            const currentGroup = slideData[swiper.activeIndex];
+            document.getElementById('slogan-indicator').innerText = `${currentSloganIndex + 1}/${currentGroup.slogans.length}`;
+            document.getElementById('slogan-text').innerText = currentGroup.slogans[currentSloganIndex];
+        }
+
+        function goToNextGroup() {
+            if (swiper.activeIndex < slideData.length - 1) swiper.slideNext();
+            else alert("已經是最後一組交接了！");
+        }
+
+        function nextSloganInGroup() {
+            const currentGroup = slideData[swiper.activeIndex];
+            currentSloganIndex = (currentSloganIndex + 1) % currentGroup.slogans.length;
+            updateSloganUI();
+        }
+
+        function updateTimeUI() {
+            const btnEl = document.getElementById('record-btn-section');
+            const labelEl = document.getElementById('record-label');
+            const valueEl = document.getElementById('record-value');
+            const hintEl = document.getElementById('record-hint');
+
+            if (currentTimeIndex >= timeStepMap.length) {
+                labelEl.innerText = "🎉 所有時間點已記錄完畢";
+                valueEl.innerText = "";
+                hintEl.innerText = "";
+                btnEl.className = "record-btn"; 
+                updateDynamicUI();
+                return;
+            }
+
+            labelEl.innerText = timeStepMap[currentTimeIndex].label;
+
+            if (timeRecordState === 'waiting') {
+                btnEl.className = "record-btn";
+                valueEl.innerText = "--";
+                valueEl.style.color = "#0056b3";
+                hintEl.innerText = "點擊紀錄當下時間";
+                hintEl.style.color = "#666";
+            } else if (timeRecordState === 'recorded') {
+                btnEl.className = "record-btn recorded-state";
+                valueEl.innerText = formatTimeDiff(timeRecords[currentTimeIndex]);
+                valueEl.style.color = "#28a745";
+                hintEl.innerText = "點擊切換下一個紀錄項目";
+                hintEl.style.color = "#28a745";
+            }
+            updateDynamicUI(); 
+        }
+
+        function handleTimeRecord() {
+            if (currentTimeIndex >= timeStepMap.length) return; 
+
+            const doorStr = document.getElementById('door-time').value;
+            if (!doorStr) { alert("請確認已輸入檢傷時間！"); return; }
+            const doorTs = new Date(doorStr).getTime();
+
+            if (timeRecordState === 'waiting') {
+                const nowIso = getLocalIsoString(new Date());
+                
+                let mapItem = timeStepMap[currentTimeIndex];
+                document.getElementById(mapItem.id).value = nowIso;
+                document.getElementById(mapItem.cb).checked = true;
+                toggleImageDesc();
+                
+                timeRecords[currentTimeIndex] = new Date(nowIso).getTime() - doorTs;
+                timeRecordState = 'recorded'; 
+                updateTimeUI();
+            } else if (timeRecordState === 'recorded') {
+                currentTimeIndex++;
+                if (currentTimeIndex < timeStepMap.length) {
+                    timeRecordState = 'waiting'; 
+                }
+                updateTimeUI();
+            }
+        }
+        
+        function syncFromSidePanel() {
+            if (!currentRecordId) return; 
+            const doorStr = document.getElementById('door-time').value;
+            if (!doorStr) return;
+            const doorTs = new Date(doorStr).getTime();
+            
+            let nextIndex = 0;
+            for (let i = 0; i < timeStepMap.length; i++) {
+                let val = document.getElementById(timeStepMap[i].id).value;
+                if (val) {
+                    timeRecords[i] = new Date(val).getTime() - doorTs;
+                    nextIndex = i + 1; 
+                } else {
+                    timeRecords[i] = null;
+                }
+            }
+            currentTimeIndex = nextIndex;
+            timeRecordState = (currentTimeIndex >= timeStepMap.length) ? 'done' : 'waiting';
+            updateTimeUI();
+        }
+
+        function formatTimeDiff(ms) {
+            const totalSeconds = Math.floor(ms / 1000);
+            const m = Math.floor(totalSeconds / 60);
+            const s = totalSeconds % 60;
+            return `${m}分 ${s}秒`;
+        }
+
+        // ==========================================
+
         const sysTimeDisplay = document.getElementById('front-sys-time');
         const doorTimeInput = document.getElementById('door-time');
         const onsetInput = document.getElementById('n_onset');
-        const lkwInput = document.getElementById('n_lkw'); // 保留供資料傳輸，但用 onset 同步
+        const lkwInput = document.getElementById('n_lkw'); 
         const startBtn = document.getElementById('start-btn');
         const downloadBtn = document.getElementById('btn-download');
         const uploadBtn = document.getElementById('btn-upload');
         const syncStatus = document.getElementById('sync-status');
-        const alertMessageDisplay = document.getElementById('clock-alert-message');
         let timerInterval;
 
         toggleNeuroRtpa(); doorTimeInput.value = getLocalIsoString(new Date());
         document.getElementById('side-door-time').value = doorTimeInput.value;
         document.getElementById('side-onset-time').value = document.getElementById('n_onset').value; 
         
-        // 取得純 24 小時制格式 (避免 AM/PM)
         function get24hTimeStr() {
             let d = new Date();
             return d.getFullYear() + '/' + 
@@ -1316,97 +1465,54 @@ ${tpaBlock}`;
                    String(d.getSeconds()).padStart(2, '0');
         }
 
-        // 系統時間更新
         setInterval(() => {
             sysTimeDisplay.textContent = get24hTimeStr();
             checkTimeAndUpdateUI();
-           updateLiveDIDO(); // <--- 加入這行，讓 DIDO 每一秒都會跟著跳動
         }, 1000);
 
         const sideOnset = document.getElementById('side-onset-time');
         const sideDoor = document.getElementById('side-door-time');
 
-        // 按下「設為現在時間」時同步
         document.getElementById('set-door-now').addEventListener('click', () => { 
             let nowIso = getLocalIsoString(new Date());
             doorTimeInput.value = nowIso; 
-            sideDoor.value = nowIso; // 同步側邊欄
-            calculateAllMetrics(); 
+            sideDoor.value = nowIso; 
+            syncFromSidePanel();
             checkTimeAndUpdateUI();
         });
         
-        // 主畫面更改 -> 同步到側邊欄
         ['n_onset', 'door-time'].forEach(id => document.getElementById(id).addEventListener('change', (e) => { 
-            if(id === 'n_onset') {
-                lkwInput.value = e.target.value; // 同步 onset 到 lkw
-                sideOnset.value = e.target.value;
-            }
-            if(id === 'door-time') {
-                sideDoor.value = e.target.value;
-            }
-            calculateAllMetrics(); 
+            if(id === 'n_onset') { lkwInput.value = e.target.value; sideOnset.value = e.target.value; }
+            if(id === 'door-time') { sideDoor.value = e.target.value; }
+            syncFromSidePanel();
             checkTimeAndUpdateUI();
         }));
 
-        // 側邊欄更改 -> 同步回主畫面
         sideOnset.addEventListener('change', (e) => {
             onsetInput.value = e.target.value;
             lkwInput.value = e.target.value;
-            calculateAllMetrics();
+            syncFromSidePanel();
             checkTimeAndUpdateUI();
         });
         sideDoor.addEventListener('change', (e) => {
             doorTimeInput.value = e.target.value;
-            calculateAllMetrics();
+            syncFromSidePanel();
             checkTimeAndUpdateUI();
         });
         
         document.querySelectorAll('.sidebar-item input[type="datetime-local"]').forEach(el => { 
-            el.addEventListener('input', () => { toggleImageDesc(); calculateAllMetrics(); }); 
-            el.addEventListener('change', () => { toggleImageDesc(); calculateAllMetrics(); }); 
+            el.addEventListener('input', () => { toggleImageDesc(); syncFromSidePanel(); }); 
+            el.addEventListener('change', () => { toggleImageDesc(); syncFromSidePanel(); }); 
         });
 
-        document.querySelectorAll('.quick-log-btn').forEach(btn => {
-            btn.addEventListener('click', function() {
-                const target = this.getAttribute('data-target'); document.getElementById(`time-${target}`).value = getLocalIsoString(new Date()); document.getElementById(`cb-${target}`).checked = true;
-                toggleImageDesc(); calculateAllMetrics();
-                this.style.transform = "scale(1.3)"; setTimeout(() => this.style.transform = "scale(1)", 150);
+        ['ncct', 'tpa', 'cta', 'puncture', 'amb-dep'].forEach(target => {
+            document.getElementById(`cb-${target}`).addEventListener('change', function() { 
+                document.getElementById(`time-${target}`).value = this.checked ? getLocalIsoString(new Date()) : ""; 
+                toggleImageDesc(); 
+                syncFromSidePanel(); 
             });
         });
-        
-        ['ncct', 'tpa', 'cta', 'puncture', 'ed-leave', 'amb-dep'].forEach(target => {
-            document.getElementById(`cb-${target}`).addEventListener('change', function() { document.getElementById(`time-${target}`).value = this.checked ? getLocalIsoString(new Date()) : ""; toggleImageDesc(); calculateAllMetrics(); });
-        });
 
-       // 專門處理 DIDO 動態讀秒的函式 (改為監聽救護車出發)
-        function updateLiveDIDO() {
-            const door = document.getElementById('door-time').value;
-            const ambDep = document.getElementById('time-amb-dep').value; // 改抓取救護車出發時間
-            const didoDisplay = document.getElementById('val-dido');
-            
-            if (!door) { 
-                didoDisplay.textContent = '--'; 
-                return; 
-            }
-
-            if (!ambDep) {
-                // 狀態 1：尚未按下「救護車出發」時鐘鍵 -> 動態讀秒
-                let diffMs = new Date().getTime() - new Date(door).getTime();
-                if (diffMs >= 0) {
-                    let m = Math.floor(diffMs / 60000);
-                    let s = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0');
-                    didoDisplay.innerHTML = `<span style="color:#e74c3c;">${m} 分 ${s} 秒</span>`;
-                } else {
-                    didoDisplay.textContent = '--';
-                }
-            } else {
-                // 狀態 2：已按下「救護車出發」時鐘鍵 -> 停止讀秒
-                let diffMs = new Date(ambDep).getTime() - new Date(door).getTime();
-                didoDisplay.innerHTML = `<span style="color:#0056b3;">${Math.floor(diffMs / 60000)} 分鐘</span>`;
-            }
-        }
-
-        // 動態介面更新邏輯
         function checkTimeAndUpdateUI() {
             let onsetVal = onsetInput.value;
             if (!onsetVal) return;
@@ -1415,20 +1521,15 @@ ${tpaBlock}`;
             let now = new Date().getTime();
             let diffMs = now - onsetTime;
             
-            // 更新 Onset 時鐘顯示
             if (diffMs < 0) {
                 document.getElementById('onset-clock-display').textContent = "無效";
-           } else {
-                // 將時間計算拆分出來，讓程式碼更乾淨
+            } else {
                 let h = String(Math.floor(diffMs / 3600000)).padStart(2, '0');
                 let m = String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0');
                 let s = String(Math.floor((diffMs % 60000) / 1000)).padStart(2, '0');
-                
-                // 替換成您想要的格式 (加了一點空白與 s 讓視覺更好看)
                 document.getElementById('onset-clock-display').textContent = `${h}hr ${m}min ${s}s`;
             }
 
-            // 更新按鈕與 G-FAST 邏輯
             let hrs = diffMs / (1000 * 60 * 60);
             let gfastContainer = document.getElementById('main-gfast-container');
             let gfastScore = document.querySelectorAll('.main-gfast-cb:checked').length;
@@ -1447,18 +1548,15 @@ ${tpaBlock}`;
                     startBtn.disabled = false;
                     startBtn.className = "btn-start orange-btn";
              } else if (gfastScore > 0) {
-                    // 狀態 2：有點選但未滿 3 分 -> 綠色，不可點選
                     startBtn.textContent = "請依一般中風看診程序";
                     startBtn.disabled = true; 
                     startBtn.className = "btn-start green-disabled-btn";
                 } else {
-                    // 狀態 3：完全還沒點選（0分） -> 恢復原本的灰色，不可點選
                     startBtn.textContent = "請評估G-FAST";
                     startBtn.disabled = true;
                     startBtn.className = "btn-start gray-btn";
                 }
          } else {
-                // 狀態 4：大於 24 小時
                 startBtn.textContent = "請按一般中風看診程序";
                 startBtn.disabled = true;
                 startBtn.className = "btn-start gray-btn";
@@ -1466,119 +1564,63 @@ ${tpaBlock}`;
             }
         }
         
-        // 監聽首頁的 G-FAST 勾選以即時更新按鈕
-        document.querySelectorAll('.main-gfast-cb').forEach(cb => {
-            cb.addEventListener('change', checkTimeAndUpdateUI);
-        });
-
-        function calculateDiffInMinutes(endStr, startStr) {
-            if (!endStr || !startStr) return '--';
-            return Math.floor((new Date(endStr).getTime() - new Date(startStr).getTime()) / 60000) + ' 分鐘';
-        }
-
-        function calculateAllMetrics() {
-            const door = doorTimeInput.value;
-            const diff = (e, s) => (!e || !s) ? '--' : Math.floor((new Date(e).getTime() - new Date(s).getTime()) / 60000) + ' 分鐘';
-            document.getElementById('val-dtct').textContent = diff(document.getElementById('time-ncct').value, door);
-            document.getElementById('val-dtn').textContent = diff(document.getElementById('time-tpa').value, door);
-            document.getElementById('val-dta').textContent = diff(document.getElementById('time-cta').value, door);
-            document.getElementById('val-dtp').textContent = diff(document.getElementById('time-puncture').value, door);
-        }
-
-        // 動態警語更新功能
-          function updateClockAlert(doorDiffMinutes) {
-            let alertMsg = "";
-            let bgColor = "transparent";
-            let textColor = "#fff";
-
-            if(doorDiffMinutes < 25) {
-                alertMsg = `DTCT目標<25min, 請盡快安排腦部電腦斷層!\nDTA目標<60min, 懷疑大血管阻塞請盡快安排CTA/CTP!`;
-               bgColor = "#e67e22"; // 修改為橘色
-            } else if (doorDiffMinutes >= 25 && doorDiffMinutes <= 60) {
-                alertMsg = `DTN目標<60min, 無禁忌症請盡快施打tPA\nDTA目標<60min, 懷疑大血管阻塞請盡快安排CTA/CTP!`;
-               bgColor = "#e74c3c"; // 修改為紅色
-            } else {
-                if (currentInHouseDrAvailable) {
-                    alertMsg = `本院有取栓人力! \n請確認ICU床位/人力/完成EVT check list事項!`;
-                    bgColor = "#27ae60"; // 綠色
-                } else {
-                    let line1Str = document.getElementById('duty_line1').innerText || "無";
-                    let line2Str = document.getElementById('duty_line2').innerText || "無";
-                    alertMsg = `本院無取栓人力!\n請至外院取栓群組提出轉院需求\n(第一線||第二線醫院: ${line1Str}||${line2Str})`;
-                   bgColor = "#e74c3c"; // 紅色
-                }
-            }
-            alertMessageDisplay.innerText = alertMsg;
-
-        // 控管警示框的顯示與隱藏 
-            if (alertMsg) {
-                alertMessageDisplay.style.display = "flex"; 
-               alertMessageDisplay.style.backgroundColor = bgColor;
-            } else {
-                alertMessageDisplay.style.display = "none"; // 隱藏
-            }
-        }
+        document.querySelectorAll('.main-gfast-cb').forEach(cb => { cb.addEventListener('change', checkTimeAndUpdateUI); });
 
         function updateMainClock(doorTs) {
             let diff = new Date().getTime() - doorTs; 
+            const timerEl = document.getElementById('door-timer');
             if (diff < 0) { 
-                document.getElementById('clock-minutes').textContent = "00"; 
-                document.getElementById('clock-seconds').textContent = "00"; 
-                alertMessageDisplay.innerText = "";
-               alertMessageDisplay.style.display = "none"; // 確保無效時間時隱藏紅框
+                timerEl.innerHTML = "00:00<span>00</span>";
                 return;
             }
-            
-            let totalMinutes = Math.floor(diff / 60000);
-            let displaySeconds = String(Math.floor((diff % 60000) / 1000)).padStart(2, '0');
-            
-            document.getElementById('clock-minutes').textContent = String(totalMinutes).padStart(2, '0'); 
-            document.getElementById('clock-seconds').textContent = displaySeconds;
-            
-            // 呼叫警告更新功能
-            updateClockAlert(totalMinutes);
+            let totalSec = Math.floor(diff / 1000);
+            let m = String(Math.floor(totalSec / 60)).padStart(2, '0');
+            let s = String(totalSec % 60).padStart(2, '0');
+            let ms = String(Math.floor((diff % 1000) / 10)).padStart(2, '0');
+            timerEl.innerHTML = `${m}:${s}<span>${ms}</span>`;
         }
 
         function activateClockUI(id) {
             currentRecordId = id;
             document.getElementById('init-group').style.display = 'none'; 
-            document.getElementById('active-group').style.display = 'flex';
-            
-            // 隱藏圖片預設區塊
             document.getElementById('img-placeholder').style.display = 'none';
             
-            // 變更標題文字與顏色
             const mainTitle = document.getElementById('main-title');
             mainTitle.innerText = "Stroke Clock";
-            mainTitle.style.color = "#e74c3c"; // 紅色字體
+            mainTitle.style.color = "#e74c3c"; 
 
-            document.getElementById('btn-active-clock').textContent = `時鐘已啟用 (${id})`;
-            
-            // 🌟 新增：同步將目前編號填入 Clock 頁面的新輸入框與首頁輸入框中
             if (id && id !== "本機模式") {
                 document.getElementById('active-sync-id').value = id;
                 document.getElementById('sync-id').value = id;
+                document.getElementById('lbl-current-id').innerText = id;
+            } else {
+                document.getElementById('lbl-current-id').innerText = "本機模式";
             }
 
-            // --- 新增這行：顯示 Time from Door 標題 ---
             document.getElementById('door-clock-title').style.display = 'block'; 
+            document.getElementById('door-timer').style.display = 'block'; 
+            document.getElementById('swiper-section').style.display = 'block';
+            document.getElementById('slogan-section').style.display = 'flex';
+            document.getElementById('record-btn-section').style.display = 'flex';
             
-            document.getElementById('digital-clock').style.display = 'block'; 
-            document.getElementById('metrics-board').style.display = 'block';
-            
+            isTpaSkipped = false;
+            swiper.slideTo(0);
+            currentSloganIndex = 0;
+            setCapability(currentInHouseDrAvailable); 
+            syncFromSidePanel(); 
+            updateSloganUI();
+
             if (timerInterval) clearInterval(timerInterval);
             updateMainClock(new Date(document.getElementById('door-time').value).getTime()); 
-            timerInterval = setInterval(() => { updateMainClock(new Date(document.getElementById('door-time').value).getTime()); }, 1000);
+            timerInterval = setInterval(() => { updateMainClock(new Date(document.getElementById('door-time').value).getTime()); }, 50);
         }
 
-        // ================= 雲端連線 =================
         startBtn.addEventListener('click', function() {
             if (this.disabled) return;
             
             const doorValue = formatDT(doorTimeInput.value);
             if (!doorValue) { alert("請先輸入檢傷時間！"); return; }
             
-            // 根據按鈕文字設定 Code 類別並連動側邊欄 G-FAST
             let btnText = this.textContent;
             let nowTime = getLocalIsoString(new Date());
             
@@ -1602,15 +1644,14 @@ ${tpaBlock}`;
                 syncStatus.textContent = "⚠️ 尚未設定 Web App URL，目前為離線單機模式"; syncStatus.style.color = "#e67e22"; return; 
             }
 
-            syncStatus.textContent = "⏳ 雲端配發編號中..."; document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (連線中...)";
+            syncStatus.textContent = "⏳ 雲端配發編號中..."; 
 
             fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "create", doorTime: doorValue, onset: formatDT(document.getElementById('n_onset').value), lnt: formatDT(document.getElementById('n_lkw').value) }) })
             .then(res => res.json()).then(data => {
                 if(data.status === "success") { syncStatus.textContent = "✅ 已配發編號，同步成功"; syncStatus.style.color = "#2ecc71"; activateClockUI(data.id); }
-            }).catch(err => { syncStatus.textContent = "❌ 雲端連線失敗 (可繼續離線使用)"; syncStatus.style.color = "#e74c3c"; document.getElementById('btn-active-clock').textContent = "時鐘已啟用 (離線)"; });
+            }).catch(err => { syncStatus.textContent = "❌ 雲端連線失敗 (可繼續離線使用)"; syncStatus.style.color = "#e74c3c"; });
         });
 
-        // 🌟 修正：精簡化並共用的下載與切換個案核心邏輯
         function executeDownloadByID(idVal, triggeringBtn) {
             if(!GAS_URL || GAS_URL.includes("請在此貼上")) { alert("尚未設定 Web App URL"); return; }
             if (!idVal) { alert("請先輸入編號！"); return; }
@@ -1639,13 +1680,11 @@ ${tpaBlock}`;
             });
         }
 
-        // 【首頁】下載按鈕監聽
         downloadBtn.addEventListener('click', function() {
             const idVal = document.getElementById('sync-id').value;
             executeDownloadByID(idVal, downloadBtn);
         });
 
-        // 🌟 新增：【計時頁面】快速切換 ID 按鈕監聽
         document.getElementById('btn-active-download').addEventListener('click', function() {
             const idVal = document.getElementById('active-sync-id').value;
             executeDownloadByID(idVal, this);
@@ -1653,16 +1692,16 @@ ${tpaBlock}`;
 
         uploadBtn.addEventListener('click', function() {
             if(!currentRecordId || currentRecordId === "本機模式") { alert("目前為單機模式，無法上傳"); return; }
-            syncStatus.textContent = "⏳ 更新中..."; uploadBtn.disabled = true; uploadBtn.style.backgroundColor = "#ccc";
+            syncStatus.textContent = "⏳ 更新中..."; uploadBtn.disabled = true; uploadBtn.style.opacity = "0.5";
             fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "upload", id: currentRecordId, payload: collectDataArray() }) })
             .then(res => res.json()).then(data => {
                 if(data.status === "success") { syncStatus.textContent = `✅ 儲存成功！ (${new Date().toLocaleTimeString()})`; syncStatus.style.color = "#2ecc71"; } 
                 else { syncStatus.textContent = "❌ 儲存失敗：" + (data.error || "錯誤"); syncStatus.style.color = "#e74c3c"; }
-                uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12";
-            }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.backgroundColor = "#f39c12"; });
+                uploadBtn.disabled = false; uploadBtn.style.opacity = "1";
+            }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.opacity = "1"; });
         });
 
-// ================= 臨床影像上傳邏輯 (支援點擊 ✕ 刪除功能) =================
+// ================= 臨床影像上傳邏輯 =================
         const dropzone = document.getElementById('uploadDropzone');
         const fileInput = document.getElementById('fileInput');
         const filePreviewList = document.getElementById('filePreviewList');
@@ -1670,9 +1709,8 @@ ${tpaBlock}`;
 
         let filesToUpload = [];
 
-        // 📝 新增：專門用來刷新畫面上檔案列表的設置
         function renderFileList() {
-            filePreviewList.innerHTML = ''; // 先清空舊列表
+            filePreviewList.innerHTML = ''; 
             
             filesToUpload.forEach((file, index) => {
                 const li = document.createElement('li');
@@ -1680,7 +1718,6 @@ ${tpaBlock}`;
                 li.style.justifyContent = 'space-between';
                 li.style.alignItems = 'center';
                 
-                // 加上 ✕ 的點擊元素，並利用 data-index 記錄它是第幾個檔案
                 li.innerHTML = `
                     <span style="flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">📎 ${file.name}</span> 
                     <span style="color: #95a5a6; margin-right: 15px; font-size: 11px;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
@@ -1689,7 +1726,6 @@ ${tpaBlock}`;
                 filePreviewList.appendChild(li);
             });
             
-            // 如果沒檔案了，就把上傳按鈕隱藏
             if (filesToUpload.length > 0) {
                 btnDriveUpload.style.display = 'block';
             } else {
@@ -1702,23 +1738,15 @@ ${tpaBlock}`;
 
             fileInput.addEventListener('change', (event) => {
                 const newFiles = Array.from(event.target.files);
-                newFiles.forEach(file => {
-                    filesToUpload.push(file); // 追加檔案到陣列
-                });
-                fileInput.value = ''; // 清空以利重複選取同檔名
-                renderFileList();     // 刷新列表顯示
+                newFiles.forEach(file => { filesToUpload.push(file); });
+                fileInput.value = ''; 
+                renderFileList();     
             });
 
-            // 📝 新增：監聽列表中「✕」的點擊事件 (事件代理機制)
             filePreviewList.addEventListener('click', (event) => {
                 if (event.target.classList.contains('btn-delete-file')) {
-                    // 取得被點擊檔案的索引編號
                     const indexToRemove = parseInt(event.target.getAttribute('data-index'), 10);
-                    
-                    // 從待上傳陣列中剔除該檔案
                     filesToUpload.splice(indexToRemove, 1);
-                    
-                    // 重新渲染畫面
                     renderFileList();
                 }
             });
@@ -1736,7 +1764,6 @@ ${tpaBlock}`;
 
                 let uploadCount = 0;
                 let errorMessages = [];
-                let uploadedLinksData = []; // 【新增】用來存放成功上傳的檔案名稱與網址
 
                 for (let i = 0; i < filesToUpload.length; i++) {
                     const file = filesToUpload[i];
@@ -1759,25 +1786,21 @@ ${tpaBlock}`;
                                     body: JSON.stringify(payload)
                                 });
                                 
-                                // 先取得純文字，方便除錯
                                 const textResult = await response.text(); 
                                 
                                 try {
                                     const result = JSON.parse(textResult);
                                     
-                                    // 只要狀態是 success 就判定成功
                                     if (result.status === "success") {
                                     uploadCount++;
                                     let fileUrl = result.fileUrl || result.url || ""; 
                                     
-                                    // 【修改 5】把成功的連結推入全域陣列中
                                     currentCaseImages.push({ name: file.name, url: fileUrl });
                                 } else {
                                         errorMessages.push(`【後端錯誤】${file.name}: ${result.error || "未知錯誤"}`);
                                     }
                                 } catch (parseErr) {
-                                     // 如果回傳的不是 JSON，代表 GAS 回傳了 HTML 錯誤頁面
-                                     errorMessages.push(`【解析失敗】${file.name}: 後端回傳非預期格式。內容: ${textResult.substring(0, 50)}...`);
+                                     errorMessages.push(`【解析失敗】${file.name}: 後端回傳非預期格式。`);
                                 }
 
                             } catch (error) {
@@ -1795,18 +1818,13 @@ ${tpaBlock}`;
                     alert(`✅ 影像提供成功！已成功上傳 ${uploadCount} 個影像檔案至指定資料夾。`);
                 }
 
-                // 成功後先清空待上傳陣列 (左側欄的預覽)
                 if(uploadCount === filesToUpload.length) {
                     filesToUpload = [];
                     renderFileList();
                 }
 
-                // 【修改 6】畫出所有的連結，並「自動觸發」主畫面的上傳更新，確保存進 Google Sheet
                 if (currentCaseImages.length > 0) {
                     renderUploadedLinks();
-                    
-                    // 神奇的魔法：程式自動幫使用者按右上角的「上傳更新」按鈕
-                    // 這樣剛剛放入 array [33] 的網址就會瞬間寫進 Google Sheet 裡
                     const mainUploadBtn = document.getElementById('btn-upload');
                     if (mainUploadBtn && !mainUploadBtn.disabled) {
                         mainUploadBtn.click();
@@ -1825,26 +1843,20 @@ ${tpaBlock}`;
         const frontGender = document.getElementById('n_gender');
         const sideGender = document.getElementById('side_n_gender');
 
-        // 首頁改動 -> 同步到側邊欄
         frontAge.addEventListener('input', (e) => sideAge.value = e.target.value);
         frontGender.addEventListener('change', (e) => sideGender.value = e.target.value);
-
-        // 側邊欄改動 -> 同步回首頁
         sideAge.addEventListener('input', (e) => frontAge.value = e.target.value);
         sideGender.addEventListener('change', (e) => frontGender.value = e.target.value);
 
-        // 觸發初始計算
         checkTimeAndUpdateUI();
 
-// ================= 🔔 多裝置即時新個案偵測與警示系統 (電腦右下角彈窗 + 手機系統橫幅通知版) =================
-let lastKnownMaxId = 0;    // 紀錄本地已知的最大編號
-let globalAudioCtx = null; // 全域音效上下文
-let rejectedCaseIds = [];  // 紀錄使用者按過「否」不願跳轉的個案 ID 陣列
+// ================= 🔔 多裝置即時新個案偵測與警示系統 =================
+let lastKnownMaxId = 0;    
+let globalAudioCtx = null; 
+let rejectedCaseIds = [];  
 
-// 1. 頁面啟動時，主動向作業系統索取「通知推播權限」
 function requestNotificationPermission() {
     if ("Notification" in window) {
-        // 如果尚未決定權限，主動跳出瀏覽器提示要求允許
         if (Notification.permission !== "granted" && Notification.permission !== "denied") {
             Notification.requestPermission().then(permission => {
                 console.log("🖥️ 作業系統推播權限狀態變更為:", permission);
@@ -1852,9 +1864,8 @@ function requestNotificationPermission() {
         }
     }
 }
-requestNotificationPermission(); // 立即執行
+requestNotificationPermission(); 
 
-// 2. 建立並解鎖瀏覽器音效限制
 function initAudioContext() {
     if (!globalAudioCtx) {
         globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1864,12 +1875,10 @@ function initAudioContext() {
     }
 }
 
-// 監聽第一次點擊以解除靜音鎖定
 ['click', 'touchstart', 'keydown'].forEach(eventType => {
     document.addEventListener(eventType, initAudioContext, { once: true });
 });
 
-// 產生高頻穿透鈴聲 (嗶！嗶！嗶！)
 function playAlertSound() {
     try {
         if (!globalAudioCtx) globalAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -1883,7 +1892,7 @@ function playAlertSound() {
             gainNode.connect(globalAudioCtx.destination);
             
             oscillator.type = 'sine';
-            oscillator.frequency.value = 988; // 高音 B5 頻率
+            oscillator.frequency.value = 988; 
             
             gainNode.gain.setValueAtTime(0.6, globalAudioCtx.currentTime + delay);
             gainNode.gain.exponentialRampToValueAtTime(0.01, globalAudioCtx.currentTime + delay + 0.12);
@@ -1896,34 +1905,24 @@ function playAlertSound() {
     }
 }
 
-// 3. 核心推播控制：觸發電腦右下角或手機頂端橫幅
 function triggerSystemNotification(caseId, minutesAgoStr) {
     if ("Notification" in window && Notification.permission === "granted") {
-        
-        // 建立系統通知物件 (電腦會跳在右下角，手機會顯示在頂端通知橫幅)
         const notification = new Notification("🚨 院內新增急性中風個案！", {
             body: `個案編號: ${caseId} (${minutesAgoStr})\n請點選此處立即導入時間軸。`,
-            icon: "https://cdn-icons-png.flaticon.com/512/179/179313.png", // 可自行替換為時鐘或警示圖示
-            requireInteraction: true // 🌟 強迫通知保持停留在螢幕上，直到醫護同仁點選為止
+            icon: "https://cdn-icons-png.flaticon.com/512/179/179313.png", 
+            requireInteraction: true 
         });
 
-        // 當醫護人員「點選」手機橫幅或電腦右下角通知時的行為
         notification.onclick = function() {
-            window.focus(); // 強制將網頁視窗拉回最前台取得焦點
-            
-            // 自動載入該個案資料
+            window.focus(); 
             document.getElementById('sync-id').value = caseId;
             document.getElementById('btn-download').click();
-            
-            this.close(); // 關閉通知
+            this.close(); 
         };
     }
 }
 
-// 4. 背景輪詢主邏輯 (固定 5 秒)
 function startBackgroundPolling() {
-    console.log("🚀 背景即時新個案偵測系統已啟動 (每 5 秒檢查一次)...");
-    
     setInterval(() => {
         if (!GAS_URL || GAS_URL.includes("請在此貼上")) return;
 
@@ -1939,7 +1938,6 @@ function startBackgroundPolling() {
                 const serverTime = parseExcelDateTime(data.timestamp);
                 const nowTime = new Date();
                 
-                // 動態計算距離檢傷時間幾分鐘前
                 let timeAgoStr = "";
                 let minutesText = "新進件";
                 if (!isNaN(serverTime.getTime())) {
@@ -1961,27 +1959,21 @@ function startBackgroundPolling() {
                     }
                 }
                 
-                // 無條件靜默更新 DIDO 下方的雲端個案狀態板
                 document.getElementById('lbl-latest-id').textContent = serverLatestId;
                 document.getElementById('lbl-latest-door').innerHTML = (data.timestamp || "-") + timeAgoStr;
 
                 if (isNaN(serverTime.getTime())) return;
 
-                // 檢查是否在一小時之內
                 const timeDiff = Math.abs(nowTime.getTime() - serverTime.getTime());
                 const isWithinOneHour = (timeDiff <= 3600000);
-
-                // 🌟 檢查網頁當前是否被縮小、切換到背景，或者滑鼠不在該視窗
                 const isPageBackground = document.hidden || !document.hasFocus();
 
-                // 1. 【第一次打開網頁/重新整理】的初始檢查
                 if (lastKnownMaxId === 0) {
-                    lastKnownMaxId = serverLatestId; // 對齊基準線
+                    lastKnownMaxId = serverLatestId; 
                     
                     if (isWithinOneHour && !rejectedCaseIds.includes(serverLatestId) && currentRecordId === null) {
                         playAlertSound();
                         
-                        // 網頁在背景/滑鼠移開時，直接發射系統推播通知
                         if (isPageBackground) {
                             triggerSystemNotification(serverLatestId, minutesText);
                         } else {
@@ -1999,14 +1991,12 @@ function startBackgroundPolling() {
                     return;
                 }
 
-                // 2. 【網頁開著待命時】後續有全新的個案進件
                 if (serverLatestId > lastKnownMaxId) {
-                    lastKnownMaxId = serverLatestId; // 更新最大 ID 紀錄
+                    lastKnownMaxId = serverLatestId; 
                     
                     if (isWithinOneHour && !rejectedCaseIds.includes(serverLatestId) && currentRecordId === null) {
                         playAlertSound();
                         
-                        // 如果網頁在背景/使用者在看其他視窗，強行發射橫幅/彈窗通知
                         if (isPageBackground) {
                             triggerSystemNotification(serverLatestId, minutesText);
                         } else {
@@ -2025,13 +2015,10 @@ function startBackgroundPolling() {
             }
         })
         .catch(err => console.error("[背景輪詢] 連線異常: ", err));
-    }, 5000); // ⏱️ 固定 5 秒輪詢檢查一次
+    }, 5000); 
 }
 
-// 啟動輪詢
 startBackgroundPolling();
-
-        
     </script>
 </body>
 </html>
