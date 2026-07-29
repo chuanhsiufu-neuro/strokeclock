@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>中風個案檢傷篩檢工具 V7</title>
+    <title>中風個案檢傷篩檢工具 V8</title>
     <!-- 引入 Swiper CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@10/swiper-bundle.min.css" />
     <style>
         /* 整體設計 */
         body { font-family: "Microsoft JhengHei", Arial, sans-serif; background-color: #f4f4f9; color: #333; padding: 20px 10px 20px 55px; text-align: center; margin: 0; display: flex; flex-direction: column; align-items: center; min-height: 100vh; box-sizing: border-box; overflow-x: hidden; }
-        h1 { color: #2c3e50; margin-top: 0; margin-bottom: 20px; font-size: 32px; font-weight: bold; }
+        h1 { color: #2c3e50; margin-top: 0; margin-bottom: 20px; font-size: 32px; font-weight: bold; transition: all 0.3s; }
 
         /* 左側固定垂直標籤列 */
         #tab-bar { position: fixed; top: 0; left: 0; width: 45px; height: 100%; background-color: #1a252f; z-index: 102; display: flex; flex-direction: column; padding-top: 10px; box-shadow: 2px 0 5px rgba(0,0,0,0.3); overflow-y: auto; }
@@ -88,7 +88,7 @@
         
         #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px; }
         #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
-        #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 24px; /* 從 32px 縮小為 24px */ font-weight: bold; padding: 8px 10px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box; text-align: center; white-space: nowrap; }
+        #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 24px; font-weight: bold; padding: 8px 10px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box; text-align: center; white-space: nowrap; }
         
         #controls-container { width: 100%; max-width: 500px; padding-top: 10px; margin-top: auto; display: flex; flex-direction: column; align-items: center;}
         
@@ -121,12 +121,13 @@
 
         #sync-status { font-size: 14px; font-weight: bold; color: #7f8c8d; margin-bottom: 15px; display: block; min-height: 20px; line-height: 1.4;}
 
-        /* --- 新增：Swiper與新版時鐘介面樣式 --- */
+        /* --- Swiper與新版時鐘介面樣式 (放大圖片與加入Hover) --- */
         .swiper-container-wrapper { background-color: #ffffff; padding: 5px 0 15px 0; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); width: 90%; max-width: 500px; border-radius: 8px; }
-        .swiper { width: 100%; height: 280px; /* 原本是 200px，放大至 280px */ }
-        .swiper-slide { display: flex; justify-content: center; align-items: center; background-color: #fff; }
-        .swiper-slide img { max-width: 95%; /* 圖片寬度極限從 90% 放大到 95% */ max-height: 100%; object-fit: contain; }
-        .image-placeholder { width: 95%; height: 250px; background-color: #eee; display: flex; justify-content: center; align-items: center; color: #888; border: 2px dashed #ccc; border-radius: 10px; }
+        .swiper { width: 100%; height: 350px; /* 高度再放大至 350px */ }
+        .swiper-slide { display: flex; justify-content: center; align-items: center; background-color: #fff; overflow: hidden; border-radius: 6px; }
+        .swiper-slide img { max-width: 95%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
+        .swiper-slide img:hover { transform: scale(1.15); cursor: zoom-in; } /* 加入游標移入放大效果 */
+        .image-placeholder { width: 95%; height: 300px; background-color: #eee; display: flex; justify-content: center; align-items: center; color: #888; border: 2px dashed #ccc; border-radius: 10px; }
         
         .slogan-container { display: flex; width: 90%; max-width: 500px; margin: 0 auto 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; min-height: 80px; }
         .baton-btn { flex: 0 0 80px; background-color: #ff9800; color: #fff; display: flex; flex-direction: column; align-items: center; justify-content: center; cursor: pointer; font-weight: bold; padding: 10px 5px; transition: background-color 0.2s; }
@@ -175,7 +176,6 @@
 
     <div id="tab-bar">
         <button class="tab-btn" data-target="panel-neuro">神內</button>
-        <!-- 恢復原順序與項目 -->
         <button class="tab-btn" data-target="panel-transfer">轉診</button>
         <button class="tab-btn" data-target="panel-edu">病解</button>
         <button class="tab-btn" data-target="panel-er">急診</button>
@@ -329,7 +329,6 @@
             <div id="c-output" class="output-box"></div>
         </div>
 
-        <!-- 🌟 還原：急診紀錄 -->
         <div id="panel-er" class="sidebar-panel">
             <h3 class="sidebar-header">急診紀錄</h3>
 
@@ -390,7 +389,6 @@
             </div>
         </div>
 
-        <!-- 🌟 還原：護理紀錄 -->
         <div id="panel-nurse" class="sidebar-panel">
             <h3 class="sidebar-header">護理紀錄</h3>
 
@@ -421,7 +419,6 @@
             </div>
         </div>
 
-        <!-- 🌟 還原：取栓紀錄 -->
         <div id="panel-evt" class="sidebar-panel">
             <h3 class="sidebar-header">取栓紀錄</h3>
             <div class="checklist-container">
@@ -501,7 +498,6 @@
                 </div>
             </div>
 
-            <!-- 🌟 還原：轉院提醒文字 -->
             <div class="checklist-container" style="margin-top: 25px;">
                 <div class="sb-title yellow">本院無取栓人力-轉院提醒</div>
 
@@ -575,7 +571,6 @@
             <div class="sb-group">
                 <div class="sb-title orange">血栓溶解劑</div>
                 <div style="padding: 10px; background: #1a252f; border-radius: 4px; text-align: center;">
-                    <!-- 依據您的需求，衛教圖檔名稱仍維持 tPA.jpg -->
                     <img src="tPA.jpg" alt="血栓溶解劑衛教" class="edu-img" style="max-width: 100%; border-radius: 4px;" onclick="openImgModal(this.src)">
                 </div>
             </div>
@@ -600,7 +595,7 @@
     
     <h1 id="main-title">中風個案檢傷篩檢工具</h1>
 
-    <div style="color: #666; font-size: 16px; font-weight: bold; margin-bottom: 20px; text-align: center;">
+    <div id="sys-time-container" style="color: #666; font-size: 16px; font-weight: bold; margin-bottom: 20px; text-align: center; transition: all 0.3s;">
         目前時間：<span id="front-sys-time">載入中...</span>
     </div>
 
@@ -656,7 +651,7 @@
                 <!-- 💾 上傳按鈕被移到這裡 -->
                 <button id="btn-upload" class="icon-btn small" title="儲存/上傳更新" style="font-size: 24px; margin-left: 10px; color: #3498db; vertical-align: middle;">💾</button>
             </div>
-            <div id="onset-clock" style="width: 100%; max-width: 500px;"><span id="onset-clock-display">00:00:00</span></div>
+            <div id="onset-clock" style="width: 100%; max-width: 500px;"><span id="onset-clock-display">00 小時 00 分鐘</span></div>
         </div>
 
         <div id="init-group">
@@ -1186,7 +1181,7 @@ ${tpaBlock}`;
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
 
         // =======================
-        // 🌟 Swiper 相關時間節點邏輯設定
+        // 🌟 Swiper 相關時間節點邏輯設定 (完全依據新需求修改)
         // =======================
         let hasEVTDoctor = false; 
         let isTpaSkipped = false;
@@ -1222,24 +1217,25 @@ ${tpaBlock}`;
             '辦住院後請開立影像照會-Angio Neurogroup'
         ];
 
-        // 🌟 此處將主畫面的 tPA.jpg 更新為 rtPA.jpg
+        // 🌟 1. 圖片簡化：統一使用指定的 7 張圖名稱
         let slideData = [
             { img: 'ER.jpg', slogans: ['電腦斷層開立及完成同意書簽屬', '聯絡放射師有急性中風個案', '聯絡神內醫師有急性中風個案'] },
             { img: 'NCCT.jpg', slogans: ['神內醫師判讀CT是否出血', 'CT沒出血請評估是否施打tPA', 'GFAST≥3則評估是否安排CTA/CTP', '提供家屬tPA/取栓衛教單張'] },
             { img: 'rtPA.jpg', slogans: ['確認病史/Lab 是否有tPA禁忌症', '取得家屬同意並簽署tPA同意書'] },
-            { img: 'tPAtoCTA_transfer.jpg', slogans: [...transferSlogans3] },
-            { img: 'CTAtoTransfer.jpg', slogans: [...transferSlogans4] },
-            { img: 'TransfertoAmbulance.jpg', slogans: ['救護車抵達後與隨車護理師交班', '救護車出發請告知神內醫師/取栓群組'] }
+            { img: 'CTA.jpg', slogans: [...transferSlogans3] },
+            { img: 'Transfer.jpg', slogans: [...transferSlogans4] },
+            { img: 'Ambulance.jpg', slogans: ['救護車抵達後與隨車護理師交班', '救護車出發請告知神內醫師/取栓群組'] }
         ];
 
-        const originalSlide5 = { img: 'TransfertoAmbulance.jpg', slogans: ['救護車抵達後與隨車護理師交班', '救護車出發請告知神內醫師/取栓群組'] };
+        const originalSlide5 = { img: 'Ambulance.jpg', slogans: ['救護車抵達後與隨車護理師交班', '救護車出發請告知神內醫師/取栓群組'] };
 
+        // 🌟 2. 側拉與時間定義 (保留側欄的原本ID供資料傳輸)
         const timeStepMap = [
-            { label: 'DTCT (NCCT)', id: 'time-ncct', cb: 'cb-ncct' },
-            { label: 'DTN (tPA)', id: 'time-tpa', cb: 'cb-tpa' },
-            { label: 'DTCTA (CTA/CTP)', id: 'time-cta', cb: 'cb-cta' },
-            { label: 'DTAccept (外院同意轉院/Puncture)', id: 'time-puncture', cb: 'cb-puncture' },
-            { label: 'DIDO (救護車離部)', id: 'time-amb-dep', cb: 'cb-amb-dep' }
+            { label: 'DTCT (NCCT)', id: 'time-ncct', cb: 'cb-ncct' }, // index 0
+            { label: 'DTN (tPA)', id: 'time-tpa', cb: 'cb-tpa' },     // index 1
+            { label: 'DTCTA (CTA/CTP)', id: 'time-cta', cb: 'cb-cta' }, // index 2
+            { label: 'DTAccept (外院同意轉院)', id: 'time-puncture', cb: 'cb-puncture' }, // index 3 (動態更改名稱)
+            { label: 'DIDO (救護車離部)', id: 'time-amb-dep', cb: 'cb-amb-dep' } // index 4
         ];
         
         const timeRecords = new Array(timeStepMap.length).fill(null);
@@ -1261,7 +1257,7 @@ ${tpaBlock}`;
                 slideChange: function () {
                     currentSloganIndex = 0;
                     updateSloganUI();
-                    updateDynamicUI();
+                    updateTimeUI(); // 🌟 3. 滑動圖片時，動態連動切換紀錄時間的按鈕對象
                 }
             }
         });
@@ -1269,47 +1265,39 @@ ${tpaBlock}`;
         function setCapability(hasDoctor) {
             hasEVTDoctor = hasDoctor;
             if (hasDoctor) {
-                slideData[3].img = isTpaSkipped ? 'CTtoCTA_Angio.jpg' : 'tPAtoCTA_Angio.jpg';
+                slideData[3].img = 'CTA.jpg';
                 slideData[3].slogans = [...angioSlogans3]; 
                 updateImageDOM(3, slideData[3].img);
 
-                slideData[4].img = 'CTAtoAngio.jpg';
+                slideData[4].img = 'Angio.jpg';
                 slideData[4].slogans = [...angioSlogans4];
-                updateImageDOM(4, 'CTAtoAngio.jpg');
+                updateImageDOM(4, 'Angio.jpg');
 
-                // 👇 修正：分開判斷資料庫與畫面，避免隱藏狀態導致移除失敗
-                if (slideData.length === 6) {
-                    slideData.pop(); // 移除資料
-                }
-                if (swiper.slides && swiper.slides.length === 6) {
-                    swiper.removeSlide(5); // 移除畫面元件
-                    swiper.update();       // 強制刷新 Swiper
-                }
+                // 有取栓醫師：移除最後一張 Ambulance
+                if (slideData.length === 6) { slideData.pop(); }
+                if (swiper.slides && swiper.slides.length === 6) { swiper.removeSlide(5); swiper.update(); }
             } else {
-                slideData[3].img = isTpaSkipped ? 'CTtoCTA_transfer.jpg' : 'tPAtoCTA_transfer.jpg';
+                slideData[3].img = 'CTA.jpg';
                 slideData[3].slogans = [...transferSlogans3];
                 updateImageDOM(3, slideData[3].img);
 
-                slideData[4].img = 'CTAtoTransfer.jpg';
+                slideData[4].img = 'Transfer.jpg';
                 slideData[4].slogans = [...transferSlogans4];
-                updateImageDOM(4, 'CTAtoTransfer.jpg');
+                updateImageDOM(4, 'Transfer.jpg');
 
-                // 👇 修正：分開判斷資料庫與畫面
-                if (slideData.length === 5) {
-                    slideData.push(originalSlide5); // 加回資料
-                }
+                // 無取栓醫師：補回 Ambulance
+                if (slideData.length === 5) { slideData.push(originalSlide5); }
                 if (swiper.slides && swiper.slides.length === 5) {
                     const newSlide = `<div class="swiper-slide"><img id="slide-img-5" src="${originalSlide5.img}" alt="${originalSlide5.img}" onerror="this.outerHTML='<div class=\\'image-placeholder\\'>缺少圖片: ${originalSlide5.img}</div>'"></div>`;
-                    swiper.appendSlide(newSlide);   // 加回畫面元件
-                    swiper.update();                // 強制刷新 Swiper
+                    swiper.appendSlide(newSlide);
+                    swiper.update();
                 }
             }
-            
-            // 刷新標語顯示
             if (swiper.activeIndex === 3 || swiper.activeIndex === 4) {
                 currentSloganIndex = 0;
                 updateSloganUI();
             }
+            updateTimeUI(); // 更新按鈕名稱
         }
 
         function updateImageDOM(index, newImgName) {
@@ -1322,6 +1310,7 @@ ${tpaBlock}`;
         
         function updateDynamicUI() {
             const skipBtn = document.getElementById('skip-tpa-btn');
+            // 當滑動到 rtPA 或 時間進入 DTN 時顯示禁忌症按鈕
             if ((swiper && swiper.activeIndex === 2) || currentTimeIndex === 1) {
                 skipBtn.style.display = 'flex';
             } else {
@@ -1330,17 +1319,10 @@ ${tpaBlock}`;
         }
 
         function handleSkipTpa() {
-            if (currentTimeIndex <= 1) {
-                currentTimeIndex = 2; 
-                timeRecordState = 'waiting';
-                updateTimeUI();
-            }
-
             isTpaSkipped = true; 
-            const targetImg = hasEVTDoctor ? 'CTtoCTA_Angio.jpg' : 'CTtoCTA_transfer.jpg';
-            slideData[3].img = targetImg;
-            updateImageDOM(3, targetImg);
-            swiper.slideTo(3);
+            const targetImg = hasEVTDoctor ? 'Angio.jpg' : 'Transfer.jpg'; // 略過tPA，原本是跳 CTtoCTA，現在統一是 CTA，所以直接進 CTA，再接著走流程
+            swiper.slideTo(3); // 滑到 CTA
+            updateTimeUI();
         }
 
         function updateSloganUI() {
@@ -1361,63 +1343,65 @@ ${tpaBlock}`;
             updateSloganUI();
         }
 
+        // 🌟 3. 時間紀錄跟圖片綁定
         function updateTimeUI() {
+            if (!swiper) return;
+            let idx = swiper.activeIndex;
+            
+            // 對應圖片到時間節點：ER(0)/NCCT(1) -> DTCT(0), rtPA(2) -> DTN(1), CTA(3) -> DTCTA(2), Angio/Transfer(4) -> DTP/DTAccept(3), Ambulance(5) -> DIDO(4)
+            if (idx === 0 || idx === 1) currentTimeIndex = 0;
+            else if (idx === 2) currentTimeIndex = 1;
+            else if (idx === 3) currentTimeIndex = 2;
+            else if (idx === 4) currentTimeIndex = 3;
+            else if (idx === 5) currentTimeIndex = 4;
+
+            // 🌟 2. 時鐘名稱動態調整
+            timeStepMap[3].label = hasEVTDoctor ? 'DTP (Puncture)' : 'DTAccept (外院同意轉院)';
+
             const btnEl = document.getElementById('record-btn-section');
             const labelEl = document.getElementById('record-label');
             const valueEl = document.getElementById('record-value');
             const hintEl = document.getElementById('record-hint');
 
-            if (currentTimeIndex >= timeStepMap.length) {
-                labelEl.innerText = "🎉 所有時間點已記錄完畢";
-                valueEl.innerText = "";
-                hintEl.innerText = "";
-                btnEl.className = "record-btn"; 
-                updateDynamicUI();
-                return;
-            }
-
             labelEl.innerText = timeStepMap[currentTimeIndex].label;
 
-            if (timeRecordState === 'waiting') {
+            // 判斷該階段是否已經紀錄過時間
+            if (timeRecords[currentTimeIndex] === null) {
                 btnEl.className = "record-btn";
                 valueEl.innerText = "--";
                 valueEl.style.color = "#0056b3";
                 hintEl.innerText = "點擊紀錄當下時間";
                 hintEl.style.color = "#666";
-            } else if (timeRecordState === 'recorded') {
+            } else {
                 btnEl.className = "record-btn recorded-state";
                 valueEl.innerText = formatTimeDiff(timeRecords[currentTimeIndex]);
                 valueEl.style.color = "#28a745";
-                hintEl.innerText = "點擊切換下一個紀錄項目";
+                hintEl.innerText = "已紀錄 (可往左滑看下一步)";
                 hintEl.style.color = "#28a745";
             }
             updateDynamicUI(); 
         }
 
+        // 點擊後直接覆寫該對應階段時間，並自動跳下一張圖
         function handleTimeRecord() {
-            if (currentTimeIndex >= timeStepMap.length) return; 
-
             const doorStr = document.getElementById('door-time').value;
             if (!doorStr) { alert("請確認已輸入檢傷時間！"); return; }
             const doorTs = new Date(doorStr).getTime();
 
-            if (timeRecordState === 'waiting') {
-                const nowIso = getLocalIsoString(new Date());
-                
-                let mapItem = timeStepMap[currentTimeIndex];
-                document.getElementById(mapItem.id).value = nowIso;
-                document.getElementById(mapItem.cb).checked = true;
-                toggleImageDesc();
-                
-                timeRecords[currentTimeIndex] = new Date(nowIso).getTime() - doorTs;
-                timeRecordState = 'recorded'; 
-                updateTimeUI();
-            } else if (timeRecordState === 'recorded') {
-                currentTimeIndex++;
-                if (currentTimeIndex < timeStepMap.length) {
-                    timeRecordState = 'waiting'; 
-                }
-                updateTimeUI();
+            const nowIso = getLocalIsoString(new Date());
+            
+            // 寫入對應的側拉欄位與全域變數
+            let mapItem = timeStepMap[currentTimeIndex];
+            document.getElementById(mapItem.id).value = nowIso;
+            document.getElementById(mapItem.cb).checked = true;
+            toggleImageDesc();
+            
+            timeRecords[currentTimeIndex] = new Date(nowIso).getTime() - doorTs;
+            updateTimeUI();
+            
+            // 🌟 點擊後自動滑向下一階段圖 (若是 ER，則滑向 NCCT；若已最後則不動)
+            if (swiper.activeIndex < slideData.length - 1) {
+                setTimeout(() => { swiper.slideNext(); }, 300);
             }
         }
         
@@ -1427,18 +1411,14 @@ ${tpaBlock}`;
             if (!doorStr) return;
             const doorTs = new Date(doorStr).getTime();
             
-            let nextIndex = 0;
             for (let i = 0; i < timeStepMap.length; i++) {
                 let val = document.getElementById(timeStepMap[i].id).value;
                 if (val) {
                     timeRecords[i] = new Date(val).getTime() - doorTs;
-                    nextIndex = i + 1; 
                 } else {
                     timeRecords[i] = null;
                 }
             }
-            currentTimeIndex = nextIndex;
-            timeRecordState = (currentTimeIndex >= timeStepMap.length) ? 'done' : 'waiting';
             updateTimeUI();
         }
 
@@ -1536,7 +1516,7 @@ ${tpaBlock}`;
             } else {
                 let h = String(Math.floor(diffMs / 3600000)).padStart(2, '0');
                 let m = String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0');
-                // 修改：只顯示時跟分，不顯示秒
+                // 🌟 3. LNT 時鐘只顯示時分
                 document.getElementById('onset-clock-display').textContent = `${h} 小時 ${m} 分鐘`;
             }
 
@@ -1595,9 +1575,9 @@ ${tpaBlock}`;
             document.getElementById('init-group').style.display = 'none'; 
             document.getElementById('img-placeholder').style.display = 'none';
             
-            const mainTitle = document.getElementById('main-title');
-            mainTitle.innerText = "Stroke Clock";
-            mainTitle.style.color = "#e74c3c"; 
+            // 🌟 3. 隱藏主畫面標題與系統時間，讓綠色數字鐘上推
+            document.getElementById('main-title').style.display = 'none'; 
+            document.getElementById('sys-time-container').style.display = 'none'; 
 
             if (id && id !== "本機模式") {
                 document.getElementById('active-sync-id').value = id;
