@@ -1391,46 +1391,42 @@ ${tpaBlock}`;
 
         function setCapability(hasDoctor) {
             hasEVTDoctor = hasDoctor;
+            
+            // 1. 更新資料庫陣列
             if (hasDoctor) {
                 slideData[3].img = 'CTA.jpg';
                 slideData[3].slogans = [...angioSlogans3]; 
-                updateImageDOM(3, slideData[3].img);
 
                 slideData[4].img = 'Angio.jpg';
                 slideData[4].slogans = [...angioSlogans4];
-                updateImageDOM(4, 'Angio.jpg');
 
-                // 👇 修正：強制清理陣列與畫面多餘的圖片節點 (確保不管隱藏或顯示狀態都能清乾淨)
                 if (slideData.length > 5) { 
-                    slideData.length = 5; 
-                }
-                if (swiper && swiper.slides) { 
-                    while (swiper.slides.length > 5) {
-                        swiper.removeSlide(swiper.slides.length - 1);
-                    }
-                    swiper.update(); 
+                    slideData.length = 5; // 移除救護車資料
                 }
             } else {
                 slideData[3].img = 'CTA.jpg';
                 slideData[3].slogans = [...transferSlogans3];
-                updateImageDOM(3, slideData[3].img);
 
                 slideData[4].img = 'Transfer.jpg';
                 slideData[4].slogans = [...transferSlogans4];
-                updateImageDOM(4, 'Transfer.jpg');
 
-                // 👇 修正：確保狀態正確補回
                 if (slideData.length === 5) { 
-                    slideData.push(originalSlide5); 
-                }
-                if (swiper && swiper.slides && swiper.slides.length === 5) {
-                    const newSlide = `<div class="swiper-slide"><img id="slide-img-5" src="${originalSlide5.img}" alt="${originalSlide5.img}" onerror="this.outerHTML='<div class=\\'image-placeholder\\'>缺少圖片: ${originalSlide5.img}</div>'"></div>`;
-                    swiper.appendSlide(newSlide);
-                    swiper.update();
+                    slideData.push(originalSlide5); // 加回救護車資料
                 }
             }
             
-            if (swiper.activeIndex === 3 || swiper.activeIndex === 4) {
+            // 2. 暴力且絕對安全的畫面同步：清空後重新加入 (解決第一次載入不同步的 Bug)
+            if (swiper) {
+                swiper.removeAllSlides();
+                slideData.forEach((slide, index) => {
+                    const newSlide = `<div class="swiper-slide"><img id="slide-img-${index}" src="${slide.img}" alt="${slide.img}" onerror="this.outerHTML='<div class=\\'image-placeholder\\'>缺少圖片: ${slide.img}</div>'"></div>`;
+                    swiper.appendSlide(newSlide);
+                });
+                swiper.update(); // 強制刷新
+            }
+            
+            // 3. 刷新標語與時間按鈕名稱
+            if (swiper && (swiper.activeIndex === 3 || swiper.activeIndex === 4)) {
                 currentSloganIndex = 0;
                 updateSloganUI();
             }
