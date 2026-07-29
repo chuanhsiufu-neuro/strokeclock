@@ -170,6 +170,15 @@
         .file-list li { font-size: 12px; background: #34495e; padding: 6px 10px; border-radius: 4px; margin-bottom: 6px; display: flex; justify-content: space-between; color: #ecf0f1; }
         .uploaded-link-item { display: flex; align-items: center; gap: 6px; background-color: #2c3e50; color: #3498db; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; border: 1px solid #34495e; transition: 0.2s; word-break: break-all; }
         .uploaded-link-item:hover { background-color: #34495e; border-color: #3498db; color: #2ecc71; }
+
+        /* --- 新增：臨床病程症狀選擇 Modal 樣式 --- */
+        #symptom-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; }
+        .symp-modal-content { background:#2c3e50; padding:20px; border-radius:8px; width:90%; max-width:450px; max-height:85vh; overflow-y:auto; color:#ecf0f1; text-align:left; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .symp-row { margin-bottom: 12px; font-size: 15px; border-bottom: 1px dashed #34495e; padding-bottom: 10px; }
+        .symp-row strong { color: #f1c40f; display: inline-block; margin-bottom: 6px; font-size: 16px; }
+        .symp-row label { margin-right: 12px; display: inline-flex; align-items: center; cursor: pointer; color: #bdc3c7; }
+        .symp-row input[type="checkbox"] { margin-right: 4px; width: 16px; height: 16px; cursor: pointer; }
+        
     </style>
 </head>
 <body>
@@ -278,9 +287,13 @@
                     <div style="flex:1;"><input type="datetime-local" id="n_neuro_arrival" class="sb-input" step="1"></div>
                 </div>
                 
-                <span class="sb-label">臨床病程 (Clinical course)</span>
+                <!-- --- 替換：臨床病程標題加上「📋選單」按鈕 --- -->
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
+                    <span class="sb-label" style="margin-bottom: 0;">臨床病程 (Clinical course)</span>
+                    <button class="icon-btn small" title="常見症狀快速帶入" onclick="openSymptomsModal()" style="color: #f1c40f; font-size: 16px; font-weight: bold; background: #34495e; padding: 2px 8px; border-radius: 4px;">📋選單</button>
+                </div>
                 <textarea id="n_symptoms" rows="2" class="sb-textarea" placeholder="例如: 右側無力 (MP: 2/5)..." style="margin-bottom: 8px;"></textarea>
-                
+            
                 <div id="n_nihss_block" style="background:#1a252f; padding:8px; border-radius:4px; margin-bottom:8px;">
                     <span class="sb-label">NIHSS 評估分數 <span id="n_nihss_display" class="score-display"></span></span>
                     <input type="text" id="n_nihss" class="sb-input" placeholder="細項(含X自動加總) 例如: 21002..." oninput="calcNeuroNIHSS()">
@@ -588,6 +601,34 @@
             </div>
         </div>
     </div> 
+
+    <!-- --- 新增：症狀選擇表單 Modal --- -->
+    <div id="symptom-modal" onclick="if(event.target===this) closeSymptomsModal()">
+        <div class="symp-modal-content">
+            <h4 style="margin-top:0; color:#2ecc71; border-bottom:1px solid #34495e; padding-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
+                勾選常見臨床症狀 
+                <span style="color:#e74c3c; cursor:pointer; font-size:24px;" onclick="closeSymptomsModal()">×</span>
+            </h4>
+            
+            <div class="symp-row"><strong>1. Limb weakness:</strong> <br><label><input type="checkbox" name="symp_limb" value="RU"> RU</label> <label><input type="checkbox" name="symp_limb" value="LU"> LU</label> <label><input type="checkbox" name="symp_limb" value="RL"> RL</label> <label><input type="checkbox" name="symp_limb" value="LL"> LL</label></div>
+            <div class="symp-row"><strong>2. Facial Palsy:</strong> <br><label><input type="checkbox" name="symp_face" value="Right"> Right</label> <label><input type="checkbox" name="symp_face" value="Left"> Left</label></div>
+            <div class="symp-row"><strong>3. Numbness:</strong> <br><label><input type="checkbox" name="symp_numb" value="R facial"> R facial</label> <label><input type="checkbox" name="symp_numb" value="L facial"> L facial</label> <label><input type="checkbox" name="symp_numb" value="RU"> RU</label> <label><input type="checkbox" name="symp_numb" value="LU"> LU</label> <label><input type="checkbox" name="symp_numb" value="RL"> RL</label> <label><input type="checkbox" name="symp_numb" value="LL"> LL</label></div>
+            <div class="symp-row"><strong>4. Gaze deviation:</strong> <br><label><input type="checkbox" name="symp_gaze" value="Right"> Right</label> <label><input type="checkbox" name="symp_gaze" value="Left"> Left</label></div>
+            <div class="symp-row"><strong>5. Speech/Swallowing:</strong> <br><label><input type="checkbox" name="symp_misc" value="Dysarthria"> Dysarthria</label> <label><input type="checkbox" name="symp_misc" value="Dysphagia"> Dysphagia</label></div>
+            <div class="symp-row"><strong>6. Aphasia:</strong> <br><label><input type="checkbox" name="symp_aphasia" value="Motor"> Motor</label> <label><input type="checkbox" name="symp_aphasia" value="Sensory"> Sensory</label> <label><input type="checkbox" name="symp_aphasia" value="Mixed type"> Mixed type</label></div>
+            <div class="symp-row"><strong>7. Tongue deviation:</strong> <br><label><input type="checkbox" name="symp_tongue" value="Right"> Right</label> <label><input type="checkbox" name="symp_tongue" value="Left"> Left</label></div>
+            <div class="symp-row"><strong>8. Gait deviation:</strong> <br><label><input type="checkbox" name="symp_gait" value="Right"> Right</label> <label><input type="checkbox" name="symp_gait" value="Left"> Left</label></div>
+            <div class="symp-row"><strong>9. Limbs ataxia:</strong> <br><label><input type="checkbox" name="symp_ataxia" value="Right"> Right</label> <label><input type="checkbox" name="symp_ataxia" value="Left"> Left</label></div>
+            <div class="symp-row"><strong>10. Dizziness/Vertigo:</strong> <br><label><input type="checkbox" name="symp_misc" value="Dizziness"> Dizziness</label> <label><input type="checkbox" name="symp_misc" value="Vertigo"> Vertigo</label> <label><input type="checkbox" name="symp_misc" value="Nausea/vomiting"> Nausea/vomiting</label></div>
+            <div class="symp-row"><strong>11. Visual:</strong> <br><label><input type="checkbox" name="symp_misc" value="Diplopia"> Diplopia</label></div>
+            <div class="symp-row" style="border-bottom:none;"><strong>12. Consciousness:</strong> <br><label><input type="checkbox" name="symp_misc" value="Coma"> Coma</label> <label><input type="checkbox" name="symp_misc" value="Drowsiness"> Drowsiness</label></div>
+
+            <div style="margin-top:10px; display:flex; gap:10px; justify-content:flex-end;">
+                <button class="sb-btn" style="background:#7f8c8d; padding:10px;" onclick="closeSymptomsModal()">取消</button>
+                <button class="sb-btn sb-btn-copy" style="padding:10px; background:#e67e22;" onclick="applySymptoms()">確認帶入</button>
+            </div>
+        </div>
+    </div>
     
     <div id="img-modal" onclick="closeImgModal()">
         <img id="img-modal-content">
@@ -824,6 +865,66 @@
         }
         function closeImgModal() { document.getElementById('img-modal').style.display = 'none'; }
 
+        // --- 新增：臨床症狀選單與文字生成邏輯 ---
+        function openSymptomsModal() {
+            document.getElementById('symptom-modal').style.display = 'flex';
+        }
+        function closeSymptomsModal() {
+            document.getElementById('symptom-modal').style.display = 'none';
+        }
+        function applySymptoms() {
+            let phrases = [];
+            // 取值小幫手：給予分類名稱，回傳勾選陣列
+            const getVals = (name) => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
+            
+            let limb = getVals('symp_limb');
+            if(limb.length > 0) phrases.push(limb.join(', ') + ' limb weakness');
+            
+            let face = getVals('symp_face');
+            if(face.length > 0) phrases.push(face.join(', ') + ' facial palsy');
+            
+            let numb = getVals('symp_numb');
+            if(numb.length > 0) phrases.push(numb.join(', ') + ' numbness');
+            
+            let gaze = getVals('symp_gaze');
+            if(gaze.length > 0) phrases.push(gaze.join(', ') + ' gaze deviation');
+            
+            let aphasia = getVals('symp_aphasia');
+            if(aphasia.length > 0) phrases.push(aphasia.join(', ') + ' aphasia');
+            
+            let tongue = getVals('symp_tongue');
+            if(tongue.length > 0) phrases.push(tongue.join(', ') + ' tongue deviation');
+            
+            let gait = getVals('symp_gait');
+            if(gait.length > 0) phrases.push(gait.join(', ') + ' gait deviation');
+            
+            let ataxia = getVals('symp_ataxia');
+            if(ataxia.length > 0) phrases.push(ataxia.join(', ') + ' limbs ataxia');
+            
+            let misc = getVals('symp_misc'); // 包含言語吞嚥、意識、頭暈等，不加後綴直接推入
+            if(misc.length > 0) phrases.push(misc.join(', '));
+
+            if(phrases.length > 0) {
+                const textarea = document.getElementById('n_symptoms');
+                // 組合所有語句
+                let newText = phrases.join(', ');
+                // 確保開頭第一個字母大寫
+                newText = newText.charAt(0).toUpperCase() + newText.slice(1);
+                
+                // 如果原本有寫文字，保留並空行再加上新的；如果原本是空的，直接填入
+                if (textarea.value.trim() !== "") {
+                    textarea.value = textarea.value.trim() + '\n' + newText;
+                } else {
+                    textarea.value = newText;
+                }
+                
+                // 清空表單讓下次開啟時是乾淨的
+                document.querySelectorAll('#symptom-modal input[type="checkbox"]').forEach(cb => cb.checked = false);
+            }
+            closeSymptomsModal();
+        }
+
+        
         function getLocalIsoString(date) { const offset = date.getTimezoneOffset() * 60000; return (new Date(date - offset)).toISOString().slice(0, 16); }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
 
