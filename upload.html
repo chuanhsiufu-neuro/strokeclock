@@ -835,8 +835,21 @@
                 const res = await fetch(url); if (!res.ok) throw new Error();
                 const csv = await res.text();
                 const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
-                const td = new Date(); const y = td.getFullYear(); const m = td.getMonth() + 1; const d = td.getDate();
+                
+                // 👇 修正：時間跨日處理邏輯
+                const td = new Date(); 
+                const currentHour = td.getHours();
+                
+                // 如果現在時間是 00:00 ~ 07:59，將搜尋日期倒退回前一天
+                if (currentHour < 8) {
+                    td.setDate(td.getDate() - 1);
+                }
+
+                const y = td.getFullYear(); 
+                const m = td.getMonth() + 1; 
+                const d = td.getDate();
                 const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
+                
                 let fr = rows.find(r => r[0] && possibleDates.some(pd => r[0].includes(pd)));
                 if (fr) {
                     document.getElementById('neuro_dr_m').innerText = fr[3] || "-"; document.getElementById('neuro_dr_a').innerText = fr[4] || "-"; 
@@ -844,11 +857,11 @@
                     document.getElementById('neuro_nur').innerText = fr[7] || "-";
                     statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
                     
-                    const currentHour = new Date().getHours();
                     let activeDr = "-";
-                    if(currentHour >= 8 && currentHour < 12) activeDr = fr[3];
-                    else if(currentHour >= 12 && currentHour < 17) activeDr = fr[4];
-                    else activeDr = fr[5];
+                    // 00:00 ~ 07:59 也會自動落入下方的 else (夜班)，並且使用的是「前一天」的資料
+                    if (currentHour >= 8 && currentHour < 12) activeDr = fr[3];
+                    else if (currentHour >= 12 && currentHour < 17) activeDr = fr[4];
+                    else activeDr = fr[5]; 
                     
                     if(activeDr && activeDr !== "-" && activeDr !== "無" && activeDr.trim() !== "") {
                         currentInHouseDrAvailable = true;
@@ -857,6 +870,7 @@
                     }
                 } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
             } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
+            
             setCapability(currentInHouseDrAvailable);
         }
         
