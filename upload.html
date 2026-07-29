@@ -672,6 +672,7 @@
                 </div>
             </div>
 
+           <!-- --- 替換 1：修改主畫面輸入欄位為 年齡、性別、Pre-mRS --- -->
             <div class="front-row" style="margin-bottom: 12px; display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 6px; width: 100%;">
                 <div style="flex: 0.8; display: flex; flex-direction: column; align-items: flex-start; min-width: 0;">
                     <span style="font-size: 13px; color: #34495e; margin-bottom: 4px; white-space: nowrap;">年齡</span>
@@ -685,12 +686,22 @@
                     </select>
                 </div>
                 <div style="flex: 1.4; display: flex; flex-direction: column; align-items: flex-start; min-width: 0;">
-                    <span style="font-size: 13px; color: #34495e; margin-bottom: 4px; white-space: nowrap;">雲端 ID</span>
-                    <div style="display: flex; width: 100%; gap: 4px; align-items: center;">
-                        <input type="number" id="sync-id" class="front-input" style="width: 100%; text-align: center; padding: 6px 2px; box-sizing: border-box;" placeholder="輸入ID">
-                        <button id="btn-download" class="btn-download" style="flex: 0 0 36px; height: 32px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center;" title="下載資料">⬇️</button>
-                    </div>
+                    <span style="font-size: 13px; color: #34495e; margin-bottom: 4px; white-space: nowrap;">Pre-mRS</span>
+                    <select id="front_n_mrs" class="front-input" style="width: 100%; padding: 6px 2px; box-sizing: border-box;">
+                        <option value="0" selected>0(無症狀)</option>
+                        <option value="1">1(無顯著)</option>
+                        <option value="2">2(輕度)</option>
+                        <option value="3">3(中度)</option>
+                        <option value="4">4(中重度)</option>
+                        <option value="5">5(臥床)</option>
+                    </select>
                 </div>
+            </div>
+            
+            <!-- 隱藏保留原雲端ID與下載按鈕，供背景系統與推播連動使用，避免程式報錯 -->
+            <div style="display: none;">
+                <input type="number" id="sync-id">
+                <button id="btn-download"></button>
             </div>
             
             <div class="time-box">
@@ -1008,7 +1019,8 @@
             
             document.getElementById('n_age').value = row[13] || ""; document.getElementById('side_n_age').value = row[13] || "";
             document.getElementById('n_gender').value = row[14] || "";document.getElementById('side_n_gender').value = row[14] || "";
-            document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('n_symptoms').value = row[16] || "";
+            document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('front_n_mrs').value = row[15] || "0"; // 同步更新首頁的 mRS
+            document.getElementById('n_symptoms').value = row[16] || "";
             
             let gStr = row[17] || "";
             document.querySelectorAll('.main-gfast-cb').forEach(cb => { cb.checked = gStr.includes(cb.value); });
@@ -1851,16 +1863,21 @@ ${tpaBlock}`;
             });
         }
         
-        // ================= 年齡與性別 雙向連動 =================
+        // --- 替換 3：新增 Pre-mRS 雙向連動 =================
         const frontAge = document.getElementById('n_age');
         const sideAge = document.getElementById('side_n_age');
         const frontGender = document.getElementById('n_gender');
         const sideGender = document.getElementById('side_n_gender');
+        const frontMrs = document.getElementById('front_n_mrs');
+        const sideMrs = document.getElementById('n_mrs');
 
         frontAge.addEventListener('input', (e) => sideAge.value = e.target.value);
         frontGender.addEventListener('change', (e) => sideGender.value = e.target.value);
+        frontMrs.addEventListener('change', (e) => sideMrs.value = e.target.value);
+
         sideAge.addEventListener('input', (e) => frontAge.value = e.target.value);
         sideGender.addEventListener('change', (e) => frontGender.value = e.target.value);
+        sideMrs.addEventListener('change', (e) => frontMrs.value = e.target.value);
 
         checkTimeAndUpdateUI();
 
