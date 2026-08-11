@@ -1305,6 +1305,37 @@ ${tpaBlock}`;
             }
         }
 
+        function transferToReferralPlatform() {
+        const d = getGenData();
+        
+        let mappedTpaStatus = "";
+        if (d.rtpaSel === '未施打') mappedTpaStatus = "未施打";
+        else if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') mappedTpaStatus = "有施打";
+    
+        let tpaYesNoteStr = "";
+        if (d.tpaBolusDose || d.tpaCifDose) tpaYesNoteStr = `Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
+    
+        const referralData = {
+            age: d.age, gender: d.gender, mrs: d.mrs, onset: d.onset, door: d.door,
+            occlusion: d.ctaDesc, nihssRaw: d.nihssRaw, nihssScore: d.nihssScore,
+            symptoms: d.symptoms + (d.neText ? "\n\n" + d.neText : ""), 
+            pmhList: d.pmhList, pmhOther: document.getElementById('n_pmh_other').value,
+            cre: d.cre, labOther: d.labOther, tpaStatus: mappedTpaStatus,
+            tpaDose: (mappedTpaStatus === '有施打') ? d.rtpaSel : "",
+            tpaBolusTime: d.tpaBolusTime, tpaYesNote: tpaYesNoteStr, tpaNoNote: d.rtpaText,
+            famSel: d.famSel, famText: d.famText
+        };
+    
+        // 將資料轉成 JSON 字串，再進行 Base64 與 URL 安全編碼 (支援中文字)
+        const jsonString = JSON.stringify(referralData);
+        const encodedData = btoa(encodeURIComponent(jsonString));
+        
+        // ⚠️ 替換成您轉診平台 clinical.html 的真實完整網址
+        const targetUrl = `https://chuanhsiufu-neuro.github.io/EVTtransfer/clinical.html?draftData=${encodedData}`;
+        
+        window.open(targetUrl, '_blank');
+        }    
+        
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
 
         // =======================
