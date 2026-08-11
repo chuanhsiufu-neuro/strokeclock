@@ -121,12 +121,12 @@
 
         #sync-status { font-size: 14px; font-weight: bold; color: #7f8c8d; margin-bottom: 15px; display: block; min-height: 20px; line-height: 1.4;}
 
-        /* --- Swiper與新版時鐘介面樣式 (放大圖片與加入Hover) --- */
+        /* --- Swiper與新版時鐘介面樣式 --- */
         .swiper-container-wrapper { background-color: #ffffff; padding: 5px 0 15px 0; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); width: 90%; max-width: 500px; border-radius: 8px; }
-        .swiper { width: 100%; height: 350px; /* 高度再放大至 350px */ }
+        .swiper { width: 100%; height: 350px; }
         .swiper-slide { display: flex; justify-content: center; align-items: center; background-color: #fff; overflow: hidden; border-radius: 6px; }
         .swiper-slide img { max-width: 95%; max-height: 100%; object-fit: contain; transition: transform 0.3s ease; }
-        .swiper-slide img:hover { transform: scale(1.15); cursor: zoom-in; } /* 加入游標移入放大效果 */
+        .swiper-slide img:hover { transform: scale(1.15); cursor: zoom-in; } 
         .image-placeholder { width: 95%; height: 300px; background-color: #eee; display: flex; justify-content: center; align-items: center; color: #888; border: 2px dashed #ccc; border-radius: 10px; }
         
         .slogan-container { display: flex; width: 90%; max-width: 500px; margin: 0 auto 15px; background-color: #fff; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); overflow: hidden; min-height: 80px; }
@@ -156,28 +156,27 @@
         .edu-img { cursor: pointer; transition: transform 0.2s; }
         .edu-img:hover { transform: scale(1.02); box-shadow: 0 0 8px rgba(255,255,255,0.3); }
 
-        /* 臨床影像上傳區塊樣式 */
-        .image-upload-section { background-color: #1a252f; border: 1px solid #34495e; border-radius: 8px; padding: 15px; margin: 20px 15px 15px 15px; color: #ecf0f1; }
-        .image-upload-section h4 { margin: 0 0 12px 0; font-size: 15px; color: #f1c40f; }
-        .upload-method { margin-bottom: 15px; }
-        .method-title { font-size: 13px; font-weight: bold; margin-bottom: 8px; color: #bdc3c7; }
-        .dropzone { border: 2px dashed #7f8c8d; border-radius: 6px; background-color: #2c3e50; padding: 15px 10px; text-align: center; cursor: pointer; transition: 0.2s; }
-        .dropzone:hover { background-color: #34495e; border-color: #bdc3c7; }
-        .dropzone-content .icon { font-size: 24px; display: block; margin-bottom: 5px; }
-        .dropzone-content strong { font-size: 13px; color: #ecf0f1; display: block;}
-        .hint-text { font-size: 11px; color: #95a5a6; margin-top: 4px; }
-        .file-list { list-style: none; padding: 0; margin-top: 10px; }
-        .file-list li { font-size: 12px; background: #34495e; padding: 6px 10px; border-radius: 4px; margin-bottom: 6px; display: flex; justify-content: space-between; color: #ecf0f1; }
-        .uploaded-link-item { display: flex; align-items: center; gap: 6px; background-color: #2c3e50; color: #3498db; text-decoration: none; padding: 8px 12px; border-radius: 6px; font-size: 13px; margin-bottom: 8px; border: 1px solid #34495e; transition: 0.2s; word-break: break-all; }
-        .uploaded-link-item:hover { background-color: #34495e; border-color: #3498db; color: #2ecc71; }
-
-        /* --- 新增：臨床病程症狀選擇 Modal 樣式 --- */
+        /* --- 臨床病程症狀選擇 Modal 樣式 --- */
         #symptom-modal { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10000; align-items:center; justify-content:center; }
-        .symp-modal-content { background:#2c3e50; padding:20px; border-radius:8px; width:90%; max-width:450px; max-height:85vh; overflow-y:auto; color:#ecf0f1; text-align:left; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .symp-modal-content { background:#2c3e50; padding:20px; border-radius:8px; width:90%; max-width:550px; max-height:85vh; overflow-y:auto; color:#ecf0f1; text-align:left; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
         .symp-row { margin-bottom: 12px; font-size: 15px; border-bottom: 1px dashed #34495e; padding-bottom: 10px; }
         .symp-row strong { color: #f1c40f; display: inline-block; margin-bottom: 6px; font-size: 16px; }
         .symp-row label { margin-right: 12px; display: inline-flex; align-items: center; cursor: pointer; color: #bdc3c7; }
         .symp-row input[type="checkbox"] { margin-right: 4px; width: 16px; height: 16px; cursor: pointer; }
+        .side-label { display: inline-block; width: 100px; font-weight: bold; color: #3498db; }
+
+        /* Modal 內按鈕與微排版支援 */
+        .btn-custom { padding: 8px 14px; border-radius: 6px; font-weight: bold; font-size: 14px; border: none; cursor: pointer; transition: 0.2s; display: inline-flex; align-items: center; justify-content: center; }
+        .btn-custom:hover { opacity: 0.88; transform: translateY(-1px); }
+        .btn-theme-primary   { background-color: #3498db; color: white; }
+        .btn-theme-danger    { background-color: #e74c3c; color: white; }
+        .btn-theme-secondary { background-color: #7f8c8d; color: white; }
+        .btn-theme-dark      { background-color: #e67e22; color: white; } 
+        .py-1 { padding-top: 4px; padding-bottom: 4px; }
+        .px-2 { padding-left: 8px; padding-right: 8px; }
+        .ms-1 { margin-left: 4px; }
+        .ms-2 { margin-left: 8px; }
+        .fs-7 { font-size: 12px; }
         
     </style>
 </head>
@@ -287,7 +286,6 @@
                     <div style="flex:1;"><input type="datetime-local" id="n_neuro_arrival" class="sb-input" step="1"></div>
                 </div>
                 
-                <!-- --- 替換：臨床病程標題加上「📋選單」按鈕 --- -->
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">
                     <span class="sb-label" style="margin-bottom: 0;">臨床病程 (Clinical course)</span>
                     <button class="icon-btn small" title="常見症狀快速帶入" onclick="openSymptomsModal()" style="color: #f1c40f; font-size: 16px; font-weight: bold; background: #34495e; padding: 2px 8px; border-radius: 4px;">📋選單</button>
@@ -303,9 +301,10 @@
                     <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
                         <span class="sb-label" style="margin:0; font-weight:bold; color:#3498db;">神經學檢查 (NE)</span>
                         <div style="display:flex; gap:10px;">
-                            <label class="sb-cb-label" style="color:#2ecc71;"><input type="radio" name="ne_template" value="L"> L't MCA</label>
-                            <label class="sb-cb-label" style="color:#e67e22;"><input type="radio" name="ne_template" value="R"> R't MCA</label>
-                        </div>
+    <label class="sb-cb-label" style="color:#2ecc71;"><input type="radio" name="ne_template" value="L"> L't MCA</label>
+    <label class="sb-cb-label" style="color:#e67e22;"><input type="radio" name="ne_template" value="R"> R't MCA</label>
+    <label class="sb-cb-label" style="color:#e74c3c;"><input type="radio" name="ne_template" value="BAO"> BAO</label>
+</div>
                     </div>
                     <textarea id="n_ne_text" rows="6" class="sb-textarea" placeholder="勾選上方帶入範本，或手 manual 輸入..."></textarea>
                 </div>
@@ -484,32 +483,17 @@
                 <div class="sb-row" style="margin-bottom: 8px;"><div><span class="sb-label">家屬</span><select id="t_fam_sel" class="sb-select"><option value=""></option><option value="配偶">配偶</option><option value="子女">子女</option><option value="父母">父母</option><option value="手足">手足</option><option value="其他">其他</option></select></div><div><span class="sb-label">備註</span><input type="text" id="t_fam_text" class="sb-input"></div></div>
                 <span class="sb-label">同意轉院取栓</span><select id="t_consent" class="sb-select"><option value=""></option><option value="是">是</option><option value="考慮中">考慮中</option></select>
             </div>
-            <div class="sb-btn-group"><button class="sb-btn sb-btn-gen" onclick="genTransferText()" style="background-color:#e67e22;">📝 生成轉診單</button><button class="sb-btn sb-btn-copy" onclick="copyBoxText('t-output')">📋 複製內容</button></div>
+            <div class="sb-btn-group">
+                <button class="sb-btn sb-btn-gen" onclick="genTransferText()" style="background-color:#e67e22;">📝 生成轉診單</button>
+                <button class="sb-btn sb-btn-copy" onclick="copyBoxText('t-output')">📋 複製內容</button>
+            </div>
+
+            <!-- 🌟 一鍵帶入區域聯防表單 (clinical.html) -->
+            <button class="sb-btn" style="background-color:#8e44ad; width: 100%; margin: 15px 15px 0 15px; box-sizing: border-box;" onclick="transferToReferralPlatform()">
+                🚀 一鍵帶入區域聯防表單
+            </button>
             
             <div id="t-output" class="output-box" style="border-left-color: #e67e22;"></div>
-
-            <div class="image-upload-section">
-                <h4>📁 臨床影像提供 (支援檔案/照相/錄影)</h4>
-                
-                <div class="upload-method">
-                    <p class="method-title"> 開啟相機/檔案上傳</p>
-                    <div class="dropzone" id="uploadDropzone">
-                        <input type="file" id="fileInput" accept="image/*,video/*" multiple style="display: none;">
-                        <div class="dropzone-content">
-                            <span class="icon">📷</span>
-                            <strong>點擊開啟相機 (可重覆追加拍攝)</strong>
-                            <p class="hint-text">(照片將顯示於下方，點擊上傳按鈕才會發送)</p>
-                        </div>
-                    </div>
-                    <ul id="filePreviewList" class="file-list"></ul>
-                    <button id="btn-drive-upload" class="sb-btn sb-btn-gen" style="width: 100%; margin-top: 10px; background-color: #27ae60; display: none;">☁️ 開始上傳至雲端資料夾</button>
-                    <!-- 上傳成功後顯示連結的區塊 -->
-                    <div id="uploaded-links-container" style="display: none; margin-top: 15px; padding-top: 12px; border-top: 1px dashed #7f8c8d; text-align: left;">
-                        <div style="font-size: 13px; color: #2ecc71; margin-bottom: 8px; font-weight: bold;">✅ 上傳成功 (點擊可直接預覽)：</div>
-                        <div id="uploaded-links-list"></div>
-                    </div>
-                </div>
-            </div>
 
             <div class="checklist-container" style="margin-top: 25px;">
                 <div class="sb-title yellow">本院無取栓人力-轉院提醒</div>
@@ -602,7 +586,7 @@
         </div>
     </div> 
 
-    <!-- --- 新增：症狀選擇表單 Modal --- -->
+    <!-- --- 症狀選擇表單 Modal --- -->
     <div id="symptom-modal" onclick="if(event.target===this) closeSymptomsModal()">
         <div class="symp-modal-content">
             <h4 style="margin-top:0; color:#2ecc71; border-bottom:1px solid #34495e; padding-bottom:10px; display:flex; justify-content:space-between; align-items:center;">
@@ -610,22 +594,87 @@
                 <span style="color:#e74c3c; cursor:pointer; font-size:24px;" onclick="closeSymptomsModal()">×</span>
             </h4>
             
-            <div class="symp-row"><strong>1. Limb weakness:</strong> <br><label><input type="checkbox" name="symp_limb" value="RU"> RU</label> <label><input type="checkbox" name="symp_limb" value="LU"> LU</label> <label><input type="checkbox" name="symp_limb" value="RL"> RL</label> <label><input type="checkbox" name="symp_limb" value="LL"> LL</label></div>
-            <div class="symp-row"><strong>2. Facial Palsy:</strong> <br><label><input type="checkbox" name="symp_face" value="Right"> Right</label> <label><input type="checkbox" name="symp_face" value="Left"> Left</label></div>
-            <div class="symp-row"><strong>3. Numbness:</strong> <br><label><input type="checkbox" name="symp_numb" value="R facial"> R facial</label> <label><input type="checkbox" name="symp_numb" value="L facial"> L facial</label> <label><input type="checkbox" name="symp_numb" value="RU"> RU</label> <label><input type="checkbox" name="symp_numb" value="LU"> LU</label> <label><input type="checkbox" name="symp_numb" value="RL"> RL</label> <label><input type="checkbox" name="symp_numb" value="LL"> LL</label></div>
-            <div class="symp-row"><strong>4. Gaze deviation:</strong> <br><label><input type="checkbox" name="symp_gaze" value="Right"> Right</label> <label><input type="checkbox" name="symp_gaze" value="Left"> Left</label></div>
-            <div class="symp-row"><strong>5. Speech/Swallowing:</strong> <br><label><input type="checkbox" name="symp_misc" value="Dysarthria"> Dysarthria</label> <label><input type="checkbox" name="symp_misc" value="Dysphagia"> Dysphagia</label></div>
-            <div class="symp-row"><strong>6. Aphasia:</strong> <br><label><input type="checkbox" name="symp_aphasia" value="Motor"> Motor</label> <label><input type="checkbox" name="symp_aphasia" value="Sensory"> Sensory</label> <label><input type="checkbox" name="symp_aphasia" value="Mixed type"> Mixed type</label></div>
-            <div class="symp-row"><strong>7. Tongue deviation:</strong> <br><label><input type="checkbox" name="symp_tongue" value="Right"> Right</label> <label><input type="checkbox" name="symp_tongue" value="Left"> Left</label></div>
-            <div class="symp-row"><strong>8. Gait deviation:</strong> <br><label><input type="checkbox" name="symp_gait" value="Right"> Right</label> <label><input type="checkbox" name="symp_gait" value="Left"> Left</label></div>
-            <div class="symp-row"><strong>9. Limbs ataxia:</strong> <br><label><input type="checkbox" name="symp_ataxia" value="Right"> Right</label> <label><input type="checkbox" name="symp_ataxia" value="Left"> Left</label></div>
-            <div class="symp-row"><strong>10. Dizziness/Vertigo:</strong> <br><label><input type="checkbox" name="symp_misc" value="Dizziness"> Dizziness</label> <label><input type="checkbox" name="symp_misc" value="Vertigo"> Vertigo</label> <label><input type="checkbox" name="symp_misc" value="Nausea/vomiting"> Nausea/vomiting</label></div>
-            <div class="symp-row"><strong>11. Visual:</strong> <br><label><input type="checkbox" name="symp_misc" value="Diplopia"> Diplopia</label></div>
-            <div class="symp-row" style="border-bottom:none;"><strong>12. Consciousness:</strong> <br><label><input type="checkbox" name="symp_misc" value="Coma"> Coma</label> <label><input type="checkbox" name="symp_misc" value="Drowsiness"> Drowsiness</label></div>
+            <div class="symp-row">
+                <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                    <strong style="margin-bottom: 0;">1. Weakness / Numbness:</strong>
+                    <button type="button" class="btn-custom btn-theme-danger py-1 px-2 ms-2 fs-7" onclick="checkSide('L')">L 全選</button>
+                    <button type="button" class="btn-custom btn-theme-primary py-1 px-2 ms-1 fs-7" onclick="checkSide('R')">R 全選</button>
+                </div>
+                
+                <span class="side-label">Facial palsy:</span> 
+                <label><input type="checkbox" value="L facial palsy"> Left</label> 
+                <label><input type="checkbox" value="R facial palsy"> Right</label><br>
+                
+                <span class="side-label">Upper limb:</span> 
+                <label><input type="checkbox" value="LU weakness"> Left</label> 
+                <label><input type="checkbox" value="RU weakness"> Right</label><br>
+                
+                <span class="side-label">Lower limb:</span> 
+                <label><input type="checkbox" value="LL weakness"> Left</label> 
+                <label><input type="checkbox" value="RL weakness"> Right</label><br>
 
+                <span class="side-label">Numbness:</span> 
+                <label><input type="checkbox" value="L numbness"> Left</label> 
+                <label><input type="checkbox" value="R numbness"> Right</label>
+            </div>
+
+            <div class="symp-row">
+                <strong>2. Speech:</strong><br>
+                <label><input type="checkbox" value="Dysarthria"> Dysarthria</label><br>
+                <span class="side-label">Aphasia:</span> 
+                <label><input type="checkbox" value="Motor aphasia"> Motor</label> 
+                <label><input type="checkbox" value="Sensory aphasia"> Sensory</label> 
+                <label><input type="checkbox" value="Global aphasia"> Global</label>
+            </div>
+
+            <div class="symp-row">
+                <strong>3. Gaze deviation:</strong><br>
+                <span class="side-label">Direction:</span>
+                <label><input type="checkbox" value="L gaze deviation"> Left</label> 
+                <label><input type="checkbox" value="R gaze deviation"> Right</label> 
+                <label><input type="checkbox" value="Dysconjugate gaze"> Dysconjugate</label>
+            </div>
+
+            <div class="symp-row">
+                <strong>4. Cortical signs:</strong><br>
+                <span class="side-label">Hemianopia:</span> 
+                <label><input type="checkbox" value="L hemianopia"> Left</label> 
+                <label><input type="checkbox" value="R hemianopia"> Right</label><br>
+                
+                <span class="side-label">Hemineglect:</span> 
+                <label><input type="checkbox" value="L hemineglect"> Left</label> 
+                <label><input type="checkbox" value="R hemineglect"> Right</label>
+            </div>
+
+            <div class="symp-row">
+                <strong>5. Ataxia:</strong><br>
+                <span class="side-label">Upper limb:</span> 
+                <label><input type="checkbox" value="L upper limb ataxia"> Left</label> 
+                <label><input type="checkbox" value="R upper limb ataxia"> Right</label><br>
+                
+                <span class="side-label">Lower limb:</span> 
+                <label><input type="checkbox" value="L lower limb ataxia"> Left</label> 
+                <label><input type="checkbox" value="R lower limb ataxia"> Right</label><br>
+                
+                <span class="side-label">Gait:</span> 
+                <label><input type="checkbox" value="gait ataxia"> Gait deviation</label>
+            </div>
+
+            <div class="symp-row" style="border-bottom:none;">
+                <strong>6. Others:</strong><br>
+                <div style="margin-top:5px;">
+                    <label><input type="checkbox" value="dizziness"> dizziness</label> 
+                    <label><input type="checkbox" value="nausea/vomiting"> nausea/vomiting</label>
+                </div>
+                <div style="margin-top:5px;">
+                    <label><input type="checkbox" value="drowsiness"> drowsiness</label> 
+                    <label><input type="checkbox" value="coma"> coma</label>
+                </div>
+            </div>
+            
             <div style="margin-top:10px; display:flex; gap:10px; justify-content:flex-end;">
-                <button class="sb-btn" style="background:#7f8c8d; padding:10px;" onclick="closeSymptomsModal()">取消</button>
-                <button class="sb-btn sb-btn-copy" style="padding:10px; background:#e67e22;" onclick="applySymptoms()">確認帶入</button>
+                <button class="btn-custom btn-theme-secondary" type="button" onclick="closeSymptomsModal()">取消</button>
+                <button class="btn-custom btn-theme-dark" type="button" onclick="applySymptoms()">✅ 帶入勾選症狀</button>
             </div>
         </div>
     </div>
@@ -640,7 +689,6 @@
         目前時間：<span id="front-sys-time">載入中...</span>
     </div>
 
-    <!-- 🌟 新版時間紀錄器與 Swiper 區域 (初始隱藏，點擊啟動後顯示) -->
     <div id="door-clock-title" style="display: none; font-size: 18px; font-weight: bold; color: #333; margin: 0 auto 5px auto; text-align: center; width: 90%; max-width: 500px;">Time from Door</div>
     <div class="timer-display" id="door-timer" style="display: none;">
       00:00<span>00</span>
@@ -689,7 +737,6 @@
         <div id="onset-clock-container">
             <div id="onset-clock-title">
                 Time from LNT/Onset
-                <!-- 💾 上傳按鈕被移到這裡 -->
                 <button id="btn-upload" class="icon-btn small" title="儲存/上傳更新" style="font-size: 24px; margin-left: 10px; color: #3498db; vertical-align: middle;">💾</button>
             </div>
             <div id="onset-clock" style="width: 100%; max-width: 500px;"><span id="onset-clock-display">00 小時 00 分鐘</span></div>
@@ -713,7 +760,6 @@
                 </div>
             </div>
 
-           <!-- --- 替換 1：修改主畫面輸入欄位為 年齡、性別、Pre-mRS --- -->
             <div class="front-row" style="margin-bottom: 12px; display: flex; flex-wrap: nowrap; align-items: flex-end; gap: 6px; width: 100%;">
                 <div style="flex: 0.8; display: flex; flex-direction: column; align-items: flex-start; min-width: 0;">
                     <span style="font-size: 13px; color: #34495e; margin-bottom: 4px; white-space: nowrap;">年齡</span>
@@ -739,7 +785,6 @@
                 </div>
             </div>
             
-            <!-- 隱藏保留原雲端ID與下載按鈕，供背景系統與推播連動使用，避免程式報錯 -->
             <div style="display: none;">
                 <input type="number" id="sync-id">
                 <button id="btn-download"></button>
@@ -764,7 +809,6 @@
 
         <span id="sync-status">歡迎使用雲端系統</span>
 
-        <!-- 🌟 新版：雲端最新狀態整合區域 -->
         <div id="latest-cloud-board" style="width: 90%; max-width: 500px; margin: 10px auto 0 auto; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left;">
             <div style="font-weight: bold; color: #f1c40f; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
                 <span>🔔</span> 雲端最新個案狀態 (5秒即時同步)
@@ -773,7 +817,6 @@
                 最新編號：<span id="lbl-latest-id" style="font-weight: bold; color: #2ecc71; font-size: 16px;">-</span> | 目前編號：<span id="lbl-current-id" style="color: #3498db; font-weight: bold; font-size: 16px;">未建立</span><br>
                 檢傷時間：<span id="lbl-latest-door" style="color: #bdc3c7;">-</span>
             </div>
-            <!-- 將切換編號功能併入此處 -->
             <div style="display: flex; gap: 6px; margin-top: 10px; align-items: center; background: #2c3e50; padding: 6px 8px; border-radius: 6px; max-width: 100%; box-sizing: border-box;">
                 <span style="color: #f1c40f; font-size: 13px; font-weight: bold; white-space: nowrap; flex-shrink: 0;">切換 ID:</span>
                 <input type="number" id="active-sync-id" class="front-input" style="flex: 1; min-width: 0; text-align: center; padding: 6px 2px; background-color: #fff; color: #333;" placeholder="輸入ID">
@@ -833,25 +876,6 @@
         }
         
         let currentRecordId = null; 
-        let currentCaseImages = []; 
-
-        function renderUploadedLinks() {
-            const linksContainer = document.getElementById('uploaded-links-container');
-            const linksList = document.getElementById('uploaded-links-list');
-            linksList.innerHTML = ''; 
-            if (currentCaseImages && currentCaseImages.length > 0) {
-                linksContainer.style.display = 'block';
-                currentCaseImages.forEach((item, index) => {
-                    const href = item.url ? item.url : "#";
-                    const target = item.url ? 'target="_blank"' : '';
-                    const hint = item.url ? '' : ' (⚠️ 未回傳網址)';
-                    linksList.innerHTML += `<a href="${href}" ${target} class="uploaded-link-item">🔗 ${item.name} ${hint}</a>`;
-                });
-            } else {
-                linksContainer.style.display = 'none';
-            }
-        }
-        
         let currentInHouseDrAvailable = false; 
         
         function openImgModal(src) {
@@ -865,53 +889,37 @@
         }
         function closeImgModal() { document.getElementById('img-modal').style.display = 'none'; }
 
-        // --- 新增：臨床症狀選單與文字生成邏輯 ---
+       // --- 臨床症狀選單與文字生成邏輯 ---
+        function checkSide(side) {
+            if (side === 'L') {
+                const newState = !document.querySelector('input[value="L facial palsy"]').checked;
+                document.querySelector('input[value="L facial palsy"]').checked = newState;
+                document.querySelector('input[value="LU weakness"]').checked = newState;
+                document.querySelector('input[value="LL weakness"]').checked = newState;
+                document.querySelector('input[value="L numbness"]').checked = newState;
+            } else if (side === 'R') {
+                const newState = !document.querySelector('input[value="R facial palsy"]').checked;
+                document.querySelector('input[value="R facial palsy"]').checked = newState;
+                document.querySelector('input[value="RU weakness"]').checked = newState;
+                document.querySelector('input[value="RL weakness"]').checked = newState;
+                document.querySelector('input[value="R numbness"]').checked = newState;
+            }
+        }
+
         function openSymptomsModal() {
             document.getElementById('symptom-modal').style.display = 'flex';
         }
         function closeSymptomsModal() {
             document.getElementById('symptom-modal').style.display = 'none';
         }
+        
         function applySymptoms() {
-            let phrases = [];
-            // 取值小幫手：給予分類名稱，回傳勾選陣列
-            const getVals = (name) => Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(el => el.value);
-            
-            let limb = getVals('symp_limb');
-            if(limb.length > 0) phrases.push(limb.join(', ') + ' limb weakness');
-            
-            let face = getVals('symp_face');
-            if(face.length > 0) phrases.push(face.join(', ') + ' facial palsy');
-            
-            let numb = getVals('symp_numb');
-            if(numb.length > 0) phrases.push(numb.join(', ') + ' numbness');
-            
-            let gaze = getVals('symp_gaze');
-            if(gaze.length > 0) phrases.push(gaze.join(', ') + ' gaze deviation');
-            
-            let aphasia = getVals('symp_aphasia');
-            if(aphasia.length > 0) phrases.push(aphasia.join(', ') + ' aphasia');
-            
-            let tongue = getVals('symp_tongue');
-            if(tongue.length > 0) phrases.push(tongue.join(', ') + ' tongue deviation');
-            
-            let gait = getVals('symp_gait');
-            if(gait.length > 0) phrases.push(gait.join(', ') + ' gait deviation');
-            
-            let ataxia = getVals('symp_ataxia');
-            if(ataxia.length > 0) phrases.push(ataxia.join(', ') + ' limbs ataxia');
-            
-            let misc = getVals('symp_misc'); // 包含言語吞嚥、意識、頭暈等，不加後綴直接推入
-            if(misc.length > 0) phrases.push(misc.join(', '));
-
-            if(phrases.length > 0) {
-                const textarea = document.getElementById('n_symptoms');
-                // 組合所有語句
-                let newText = phrases.join(', ');
-                // 確保開頭第一個字母大寫
+            let checkedBoxes = Array.from(document.querySelectorAll('#symptom-modal input[type="checkbox"]:checked')).map(cb => cb.value);
+            if (checkedBoxes.length > 0) {
+                const textarea = document.getElementById('n_symptoms'); // 院內版是寫入 n_symptoms 欄位
+                let newText = checkedBoxes.join(', ');
                 newText = newText.charAt(0).toUpperCase() + newText.slice(1);
                 
-                // 如果原本有寫文字，保留並空行再加上新的；如果原本是空的，直接填入
                 if (textarea.value.trim() !== "") {
                     textarea.value = textarea.value.trim() + '\n' + newText;
                 } else {
@@ -923,7 +931,6 @@
             }
             closeSymptomsModal();
         }
-
         
         function getLocalIsoString(date) { const offset = date.getTimezoneOffset() * 60000; return (new Date(date - offset)).toISOString().slice(0, 16); }
         function formatDT(val) { return val ? val.replace('T', ' ') : ""; }
@@ -948,11 +955,9 @@
                 const csv = await res.text();
                 const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
                 
-                // 👇 修正：時間跨日處理邏輯
                 const td = new Date(); 
                 const currentHour = td.getHours();
                 
-                // 如果現在時間是 00:00 ~ 07:59，將搜尋日期倒退回前一天
                 if (currentHour < 8) {
                     td.setDate(td.getDate() - 1);
                 }
@@ -970,7 +975,6 @@
                     statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
                     
                     let activeDr = "-";
-                    // 00:00 ~ 07:59 也會自動落入下方的 else (夜班)，並且使用的是「前一天」的資料
                     if (currentHour >= 8 && currentHour < 12) activeDr = fr[3];
                     else if (currentHour >= 12 && currentHour < 17) activeDr = fr[4];
                     else activeDr = fr[5]; 
@@ -1021,18 +1025,33 @@
 
         const neTemplateL = `[NE]\nGCS   E3M5V2\nLanguage: mute, failed in naming/repetition\nNeglect: not demonstratable\nCN:\nPupil 3/3, light reflex +/+, right hemianopia to threatening\nEOM: forced deviation to the left, could not be corrected by VOR\nFace: right central facial palsy\n\nMP:\nRUL/LUL 2(to pain) / >4\nRLL/LLL  2~3 可踩床/>4\n\nBabinski R/L +/-\nSensation: right limbs hypesthesia to pain\nFNF, HKS: could not cooperate`;
         const neTemplateR = `[NE]\nGCS   E3M6V3\nLanguage: fluent, could follow 1 step order\nNeglect: left neglect to auditory stimuli\n\nPupil 3/3, light reflex +/+, left hemianopia to threatening\nEOM: forced deviation to his right, not be corrected by VOR\nFace: left central facial palsy\n\nMP:\nRUL/LUL 5/ 2(to pain)\nRLL/LLL 5/ 2~3 可踩床\n\nBabinski R/L flexor/extensor\nSensation: nearly loss over left limbs to pain\nFNF, HKS: could not cooperate`;
+const neTemplateBAO = `[NE]
+GCS E1poorM4V1
+Pupil 3/3, light reflex -/-
+EOM: dysconjugate
+VOR -/- 
+Face: bilateral facial palsy
 
-        document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
-            radio.addEventListener('change', function() {
-                if (this.value === 'L') { 
-                    document.getElementById('n_ne_text').value = neTemplateL; 
-                    document.getElementById('n_nihss').value = "021 121 0302 01320";
-                } else if (this.value === 'R') { 
-                    document.getElementById('n_ne_text').value = neTemplateR; 
-                    document.getElementById('n_nihss').value = "010 121 3020 02012";
-                }
-                calcNeuroNIHSS();
-            });
+MP: 1~2/1~2
+
+Babinski R/L extensor/extensor
+Sensation: poor response to pain stimuli over limbs`;
+
+document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        if (this.value === 'L') { 
+            document.getElementById('n_ne_text').value = neTemplateL; 
+            document.getElementById('n_nihss').value = "021 121 0302 01320";
+        } else if (this.value === 'R') { 
+            document.getElementById('n_ne_text').value = neTemplateR; 
+            document.getElementById('n_nihss').value = "010 121 3020 02012";
+        // ✨ 2. 新增這個 else if 來處理點擊 BAO 的動作
+        } else if (this.value === 'BAO') {
+            document.getElementById('n_ne_text').value = neTemplateBAO; 
+            document.getElementById('n_nihss').value = "322 233 4444 02320";
+        }
+        calcNeuroNIHSS();
+    });
         });
 
         document.getElementById('n_onset').value = getLocalIsoString(new Date());
@@ -1089,7 +1108,7 @@
                 document.getElementById('t_fam_sel').value,                
                 document.getElementById('t_fam_text').value,               
                 document.getElementById('t_consent').value,                
-                JSON.stringify(currentCaseImages),                         
+                "",                                                        
                 "", "", "", "", "", "", "", "",
                 get24hTimeStr()                                            
             ];
@@ -1120,7 +1139,7 @@
             
             document.getElementById('n_age').value = row[13] || ""; document.getElementById('side_n_age').value = row[13] || "";
             document.getElementById('n_gender').value = row[14] || "";document.getElementById('side_n_gender').value = row[14] || "";
-            document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('front_n_mrs').value = row[15] || "0"; // 同步更新首頁的 mRS
+            document.getElementById('n_mrs').value = row[15] || ""; document.getElementById('front_n_mrs').value = row[15] || "0"; 
             document.getElementById('n_symptoms').value = row[16] || "";
             
             let gStr = row[17] || "";
@@ -1141,11 +1160,6 @@
             document.getElementById('t_hosp_out').value = row[29] || "新竹台大"; document.getElementById('t_hosp_in').value = row[30] || "皆可";
             document.getElementById('t_fam_sel').value = row[31] || ""; document.getElementById('t_fam_text').value = row[32] || "";
             document.getElementById('t_consent').value = row[33] || ""; 
-
-            let imgDataStr = row[34] || ""; 
-            currentCaseImages = [];
-            try { if (row[34]) { currentCaseImages = JSON.parse(row[34]); } } catch (e) { console.log("解析雲端影像資料失敗或無資料"); }
-            renderUploadedLinks(); 
           
             toggleNeuroRtpa();
             document.getElementById('cb-ncct').checked = !!row[7]; document.getElementById('cb-tpa').checked = !!row[8];
@@ -1243,7 +1257,7 @@ ${tpaBlock}`;
             document.getElementById('sidebar').scrollTo({ top: document.getElementById('sidebar').scrollHeight, behavior: 'smooth' });
         }
 
-       function genTransferText() {
+        function genTransferText() {
             const d = getGenData(); 
             let pmhStr = d.pmhList && d.pmhList.length > 0 ? d.pmhList.join(', ') : "無/未明";
             
@@ -1261,13 +1275,6 @@ ${tpaBlock}`;
             }
             if (d.ctaChecked || document.getElementById('time-cta').value) {
                 imageLine += `\n   - brain CTA: ${d.ctaDesc || "未輸入描述"}`;
-            }
-            
-            if (typeof currentCaseImages !== 'undefined' && currentCaseImages && currentCaseImages.length > 0) {
-                imageLine += `\n   - 雲端影像預覽:`;
-                currentCaseImages.forEach(img => {
-                    if(img.url) imageLine += `\n     🔗 ${img.name}: ${img.url}`;
-                });
             }
 
             let neuroEvalParts = [];
@@ -1305,41 +1312,37 @@ ${tpaBlock}`;
             }
         }
 
-        function transferToReferralPlatform() {
-        const d = getGenData();
-        
-        let mappedTpaStatus = "";
-        if (d.rtpaSel === '未施打') mappedTpaStatus = "未施打";
-        else if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') mappedTpaStatus = "有施打";
-    
-        let tpaYesNoteStr = "";
-        if (d.tpaBolusDose || d.tpaCifDose) tpaYesNoteStr = `Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
-    
-        const referralData = {
-            age: d.age, gender: d.gender, mrs: d.mrs, onset: d.onset, door: d.door,
-            occlusion: d.ctaDesc, nihssRaw: d.nihssRaw, nihssScore: d.nihssScore,
-            symptoms: d.symptoms + (d.neText ? "\n\n" + d.neText : ""), 
-            pmhList: d.pmhList, pmhOther: document.getElementById('n_pmh_other').value,
-            cre: d.cre, labOther: d.labOther, tpaStatus: mappedTpaStatus,
-            tpaDose: (mappedTpaStatus === '有施打') ? d.rtpaSel : "",
-            tpaBolusTime: d.tpaBolusTime, tpaYesNote: tpaYesNoteStr, tpaNoNote: d.rtpaText,
-            famSel: d.famSel, famText: d.famText
-        };
-    
-        // 將資料轉成 JSON 字串，再進行 Base64 與 URL 安全編碼 (支援中文字)
-        const jsonString = JSON.stringify(referralData);
-        const encodedData = btoa(encodeURIComponent(jsonString));
-        
-        // ⚠️ 替換成您轉診平台 clinical.html 的真實完整網址
-        const targetUrl = `https://chuanhsiufu-neuro.github.io/EVTtransfer/clinical.html?draftData=${encodedData}`;
-        
-        window.open(targetUrl, '_blank');
-        }    
-        
         function copyBoxText(id) { const txt = document.getElementById(id).innerText; if(txt) navigator.clipboard.writeText(txt).then(()=>alert("已複製")); }
 
+       // 🌟 拋轉至轉診平台功能 (已移除 NE 帶入)
+        function transferToReferralPlatform() {
+            const d = getGenData();
+            
+            let mappedTpaStatus = "";
+            if (d.rtpaSel === '未施打') mappedTpaStatus = "未施打";
+            else if (d.rtpaSel === '0.6 mg/kg' || d.rtpaSel === '0.9 mg/kg') mappedTpaStatus = "有施打";
+
+            let tpaYesNoteStr = "";
+            if (d.tpaBolusDose || d.tpaCifDose) tpaYesNoteStr = `Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
+
+            const referralData = {
+                age: d.age, gender: d.gender, mrs: d.mrs, onset: d.onset, door: d.door,
+                occlusion: d.ctaDesc, nihssRaw: d.nihssRaw, nihssScore: d.nihssScore,
+                symptoms: d.symptoms, // ✨ 這裡已經把原本會加上 neText 的邏輯移除了
+                pmhList: d.pmhList, pmhOther: document.getElementById('n_pmh_other').value,
+                cre: d.cre, labOther: d.labOther, tpaStatus: mappedTpaStatus,
+                tpaDose: (mappedTpaStatus === '有施打') ? d.rtpaSel : "",
+                tpaBolusTime: d.tpaBolusTime, tpaYesNote: tpaYesNoteStr, tpaNoNote: d.rtpaText,
+                famSel: d.famSel, famText: d.famText
+            };
+
+            // 寫入 localStorage 並跳轉
+            localStorage.setItem('stroke_transfer_clinical_data', JSON.stringify(referralData));
+            window.open('clinical.html', '_blank');
+        }
+
         // =======================
-        // 🌟 Swiper 相關時間節點邏輯設定 (完全依據新需求修改)
+        // 🌟 Swiper 相關時間節點邏輯設定 
         // =======================
         let hasEVTDoctor = false; 
         let isTpaSkipped = false;
@@ -1375,7 +1378,6 @@ ${tpaBlock}`;
             '辦住院後請開立影像照會-Angio Neurogroup'
         ];
 
-        // 🌟 1. 圖片簡化：統一使用指定的 7 張圖名稱
         let slideData = [
             { img: 'ER.jpg', slogans: ['電腦斷層開立及完成同意書簽屬', '聯絡放射師有急性中風個案', '聯絡神內醫師有急性中風個案'] },
             { img: 'NCCT.jpg', slogans: ['神內醫師判讀CT是否出血', 'CT沒出血請評估是否施打tPA', 'GFAST≥3則評估是否安排CTA/CTP', '提供家屬tPA/取栓衛教單張'] },
@@ -1387,13 +1389,12 @@ ${tpaBlock}`;
 
         const originalSlide5 = { img: 'Ambulance.jpg', slogans: ['救護車抵達後與隨車護理師交班', '救護車出發請告知神內醫師/取栓群組'] };
 
-        // 🌟 2. 側拉與時間定義 (保留側欄的原本ID供資料傳輸)
         const timeStepMap = [
-            { label: 'DTCT (NCCT)', id: 'time-ncct', cb: 'cb-ncct' }, // index 0
-            { label: 'DTN (tPA)', id: 'time-tpa', cb: 'cb-tpa' },     // index 1
-            { label: 'DTCTA (CTA/CTP)', id: 'time-cta', cb: 'cb-cta' }, // index 2
-            { label: 'DTAccept (外院同意轉院)', id: 'time-puncture', cb: 'cb-puncture' }, // index 3 (動態更改名稱)
-            { label: 'DIDO (救護車離部)', id: 'time-amb-dep', cb: 'cb-amb-dep' } // index 4
+            { label: 'DTCT (NCCT)', id: 'time-ncct', cb: 'cb-ncct' }, 
+            { label: 'DTN (tPA)', id: 'time-tpa', cb: 'cb-tpa' },     
+            { label: 'DTCTA (CTA/CTP)', id: 'time-cta', cb: 'cb-cta' }, 
+            { label: 'DTAccept (外院同意轉院)', id: 'time-puncture', cb: 'cb-puncture' }, 
+            { label: 'DIDO (救護車離部)', id: 'time-amb-dep', cb: 'cb-amb-dep' } 
         ];
         
         const timeRecords = new Array(timeStepMap.length).fill(null);
@@ -1415,7 +1416,7 @@ ${tpaBlock}`;
                 slideChange: function () {
                     currentSloganIndex = 0;
                     updateSloganUI();
-                    updateTimeUI(); // 🌟 3. 滑動圖片時，動態連動切換紀錄時間的按鈕對象
+                    updateTimeUI(); 
                 }
             }
         });
@@ -1423,7 +1424,6 @@ ${tpaBlock}`;
         function setCapability(hasDoctor) {
             hasEVTDoctor = hasDoctor;
             
-            // 1. 更新資料庫陣列
             if (hasDoctor) {
                 slideData[3].img = 'CTA.jpg';
                 slideData[3].slogans = [...angioSlogans3]; 
@@ -1432,7 +1432,7 @@ ${tpaBlock}`;
                 slideData[4].slogans = [...angioSlogans4];
 
                 if (slideData.length > 5) { 
-                    slideData.length = 5; // 移除救護車資料
+                    slideData.length = 5; 
                 }
             } else {
                 slideData[3].img = 'CTA.jpg';
@@ -1442,21 +1442,19 @@ ${tpaBlock}`;
                 slideData[4].slogans = [...transferSlogans4];
 
                 if (slideData.length === 5) { 
-                    slideData.push(originalSlide5); // 加回救護車資料
+                    slideData.push(originalSlide5); 
                 }
             }
             
-            // 2. 暴力且絕對安全的畫面同步：清空後重新加入 (解決第一次載入不同步的 Bug)
             if (swiper) {
                 swiper.removeAllSlides();
                 slideData.forEach((slide, index) => {
                     const newSlide = `<div class="swiper-slide"><img id="slide-img-${index}" src="${slide.img}" alt="${slide.img}" onerror="this.outerHTML='<div class=\\'image-placeholder\\'>缺少圖片: ${slide.img}</div>'"></div>`;
                     swiper.appendSlide(newSlide);
                 });
-                swiper.update(); // 強制刷新
+                swiper.update(); 
             }
             
-            // 3. 刷新標語與時間按鈕名稱
             if (swiper && (swiper.activeIndex === 3 || swiper.activeIndex === 4)) {
                 currentSloganIndex = 0;
                 updateSloganUI();
@@ -1474,7 +1472,6 @@ ${tpaBlock}`;
         
         function updateDynamicUI() {
             const skipBtn = document.getElementById('skip-tpa-btn');
-            // 當滑動到 rtPA 或 時間進入 DTN 時顯示禁忌症按鈕
             if ((swiper && swiper.activeIndex === 2) || currentTimeIndex === 1) {
                 skipBtn.style.display = 'flex';
             } else {
@@ -1484,8 +1481,7 @@ ${tpaBlock}`;
 
         function handleSkipTpa() {
             isTpaSkipped = true; 
-            const targetImg = hasEVTDoctor ? 'Angio.jpg' : 'Transfer.jpg'; // 略過tPA，原本是跳 CTtoCTA，現在統一是 CTA，所以直接進 CTA，再接著走流程
-            swiper.slideTo(3); // 滑到 CTA
+            swiper.slideTo(3); 
             updateTimeUI();
         }
 
@@ -1507,19 +1503,16 @@ ${tpaBlock}`;
             updateSloganUI();
         }
 
-        // 🌟 3. 時間紀錄跟圖片綁定
         function updateTimeUI() {
             if (!swiper) return;
             let idx = swiper.activeIndex;
             
-            // 對應圖片到時間節點：ER(0)/NCCT(1) -> DTCT(0), rtPA(2) -> DTN(1), CTA(3) -> DTCTA(2), Angio/Transfer(4) -> DTP/DTAccept(3), Ambulance(5) -> DIDO(4)
             if (idx === 0 || idx === 1) currentTimeIndex = 0;
             else if (idx === 2) currentTimeIndex = 1;
             else if (idx === 3) currentTimeIndex = 2;
             else if (idx === 4) currentTimeIndex = 3;
             else if (idx === 5) currentTimeIndex = 4;
 
-            // 🌟 2. 時鐘名稱動態調整
             timeStepMap[3].label = hasEVTDoctor ? 'DTP (Puncture)' : 'DTAccept (外院同意轉院)';
 
             const btnEl = document.getElementById('record-btn-section');
@@ -1529,7 +1522,6 @@ ${tpaBlock}`;
 
             labelEl.innerText = timeStepMap[currentTimeIndex].label;
 
-            // 判斷該階段是否已經紀錄過時間
             if (timeRecords[currentTimeIndex] === null) {
                 btnEl.className = "record-btn";
                 valueEl.innerText = "--";
@@ -1546,7 +1538,6 @@ ${tpaBlock}`;
             updateDynamicUI(); 
         }
 
-        // 點擊後直接覆寫該對應階段時間，並自動跳下一張圖
         function handleTimeRecord() {
             const doorStr = document.getElementById('door-time').value;
             if (!doorStr) { alert("請確認已輸入檢傷時間！"); return; }
@@ -1554,7 +1545,6 @@ ${tpaBlock}`;
 
             const nowIso = getLocalIsoString(new Date());
             
-            // 寫入對應的側拉欄位與全域變數
             let mapItem = timeStepMap[currentTimeIndex];
             document.getElementById(mapItem.id).value = nowIso;
             document.getElementById(mapItem.cb).checked = true;
@@ -1563,7 +1553,6 @@ ${tpaBlock}`;
             timeRecords[currentTimeIndex] = new Date(nowIso).getTime() - doorTs;
             updateTimeUI();
             
-            // 🌟 點擊後自動滑向下一階段圖 (若是 ER，則滑向 NCCT；若已最後則不動)
             if (swiper.activeIndex < slideData.length - 1) {
                 setTimeout(() => { swiper.slideNext(); }, 300);
             }
@@ -1592,8 +1581,6 @@ ${tpaBlock}`;
             const s = totalSeconds % 60;
             return `${m}分 ${s}秒`;
         }
-
-        // ==========================================
 
         const sysTimeDisplay = document.getElementById('front-sys-time');
         const doorTimeInput = document.getElementById('door-time');
@@ -1680,7 +1667,6 @@ ${tpaBlock}`;
             } else {
                 let h = String(Math.floor(diffMs / 3600000)).padStart(2, '0');
                 let m = String(Math.floor((diffMs % 3600000) / 60000)).padStart(2, '0');
-                // 🌟 3. LNT 時鐘只顯示時分
                 document.getElementById('onset-clock-display').textContent = `${h} 小時 ${m} 分鐘`;
             }
 
@@ -1739,7 +1725,6 @@ ${tpaBlock}`;
             document.getElementById('init-group').style.display = 'none'; 
             document.getElementById('img-placeholder').style.display = 'none';
             
-            // 🌟 3. 隱藏主畫面標題與系統時間，讓綠色數字鐘上推
             document.getElementById('main-title').style.display = 'none'; 
             document.getElementById('sys-time-container').style.display = 'none'; 
 
@@ -1855,143 +1840,6 @@ ${tpaBlock}`;
             }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.opacity = "1"; });
         });
 
-// ================= 臨床影像上傳邏輯 =================
-        const dropzone = document.getElementById('uploadDropzone');
-        const fileInput = document.getElementById('fileInput');
-        const filePreviewList = document.getElementById('filePreviewList');
-        const btnDriveUpload = document.getElementById('btn-drive-upload');
-
-        let filesToUpload = [];
-
-        function renderFileList() {
-            filePreviewList.innerHTML = ''; 
-            
-            filesToUpload.forEach((file, index) => {
-                const li = document.createElement('li');
-                li.style.display = 'flex';
-                li.style.justifyContent = 'space-between';
-                li.style.alignItems = 'center';
-                
-                li.innerHTML = `
-                    <span style="flex: 1; text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">📎 ${file.name}</span> 
-                    <span style="color: #95a5a6; margin-right: 15px; font-size: 11px;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
-                    <span class="btn-delete-file" data-index="${index}" style="color: #e74c3c; cursor: pointer; font-weight: bold; padding: 0 5px; font-size: 14px;" title="刪除此檔案">✕</span>
-                `;
-                filePreviewList.appendChild(li);
-            });
-            
-            if (filesToUpload.length > 0) {
-                btnDriveUpload.style.display = 'block';
-            } else {
-                btnDriveUpload.style.display = 'none';
-            }
-        }
-
-        if (dropzone) {
-            dropzone.addEventListener('click', () => { fileInput.click(); });
-
-            fileInput.addEventListener('change', (event) => {
-                const newFiles = Array.from(event.target.files);
-                newFiles.forEach(file => { filesToUpload.push(file); });
-                fileInput.value = ''; 
-                renderFileList();     
-            });
-
-            filePreviewList.addEventListener('click', (event) => {
-                if (event.target.classList.contains('btn-delete-file')) {
-                    const indexToRemove = parseInt(event.target.getAttribute('data-index'), 10);
-                    filesToUpload.splice(indexToRemove, 1);
-                    renderFileList();
-                }
-            });
-
-            btnDriveUpload.addEventListener('click', async () => {
-                let caseId = document.getElementById('sync-id').value || currentRecordId;
-                if (!caseId || caseId === "本機模式") {
-                    alert("⚠️ 請先在主畫面【輸入ID】或取得雲端編號，才能進行影像關聯。");
-                    return;
-                }
-
-                btnDriveUpload.innerText = "⏳ 影像傳輸中，請勿關閉網頁...";
-                btnDriveUpload.disabled = true;
-                btnDriveUpload.style.backgroundColor = "#e67e22";
-
-                let uploadCount = 0;
-                let errorMessages = [];
-
-                for (let i = 0; i < filesToUpload.length; i++) {
-                    const file = filesToUpload[i];
-                    await new Promise((resolve) => {
-                        const reader = new FileReader();
-                        reader.onload = async function(e) {
-                            const base64Data = e.target.result.split(',')[1];
-                            const payload = {
-                                action: "uploadImage",
-                                caseId: caseId,
-                                fileName: file.name,
-                                mimeType: file.type,
-                                base64: base64Data
-                            };
-
-                           try {
-                                const response = await fetch(GAS_URL, {
-                                    method: 'POST',
-                                    headers: { 'Content-Type': 'text/plain' },
-                                    body: JSON.stringify(payload)
-                                });
-                                
-                                const textResult = await response.text(); 
-                                
-                                try {
-                                    const result = JSON.parse(textResult);
-                                    
-                                    if (result.status === "success") {
-                                    uploadCount++;
-                                    let fileUrl = result.fileUrl || result.url || ""; 
-                                    
-                                    currentCaseImages.push({ name: file.name, url: fileUrl });
-                                } else {
-                                        errorMessages.push(`【後端錯誤】${file.name}: ${result.error || "未知錯誤"}`);
-                                    }
-                                } catch (parseErr) {
-                                     errorMessages.push(`【解析失敗】${file.name}: 後端回傳非預期格式。`);
-                                }
-
-                            } catch (error) {
-                                errorMessages.push(`【連線失敗】${file.name}: 詳情: ${error.toString()}`);
-                            }
-                            resolve();
-                        };
-                        reader.readAsDataURL(file);
-                    });
-                }
-
-                if (errorMessages.length > 0) {
-                    alert(`⚠️ 上傳結果\n成功：${uploadCount} 個檔案\n\n錯誤詳情如下：\n${errorMessages.join('\n')}`);
-                } else {
-                    alert(`✅ 影像提供成功！已成功上傳 ${uploadCount} 個影像檔案至指定資料夾。`);
-                }
-
-                if(uploadCount === filesToUpload.length) {
-                    filesToUpload = [];
-                    renderFileList();
-                }
-
-                if (currentCaseImages.length > 0) {
-                    renderUploadedLinks();
-                    const mainUploadBtn = document.getElementById('btn-upload');
-                    if (mainUploadBtn && !mainUploadBtn.disabled) {
-                        mainUploadBtn.click();
-                    }
-                }
-
-                btnDriveUpload.innerText = "☁️ 開始上傳至雲端資料夾";
-                btnDriveUpload.style.backgroundColor = "#27ae60";
-                btnDriveUpload.disabled = false;
-            });
-        }
-        
-        // --- 替換 3：新增 Pre-mRS 雙向連動 =================
         const frontAge = document.getElementById('n_age');
         const sideAge = document.getElementById('side_n_age');
         const frontGender = document.getElementById('n_gender');
@@ -2010,7 +1858,7 @@ ${tpaBlock}`;
         checkTimeAndUpdateUI();
 
 // ================= 🔔 多裝置即時新個案偵測與警示系統 =================
-let lastKnownMaxId = 0;    
+let lastKnownMaxId = 0;  
 let globalAudioCtx = null; 
 let rejectedCaseIds = [];  
 
