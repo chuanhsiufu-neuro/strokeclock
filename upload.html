@@ -947,48 +947,54 @@
             });
         });
 
-        async function fetchNeuroSchedule() {
-            const statusText = document.getElementById('neuro_duty_status');
-            try {
-                const url = `https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/gviz/tq?tqx=out:csv&range=A:H&headers=0`;
-                const res = await fetch(url); if (!res.ok) throw new Error();
-                const csv = await res.text();
-                const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
-                
-                const td = new Date(); 
-                const currentHour = td.getHours();
-                
-                if (currentHour < 8) {
-                    td.setDate(td.getDate() - 1);
-                }
-
-                const y = td.getFullYear(); 
-                const m = td.getMonth() + 1; 
-                const d = td.getDate();
-                const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
-                
-                let fr = rows.find(r => r[0] && possibleDates.some(pd => r[0].includes(pd)));
-                if (fr) {
-                    document.getElementById('neuro_dr_m').innerText = fr[3] || "-"; document.getElementById('neuro_dr_a').innerText = fr[4] || "-"; 
-                    document.getElementById('neuro_dr_n').innerText = fr[5] || "-"; document.getElementById('neuro_rad').innerText = fr[6] || "-"; 
-                    document.getElementById('neuro_nur').innerText = fr[7] || "-";
-                    statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
-                    
-                    let activeDr = "-";
-                    if (currentHour >= 8 && currentHour < 12) activeDr = fr[3];
-                    else if (currentHour >= 12 && currentHour < 17) activeDr = fr[4];
-                    else activeDr = fr[5]; 
-                    
-                    if(activeDr && activeDr !== "-" && activeDr !== "無" && activeDr.trim() !== "") {
-                        currentInHouseDrAvailable = true;
-                    } else {
-                        currentInHouseDrAvailable = false;
-                    }
-                } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
-            } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
-            
-            setCapability(currentInHouseDrAvailable);
+       async function fetchNeuroSchedule() {
+    const statusText = document.getElementById('neuro_duty_status');
+    try {
+        // 1. 先計算當下的日期與年份 (移到最前面)
+        const td = new Date(); 
+        const currentHour = td.getHours();
+        
+        // 早上 8 點前，算作前一天的班
+        if (currentHour < 8) {
+            td.setDate(td.getDate() - 1);
         }
+
+        const y = td.getFullYear(); 
+        const m = td.getMonth() + 1; 
+        const d = td.getDate();
+
+        // 2. 在網址中加入 &sheet=${y}，強制程式去抓取名稱為該年份(如 2026)的分頁
+        const url = `https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/gviz/tq?tqx=out:csv&sheet=${y}&range=A:H&headers=0`;
+        
+        // 3. 執行抓取
+        const res = await fetch(url); if (!res.ok) throw new Error();
+        const csv = await res.text();
+        const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
+        
+        const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
+        
+        let fr = rows.find(r => r[0] && possibleDates.some(pd => r[0].includes(pd)));
+        if (fr) {
+            document.getElementById('neuro_dr_m').innerText = fr[3] || "-"; document.getElementById('neuro_dr_a').innerText = fr[4] || "-"; 
+            document.getElementById('neuro_dr_n').innerText = fr[5] || "-"; document.getElementById('neuro_rad').innerText = fr[6] || "-"; 
+            document.getElementById('neuro_nur').innerText = fr[7] || "-";
+            statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
+            
+            let activeDr = "-";
+            if (currentHour >= 8 && currentHour < 12) activeDr = fr[3];
+            else if (currentHour >= 12 && currentHour < 17) activeDr = fr[4];
+            else activeDr = fr[5]; 
+            
+            if(activeDr && activeDr !== "-" && activeDr !== "無" && activeDr.trim() !== "") {
+                currentInHouseDrAvailable = true;
+            } else {
+                currentInHouseDrAvailable = false;
+            }
+        } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
+    } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
+    
+    setCapability(currentInHouseDrAvailable);
+}
         
         async function fetchTransferSchedule() {
             const statusText = document.getElementById('duty_status');
