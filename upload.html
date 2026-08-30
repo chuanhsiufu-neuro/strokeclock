@@ -18,35 +18,41 @@
         .tab-btn.active { color: white; background-color: #2c3e50; border-left: 4px solid #d32f2f; }
         .tab-btn.icon-tab { font-size: 22px; writing-mode: horizontal-tb; padding: 15px 0; }
 
-/* 手機介面優化版：右側開關按鈕 */
-        #right-toggle-btn { 
-            position: fixed; 
-            top: 15px; /* 🌟 移到最上方，距離頂部 15px */
-            right: 0; 
-            /* 🌟 移除了原本的 transform 置中設定 */
-            background-color: #3498db; 
-            color: white; 
-            border: none; 
-            padding: 12px 6px; /* 手機上稍微縮小一點避免誤觸 */
-            font-size: 14px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            border-radius: 8px 0 0 8px; 
-            z-index: 104; 
-            box-shadow: -2px 0 5px rgba(0,0,0,0.3); 
-            writing-mode: vertical-rl; 
-            letter-spacing: 2px; 
-            transition: right 0.3s ease-in-out; 
+        /* 🌟 右側開關按鈕群組 (移至右下角) */
+        #right-btn-group {
+            position: fixed;
+            bottom: 15px; 
+            right: 0;
+            z-index: 104;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            transition: right 0.3s ease-in-out;
         }
+        #time-toggle-btn, #right-toggle-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 14px 6px; 
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px 0 0 8px;
+            box-shadow: -2px 0 5px rgba(0,0,0,0.3);
+            writing-mode: vertical-rl;
+            letter-spacing: 2px;
+        }
+        #time-toggle-btn { background-color: #9b59b6; } /* 紫色區分時鐘 */
+        #time-toggle-btn:hover { background-color: #8e44ad; }
         #right-toggle-btn:hover { background-color: #2980b9; }
 
-        /* 手機介面優化版：右側側拉面板 */
+        /* 🌟 手機介面優化版：右側側拉面板 */
         #right-sidebar { 
             position: fixed; 
             top: 0; 
-            right: -100%; /* 預設完全隱藏在畫面外 */
+            right: -100%; 
             width: 320px; 
-            max-width: 85vw; /* 🌟 手機版防呆：最多只佔螢幕的 85%，避免擋住整個畫面 */
+            max-width: 85vw; 
             height: 100%; 
             background-color: #2c3e50; 
             color: white; 
@@ -77,7 +83,6 @@
         .sb-title.orange { color: #e67e22; border-left-color: #e67e22; }
         .sb-title.yellow { color: #f1c40f; border-left-color: #f1c40f; } 
         
-
         /* 恢復 Checklist 相關樣式 */
         .checklist-container { padding: 0 15px; text-align: left; margin-bottom: 15px; }
         .cl-item { margin-bottom: 12px; }
@@ -111,29 +116,16 @@
         .output-box { margin: 15px 15px 0 15px; padding: 10px; background: #1a252f; border-left: 3px solid #2ecc71; white-space: pre-wrap; font-family: monospace; font-size: 13px; color: #ecf0f1; border-radius: 4px; display: none; line-height: 1.4; }
     
         /* 新版 Time from Door 數字鐘 */
-        .timer-display {
-            background-color: #000;
-            color: #0f0;
-            text-align: center;
-            padding: 15px 10px;
-            border-radius: 10px;
-            margin: 0 auto 15px auto;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
-            font-family: 'Courier New', Courier, monospace;
-            font-size: 50px;
-            font-weight: bold;
-            text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
-            width: 90%;
-            max-width: 500px;
-            box-sizing: border-box;
-        }
+        .timer-display { background-color: #000; color: #0f0; text-align: center; padding: 15px 10px; border-radius: 10px; margin: 0 auto 15px auto; box-shadow: 0 4px 8px rgba(0,0,0,0.3); font-family: 'Courier New', Courier, monospace; font-size: 50px; font-weight: bold; text-shadow: 0 0 10px rgba(0, 255, 0, 0.7); width: 90%; max-width: 500px; box-sizing: border-box; }
         .timer-display span { font-size: 30px; }
         
         #onset-clock-container { display: flex; flex-direction: column; align-items: center; margin-bottom: 20px; width: 90%; max-width: 500px; }
         #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 24px; font-weight: bold; padding: 8px 10px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box; text-align: center; white-space: nowrap; }
         
+        /* 🌟 已修正首頁大空格: margin-top 改為 10px */
         #controls-container { width: 100%; max-width: 500px; padding-top: 10px; margin-top: 10px; display: flex; flex-direction: column; align-items: center;}
+        
         .icon-btn.small { font-size: 18px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
         .icon-btn.small:active { transform: scale(0.9); }
         .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
@@ -160,8 +152,6 @@
 
         .btn-download { font-size: 24px; font-weight: bold; background-color: #3498db; color: white; border: none; border-radius: 8px; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2); transition: 0.2s; }
         .btn-download:hover { background-color: #2980b9; }
-
-        #sync-status { font-size: 14px; font-weight: bold; color: #7f8c8d; margin-bottom: 15px; display: block; min-height: 20px; line-height: 1.4;}
 
         /* --- Swiper與新版時鐘介面樣式 --- */
         .swiper-container-wrapper { background-color: #ffffff; padding: 5px 0 15px 0; margin-bottom: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.05); width: 90%; max-width: 500px; border-radius: 8px; }
@@ -231,7 +221,8 @@
         <button class="tab-btn" data-target="panel-er">急診</button>
         <button class="tab-btn" data-target="panel-nurse">護理</button>
         <button class="tab-btn" data-target="panel-evt">取栓</button>
-        <button class="tab-btn icon-tab" data-target="panel-time" title="更改時間">⏰</button>
+        <!-- 🌟 左側獨立新增的儲存按鈕 -->
+        <button class="tab-btn icon-tab no-panel" id="sidebar-save-btn" title="儲存/上傳更新" style="color: #3498db;">💾</button>
         <button class="tab-btn icon-tab" data-target="panel-guide" title="使用說明">❓</button>
     </div>
 
@@ -265,23 +256,6 @@
                     編輯結束後，請記得按主頁面上傳鈕 <span style="font-size: 20px; vertical-align: middle;">💾</span>
                 </div>
             </div>
-        </div>
-
-        <div id="panel-time" class="sidebar-panel">
-            <h3 class="sidebar-header">時間微調 / 補登</h3>
-            
-            <div class="sidebar-item"><label class="sidebar-item-header">最後正常/發作 (LNT)</label><input type="datetime-local" id="side-onset-time" step="1"></div>
-            <div class="sidebar-item"><label class="sidebar-item-header">檢傷時間 (Door)</label><input type="datetime-local" id="side-door-time" step="1"></div>
-            
-            <hr style="border: 0; border-top: 1px solid #34495e; margin: 15px 20px;">
-                    
-            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ncct">NCCT time</label><input type="datetime-local" id="time-ncct" step="1"></div>
-            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-tpa">tPA Bolus time</label><input type="datetime-local" id="time-tpa" step="1"></div>
-            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-cta">CTA time</label><input type="datetime-local" id="time-cta" step="1"></div>
-            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-puncture">同意轉院/Puncture</label><input type="datetime-local" id="time-puncture" step="1"></div>
-            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-amb-dep">救護車出發</label><input type="datetime-local" id="time-amb-dep" step="1"></div>
-            
-            <div class="sidebar-item" style="display:none;"><label class="sidebar-item-header"><input type="checkbox" id="cb-ed-leave">急診離部(保留)</label><input type="datetime-local" id="time-ed-leave" step="1"></div>
         </div>
 
         <div id="panel-neuro" class="sidebar-panel">
@@ -850,53 +824,80 @@
         </div>        
     </div>
 
-<button id="right-toggle-btn">雲端與班表 ◀</button>
+    <!-- 🌟 右側開關群組 -->
+    <div id="right-btn-group">
+        <button id="time-toggle-btn">時間調整 ⏰</button>
+        <button id="right-toggle-btn">雲端與班表 ◀</button>
+    </div>
     
+    <!-- 🌟 右側主面板 -->
     <div id="right-sidebar">
-        <h3 class="sidebar-header" style="margin-top: 10px; font-size: 20px;">系統狀態與排班</h3>
-
-        <!-- 🌟 1. 將狀態文字移到這裡，讓側拉選單內能看到連線回饋 -->
-        <div id="sync-status" style="font-size: 14px; font-weight: bold; color: #bdc3c7; margin-bottom: 15px; text-align: center;">歡迎使用雲端系統</div>
-
-        <!-- 🌟 2. 寬度改為 100%，取消 margin auto，適應側拉面板的寬度 -->
-        <div id="latest-cloud-board" style="width: 100%; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left; margin-bottom: 15px;">
-            <div style="font-weight: bold; color: #f1c40f; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
-                <span>🔔</span> 雲端最新個案狀態 (5秒即時同步)
-            </div>
-            <div style="font-size: 14px; color: #ecf0f1; padding-left: 22px; line-height: 1.5;">
-                最新編號：<span id="lbl-latest-id" style="font-weight: bold; color: #2ecc71; font-size: 16px;">-</span> | 目前編號：<span id="lbl-current-id" style="color: #3498db; font-weight: bold; font-size: 16px;">未建立</span><br>
-                檢傷時間：<span id="lbl-latest-door" style="color: #bdc3c7;">-</span>
-            </div>
-            <div style="display: flex; gap: 6px; margin-top: 10px; align-items: center; background: #2c3e50; padding: 6px 8px; border-radius: 6px; max-width: 100%; box-sizing: border-box;">
-                <span style="color: #f1c40f; font-size: 13px; font-weight: bold; white-space: nowrap; flex-shrink: 0;">切換 ID:</span>
-                <input type="number" id="active-sync-id" class="front-input" style="flex: 1; min-width: 0; text-align: center; padding: 6px 2px; background-color: #fff; color: #333;" placeholder="輸入ID">
-                <button id="btn-active-download" class="btn-download" style="flex: 0 0 36px; height: 32px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; background-color: #3498db; border-radius: 4px; flex-shrink: 0;" title="下載並切換個案">🔄</button>
-            </div>
+        
+        <!-- 獨立的時間調整區塊 -->
+        <div id="right-time-section">
+            <h3 class="sidebar-header" style="margin-top: 10px; font-size: 20px;">時間微調 / 補登</h3>
+            
+            <div class="sidebar-item"><label class="sidebar-item-header">最後正常/發作 (LNT)</label><input type="datetime-local" id="side-onset-time" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header">檢傷時間 (Door)</label><input type="datetime-local" id="side-door-time" step="1"></div>
+            
+            <hr style="border: 0; border-top: 1px solid #34495e; margin: 15px 20px;">
+                    
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-ncct">NCCT time</label><input type="datetime-local" id="time-ncct" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-tpa">tPA Bolus time</label><input type="datetime-local" id="time-tpa" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-cta">CTA time</label><input type="datetime-local" id="time-cta" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-puncture">同意轉院/Puncture</label><input type="datetime-local" id="time-puncture" step="1"></div>
+            <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-amb-dep">救護車出發</label><input type="datetime-local" id="time-amb-dep" step="1"></div>
+            
+            <div class="sidebar-item" style="display:none;"><label class="sidebar-item-header"><input type="checkbox" id="cb-ed-leave">急診離部(保留)</label><input type="datetime-local" id="time-ed-leave" step="1"></div>
         </div>
-                
-        <div id="duty-rosters-container" style="width: 100%;">
-            <div class="duty-block" style="text-align: left;">
-                <div style="font-weight: bold; color: #3498db; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                    <span>📍 本院取栓班表</span>
-                    <a href="https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/edit?usp=drivesdk" target="_blank" class="sheet-link">📊 班表</a>
+        
+        <hr style="border: 0; border-top: 1px solid #34495e; margin: 25px 20px;">
+
+        <!-- 獨立的雲端與班表區塊 -->
+        <div id="right-cloud-section">
+            <h3 class="sidebar-header" style="font-size: 20px;">系統狀態與排班</h3>
+
+            <div id="sync-status" style="font-size: 14px; font-weight: bold; color: #bdc3c7; margin-bottom: 15px; text-align: center;">歡迎使用雲端系統</div>
+
+            <div id="latest-cloud-board" style="width: 100%; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left; margin-bottom: 15px;">
+                <div style="font-weight: bold; color: #f1c40f; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
+                    <span>🔔</span> 雲端最新個案狀態 (10秒即時同步)
                 </div>
-                <div id="neuro_duty_status" style="font-size: 12px; color: #bdc3c7; margin-bottom: 8px;">(連線讀取中...)</div>
-                <table class="neuro-duty-table" style="background:#2c3e50; border-radius:4px; padding:5px;"><tr><th>時間</th><th>8-12</th><th>12-17</th><th>夜間</th></tr>
-                <tr><td style="color: #ecf0f1; font-weight:normal;">取栓醫師</td><td id="neuro_dr_m" style="color: #f1c40f;">-</td><td id="neuro_dr_a" style="color: #f1c40f;">-</td><td id="neuro_dr_n" style="color: #f1c40f;">-</td></tr></table>
-                <div style="font-size:13px; display:flex; justify-content:space-around; background: #2c3e50; padding: 6px; border-radius: 4px; margin-top: 5px;">
-                    <span style="color: white;">放射師: <span id="neuro_rad" style="font-weight:bold; color:#2ecc71;">-</span></span>
-                    <span style="color: white;">護理師: <span id="neuro_nur" style="font-weight:bold; color:#e74c3c;">-</span></span>
+                <div style="font-size: 14px; color: #ecf0f1; padding-left: 22px; line-height: 1.5;">
+                    最新編號：<span id="lbl-latest-id" style="font-weight: bold; color: #2ecc71; font-size: 16px;">-</span> | 目前編號：<span id="lbl-current-id" style="color: #3498db; font-weight: bold; font-size: 16px;">未建立</span><br>
+                    檢傷時間：<span id="lbl-latest-door" style="color: #bdc3c7;">-</span>
+                </div>
+                <div style="display: flex; gap: 6px; margin-top: 10px; align-items: center; background: #2c3e50; padding: 6px 8px; border-radius: 6px; max-width: 100%; box-sizing: border-box;">
+                    <span style="color: #f1c40f; font-size: 13px; font-weight: bold; white-space: nowrap; flex-shrink: 0;">切換 ID:</span>
+                    <input type="number" id="active-sync-id" class="front-input" style="flex: 1; min-width: 0; text-align: center; padding: 6px 2px; background-color: #fff; color: #333;" placeholder="輸入ID">
+                    <button id="btn-active-download" class="btn-download" style="flex: 0 0 36px; height: 32px; font-size: 16px; padding: 0; display: flex; align-items: center; justify-content: center; background-color: #3498db; border-radius: 4px; flex-shrink: 0;" title="下載並切換個案">🔄</button>
                 </div>
             </div>
-            <div class="duty-block" style="text-align: left;">
-                <div style="font-weight: bold; color: #f39c12; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
-                    <span>📍 外院取栓排班</span>
-                    <a href="https://docs.google.com/spreadsheets/d/1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130/edit?gid=1484666256#gid=1484666256" target="_blank" class="sheet-link">📊 班表</a>
+                    
+            <div id="duty-rosters-container" style="width: 100%;">
+                <div class="duty-block" style="text-align: left;">
+                    <div style="font-weight: bold; color: #3498db; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>📍 本院取栓班表</span>
+                        <a href="https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/edit?usp=drivesdk" target="_blank" class="sheet-link">📊 班表</a>
+                    </div>
+                    <div id="neuro_duty_status" style="font-size: 12px; color: #bdc3c7; margin-bottom: 8px;">(連線讀取中...)</div>
+                    <table class="neuro-duty-table" style="background:#2c3e50; border-radius:4px; padding:5px;"><tr><th>時間</th><th>8-12</th><th>12-17</th><th>夜間</th></tr>
+                    <tr><td style="color: #ecf0f1; font-weight:normal;">取栓醫師</td><td id="neuro_dr_m" style="color: #f1c40f;">-</td><td id="neuro_dr_a" style="color: #f1c40f;">-</td><td id="neuro_dr_n" style="color: #f1c40f;">-</td></tr></table>
+                    <div style="font-size:13px; display:flex; justify-content:space-around; background: #2c3e50; padding: 6px; border-radius: 4px; margin-top: 5px;">
+                        <span style="color: white;">放射師: <span id="neuro_rad" style="font-weight:bold; color:#2ecc71;">-</span></span>
+                        <span style="color: white;">護理師: <span id="neuro_nur" style="font-weight:bold; color:#e74c3c;">-</span></span>
+                    </div>
                 </div>
-                <div id="duty_status" style="font-size: 12px; color: #3498db; margin-bottom: 8px;">(連線讀取中...)</div>
-                <div class="sb-row" style="background:#2c3e50; padding:8px; border-radius:4px;">
-                    <div><span class="sb-label" style="color: #e74c3c;">第一線</span><div id="duty_line1" class="duty-text">讀取中</div></div>
-                    <div><span class="sb-label" style="color: #f39c12;">第二線</span><div id="duty_line2" class="duty-text">讀取中</div></div>
+                <div class="duty-block" style="text-align: left;">
+                    <div style="font-weight: bold; color: #f39c12; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
+                        <span>📍 外院取栓排班</span>
+                        <a href="https://docs.google.com/spreadsheets/d/1_cJii5SJ-S4wv032XkKj34_q_3lGrTAosBy39gJL130/edit?gid=1484666256#gid=1484666256" target="_blank" class="sheet-link">📊 班表</a>
+                    </div>
+                    <div id="duty_status" style="font-size: 12px; color: #3498db; margin-bottom: 8px;">(連線讀取中...)</div>
+                    <div class="sb-row" style="background:#2c3e50; padding:8px; border-radius:4px;">
+                        <div><span class="sb-label" style="color: #e74c3c;">第一線</span><div id="duty_line1" class="duty-text">讀取中</div></div>
+                        <div><span class="sb-label" style="color: #f39c12;">第二線</span><div id="duty_line2" class="duty-text">讀取中</div></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -990,6 +991,7 @@
         const sidebar = document.getElementById('sidebar');
         const panels = document.querySelectorAll('.sidebar-panel');
         tabBtns.forEach(btn => {
+            if (btn.classList.contains('no-panel')) return; // 跳過沒有側拉面板的按鈕 (如儲存鈕)
             btn.addEventListener('click', () => {
                 const targetPanelId = btn.getAttribute('data-target');
                 if (btn.classList.contains('active') && sidebar.classList.contains('open')) { sidebar.classList.remove('open'); btn.classList.remove('active'); return; }
@@ -998,77 +1000,83 @@
             });
         });
 
-// --- 🌟 右側面板開關邏輯 (支援手機動態寬度) ---
-        const rightToggleBtn = document.getElementById('right-toggle-btn');
+        // --- 🌟 右側面板開關邏輯 (支援手機動態寬度與兩顆按鈕) ---
+        const rightBtnGroup = document.getElementById('right-btn-group');
         const rightSidebar = document.getElementById('right-sidebar');
+        const rightToggleBtn = document.getElementById('right-toggle-btn');
+        const timeToggleBtn = document.getElementById('time-toggle-btn');
 
-        rightToggleBtn.addEventListener('click', () => {
-            rightSidebar.classList.toggle('open');
+        function handleRightSidebarToggle(targetId) {
             if (rightSidebar.classList.contains('open')) {
-                rightToggleBtn.innerText = '收起 ▶';
-                // 讓按鈕動態往左推「側邊欄目前的真實寬度」
-                rightToggleBtn.style.right = rightSidebar.offsetWidth + 'px'; 
-            } else {
+                rightSidebar.classList.remove('open');
+                rightBtnGroup.style.right = '0';
                 rightToggleBtn.innerText = '雲端與班表 ◀';
-                rightToggleBtn.style.right = '0';
+                timeToggleBtn.innerText = '時間調整 ⏰';
+            } else {
+                rightSidebar.classList.add('open');
+                rightBtnGroup.style.right = rightSidebar.offsetWidth + 'px'; 
+                rightToggleBtn.innerText = '收起 ▶';
+                timeToggleBtn.innerText = '收起 ▶';
+                // 等待面板滑出後，平滑捲動到對應區域
+                setTimeout(() => {
+                    document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
+                }, 100);
             }
-        });
-
-        // 翻轉螢幕或改變視窗大小時，自動校正按鈕位置
-        window.addEventListener('resize', () => {
-            if (rightSidebar.classList.contains('open')) {
-                rightToggleBtn.style.right = rightSidebar.offsetWidth + 'px';
-            }
-        });
-
-       async function fetchNeuroSchedule() {
-    const statusText = document.getElementById('neuro_duty_status');
-    try {
-        // 1. 先計算當下的日期與年份 (移到最前面)
-        const td = new Date(); 
-        const currentHour = td.getHours();
-        
-        // 早上 8 點前，算作前一天的班
-        if (currentHour < 8) {
-            td.setDate(td.getDate() - 1);
         }
 
-        const y = td.getFullYear(); 
-        const m = td.getMonth() + 1; 
-        const d = td.getDate();
+        timeToggleBtn.addEventListener('click', () => handleRightSidebarToggle('right-time-section'));
+        rightToggleBtn.addEventListener('click', () => handleRightSidebarToggle('right-cloud-section'));
 
-        // 2. 在網址中加入 &sheet=${y}，強制程式去抓取名稱為該年份(如 2026)的分頁
-        const url = `https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/gviz/tq?tqx=out:csv&sheet=${y}&range=A:H&headers=0`;
-        
-        // 3. 執行抓取
-        const res = await fetch(url); if (!res.ok) throw new Error();
-        const csv = await res.text();
-        const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
-        
-        const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
-        
-        let fr = rows.find(r => r[0] && possibleDates.some(pd => r[0].includes(pd)));
-        if (fr) {
-            document.getElementById('neuro_dr_m').innerText = fr[3] || "-"; document.getElementById('neuro_dr_a').innerText = fr[4] || "-"; 
-            document.getElementById('neuro_dr_n').innerText = fr[5] || "-"; document.getElementById('neuro_rad').innerText = fr[6] || "-"; 
-            document.getElementById('neuro_nur').innerText = fr[7] || "-";
-            statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
-            
-            let activeDr = "-";
-            if (currentHour >= 8 && currentHour < 12) activeDr = fr[3];
-            else if (currentHour >= 12 && currentHour < 17) activeDr = fr[4];
-            else activeDr = fr[5]; 
-            
-            if(activeDr && activeDr !== "-" && activeDr !== "無" && activeDr.trim() !== "") {
-                currentInHouseDrAvailable = true;
-            } else {
-                currentInHouseDrAvailable = false;
+        window.addEventListener('resize', () => {
+            if (rightSidebar.classList.contains('open')) {
+                rightBtnGroup.style.right = rightSidebar.offsetWidth + 'px';
             }
-        } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
-    } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
-    
-    setCapability(currentInHouseDrAvailable);
-}
+        });
+
+        async function fetchNeuroSchedule() {
+            const statusText = document.getElementById('neuro_duty_status');
+            try {
+                const td = new Date(); 
+                const currentHour = td.getHours();
+                
+                if (currentHour < 8) {
+                    td.setDate(td.getDate() - 1);
+                }
+
+                const y = td.getFullYear(); 
+                const m = td.getMonth() + 1; 
+                const d = td.getDate();
+
+                const url = `https://docs.google.com/spreadsheets/d/1571ZX9T8xi4D1xdvtBcjhIfvJofLEyvavB_OUQDwYWc/gviz/tq?tqx=out:csv&sheet=${y}&range=A:H&headers=0`;
+                
+                const res = await fetch(url); if (!res.ok) throw new Error();
+                const csv = await res.text();
+                const rows = csv.trim().split('\n').map(row => row.split(',').map(c => c.replace(/(^"|"$)/g, '').trim()));
+                
+                const possibleDates = [`${y}/${m}/${d}`, `${y}/${String(m).padStart(2,'0')}/${String(d).padStart(2,'0')}`, `${m}/${d}/${y}`];
+                
+                let fr = rows.find(r => r[0] && possibleDates.some(pd => r[0].includes(pd)));
+                if (fr) {
+                    document.getElementById('neuro_dr_m').innerText = fr[3] || "-"; document.getElementById('neuro_dr_a').innerText = fr[4] || "-"; 
+                    document.getElementById('neuro_dr_n').innerText = fr[5] || "-"; document.getElementById('neuro_rad').innerText = fr[6] || "-"; 
+                    document.getElementById('neuro_nur').innerText = fr[7] || "-";
+                    statusText.innerText = `(載入成功: ${y}/${m}/${d})`; statusText.style.color = "#2ecc71";
+                    
+                    let activeDr = "-";
+                    if (currentHour >= 8 && currentHour < 12) activeDr = fr[3];
+                    else if (currentHour >= 12 && currentHour < 17) activeDr = fr[4];
+                    else activeDr = fr[5]; 
+                    
+                    if(activeDr && activeDr !== "-" && activeDr !== "無" && activeDr.trim() !== "") {
+                        currentInHouseDrAvailable = true;
+                    } else {
+                        currentInHouseDrAvailable = false;
+                    }
+                } else { statusText.innerText = `(找不到 ${y}/${m}/${d} 排班)`; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
+            } catch (err) { statusText.innerText = "(抓取失敗)"; statusText.style.color = "#e74c3c"; currentInHouseDrAvailable = false; }
+            
+            setCapability(currentInHouseDrAvailable);
+        }
         
         async function fetchTransferSchedule() {
             const statusText = document.getElementById('duty_status');
@@ -1194,6 +1202,9 @@ document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
             ];
         }
 
+        // 🌟 記錄最後一次儲存的資料字串，作為自動儲存的判斷依據
+        let lastSavedDataString = ""; 
+
         function populateDataArray(row) {
             const setTime = (id, val) => { 
                 if(!val) { document.getElementById(id).value = ""; return; }
@@ -1250,6 +1261,9 @@ document.querySelectorAll('input[name="ne_template"]').forEach(radio => {
             toggleImageDesc(); calcNeuroNIHSS(); calcErGFAST(); 
             
             syncFromSidePanel();
+
+            // 更新基準狀態，避免載入後立刻觸發自動儲存
+            lastSavedDataString = JSON.stringify(collectDataArray());
         }
 
         function getGenData() {
@@ -1669,6 +1683,7 @@ ${tpaBlock}`;
         const startBtn = document.getElementById('start-btn');
         const downloadBtn = document.getElementById('btn-download');
         const uploadBtn = document.getElementById('btn-upload');
+        const sidebarSaveBtn = document.getElementById('sidebar-save-btn');
         const syncStatus = document.getElementById('sync-status');
         let timerInterval;
 
@@ -1887,13 +1902,17 @@ ${tpaBlock}`;
                     syncStatus.textContent = `✅ 已下載編號 ${idVal}${lastEdit}`; 
                     syncStatus.style.color = "#2ecc71"; 
                     activateClockUI(idVal); 
-                    // 🌟 補上這段：載入成功後，自動收起右側面板，讓使用者看見主畫面的時鐘
+                    
+                    // 載入成功後自動收合面板
                     const rightSidebar = document.getElementById('right-sidebar');
+                    const rightBtnGroup = document.getElementById('right-btn-group');
                     const rightToggleBtn = document.getElementById('right-toggle-btn');
+                    const timeToggleBtn = document.getElementById('time-toggle-btn');
                     if (rightSidebar && rightSidebar.classList.contains('open')) {
                         rightSidebar.classList.remove('open');
+                        rightBtnGroup.style.right = '0';
                         rightToggleBtn.innerText = '雲端與班表 ◀';
-                        rightToggleBtn.style.right = '0';
+                        timeToggleBtn.innerText = '時間調整 ⏰';
                     }
                 } 
                 else { 
@@ -1917,16 +1936,50 @@ ${tpaBlock}`;
             executeDownloadByID(idVal, this);
         });
 
-        uploadBtn.addEventListener('click', function() {
-            if(!currentRecordId || currentRecordId === "本機模式") { alert("目前為單機模式，無法上傳"); return; }
-            syncStatus.textContent = "⏳ 更新中..."; uploadBtn.disabled = true; uploadBtn.style.opacity = "0.5";
-            fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "upload", id: currentRecordId, payload: collectDataArray() }) })
+        // 🌟 重構為獨立的儲存函數，支援靜默自動儲存
+        let isSaving = false;
+        function saveToServer(isAutoSave = false) {
+            if(!currentRecordId || currentRecordId === "本機模式") { 
+                if (!isAutoSave) alert("目前為單機模式，無法上傳"); 
+                return; 
+            }
+            if (isSaving) return;
+            isSaving = true;
+
+            const payloadData = collectDataArray();
+            const currentDataStr = JSON.stringify(payloadData);
+
+            if (!isAutoSave) {
+                syncStatus.textContent = "⏳ 更新中..."; 
+                uploadBtn.disabled = true; uploadBtn.style.opacity = "0.5";
+                sidebarSaveBtn.disabled = true; sidebarSaveBtn.style.opacity = "0.5";
+            }
+
+            fetch(GAS_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain' }, body: JSON.stringify({ action: "upload", id: currentRecordId, payload: payloadData }) })
             .then(res => res.json()).then(data => {
-                if(data.status === "success") { syncStatus.textContent = `✅ 儲存成功！ (${new Date().toLocaleTimeString()})`; syncStatus.style.color = "#2ecc71"; } 
-                else { syncStatus.textContent = "❌ 儲存失敗：" + (data.error || "錯誤"); syncStatus.style.color = "#e74c3c"; }
-                uploadBtn.disabled = false; uploadBtn.style.opacity = "1";
-            }).catch(err => { syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; syncStatus.style.color = "#e74c3c"; uploadBtn.disabled = false; uploadBtn.style.opacity = "1"; });
-        });
+                if(data.status === "success") { 
+                    syncStatus.textContent = `✅ 儲存成功！ (${new Date().toLocaleTimeString()})`; 
+                    syncStatus.style.color = "#2ecc71"; 
+                    lastSavedDataString = currentDataStr; // 🌟 更新已儲存的狀態
+                } else { 
+                    syncStatus.textContent = "❌ 儲存失敗：" + (data.error || "錯誤"); 
+                    syncStatus.style.color = "#e74c3c"; 
+                }
+            }).catch(err => { 
+                syncStatus.textContent = "❌ 上傳失敗，請檢查網路"; 
+                syncStatus.style.color = "#e74c3c"; 
+            }).finally(() => {
+                isSaving = false;
+                if (!isAutoSave) {
+                    uploadBtn.disabled = false; uploadBtn.style.opacity = "1";
+                    sidebarSaveBtn.disabled = false; sidebarSaveBtn.style.opacity = "1";
+                }
+            });
+        }
+
+        // 綁定主畫面與左側邊欄的儲存按鈕
+        uploadBtn.addEventListener('click', () => saveToServer(false));
+        sidebarSaveBtn.addEventListener('click', () => saveToServer(false));
 
         const frontAge = document.getElementById('n_age');
         const sideAge = document.getElementById('side_n_age');
@@ -1945,7 +1998,7 @@ ${tpaBlock}`;
 
         checkTimeAndUpdateUI();
 
-// ================= 🔔 多裝置即時新個案偵測與警示系統 =================
+// ================= 🔔 多裝置即時新個案偵測與自動儲存 =================
 let lastKnownMaxId = 0;  
 let globalAudioCtx = null; 
 let rejectedCaseIds = [];  
@@ -2018,7 +2071,16 @@ function triggerSystemNotification(caseId, minutesAgoStr) {
 }
 
 function startBackgroundPolling() {
+    // 🌟 將輪詢時間從 5 秒改為 10 秒
     setInterval(() => {
+        // 🌟 加入自動儲存檢查邏輯
+        if (currentRecordId && currentRecordId !== "本機模式") {
+            const currentDataStr = JSON.stringify(collectDataArray());
+            if (currentDataStr !== lastSavedDataString && !isSaving) {
+                saveToServer(true); // 如果有變更，背景悄悄觸發存檔
+            }
+        }
+
         if (!GAS_URL || GAS_URL.includes("請在此貼上")) return;
 
         fetch(GAS_URL, {
@@ -2110,7 +2172,7 @@ function startBackgroundPolling() {
             }
         })
         .catch(err => console.error("[背景輪詢] 連線異常: ", err));
-    }, 5000); 
+    }, 10000); // 10000 毫秒 = 10 秒
 }
 
 startBackgroundPolling();
