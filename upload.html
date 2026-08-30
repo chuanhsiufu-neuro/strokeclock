@@ -133,8 +133,7 @@
         #onset-clock-title { font-size: 18px; font-weight: bold; color: #333; margin-bottom: 5px; display: flex; align-items: center; justify-content: center; gap: 8px; }
         #onset-clock { font-family: 'Courier New', Courier, monospace; background-color: #ffffff; color: #ff0000; font-size: 24px; font-weight: bold; padding: 8px 10px; border-radius: 8px; border: 3px solid #ccc; box-shadow: 0 4px 8px rgba(0,0,0,0.1); width: 100%; box-sizing: border-box; text-align: center; white-space: nowrap; }
         
-        #controls-container { width: 100%; max-width: 500px; padding-top: 10px; margin-top: auto; display: flex; flex-direction: column; align-items: center;}
-        
+        #controls-container { width: 100%; max-width: 500px; padding-top: 10px; margin-top: 10px; display: flex; flex-direction: column; align-items: center;}
         .icon-btn.small { font-size: 18px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
         .icon-btn.small:active { transform: scale(0.9); }
         .icon-btn { font-size: 24px; cursor: pointer; background: none; border: none; padding: 0; margin: 0; transition: transform 0.1s; }
@@ -856,7 +855,11 @@
     <div id="right-sidebar">
         <h3 class="sidebar-header" style="margin-top: 10px; font-size: 20px;">系統狀態與排班</h3>
 
-        <div id="latest-cloud-board" style="width: 90%; max-width: 500px; margin: 10px auto 0 auto; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left;">
+        <!-- 🌟 1. 將狀態文字移到這裡，讓側拉選單內能看到連線回饋 -->
+        <div id="sync-status" style="font-size: 14px; font-weight: bold; color: #bdc3c7; margin-bottom: 15px; text-align: center;">歡迎使用雲端系統</div>
+
+        <!-- 🌟 2. 寬度改為 100%，取消 margin auto，適應側拉面板的寬度 -->
+        <div id="latest-cloud-board" style="width: 100%; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left; margin-bottom: 15px;">
             <div style="font-weight: bold; color: #f1c40f; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
                 <span>🔔</span> 雲端最新個案狀態 (5秒即時同步)
             </div>
@@ -871,7 +874,7 @@
             </div>
         </div>
                 
-        <div id="duty-rosters-container" style="width: 90%; max-width: 500px; margin-top: 15px;">
+        <div id="duty-rosters-container" style="width: 100%;">
             <div class="duty-block" style="text-align: left;">
                 <div style="font-weight: bold; color: #3498db; margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between;">
                     <span>📍 本院取栓班表</span>
@@ -1884,6 +1887,14 @@ ${tpaBlock}`;
                     syncStatus.textContent = `✅ 已下載編號 ${idVal}${lastEdit}`; 
                     syncStatus.style.color = "#2ecc71"; 
                     activateClockUI(idVal); 
+                    // 🌟 補上這段：載入成功後，自動收起右側面板，讓使用者看見主畫面的時鐘
+                    const rightSidebar = document.getElementById('right-sidebar');
+                    const rightToggleBtn = document.getElementById('right-toggle-btn');
+                    if (rightSidebar && rightSidebar.classList.contains('open')) {
+                        rightSidebar.classList.remove('open');
+                        rightToggleBtn.innerText = '雲端與班表 ◀';
+                        rightToggleBtn.style.right = '0';
+                    }
                 } 
                 else { 
                     syncStatus.textContent = "❌ " + (data.error || "找不到此編號"); 
