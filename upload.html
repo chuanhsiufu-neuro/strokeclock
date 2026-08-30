@@ -2070,17 +2070,23 @@ function triggerSystemNotification(caseId, minutesAgoStr) {
     }
 }
 
-function startBackgroundPolling() {
-    // 🌟 將輪詢時間從 5 秒改為 10 秒
+// ================= 🔔 雙軌並行：獨立自動儲存系統 (15秒) =================
+function startAutoSave() {
     setInterval(() => {
-        // 🌟 加入自動儲存檢查邏輯
-        if (currentRecordId && currentRecordId !== "本機模式") {
+        // 只有在已配發雲端編號、且非單機模式、且目前沒在儲存時，才進行資料比對
+        if (currentRecordId && currentRecordId !== "本機模式" && !isSaving) {
             const currentDataStr = JSON.stringify(collectDataArray());
-            if (currentDataStr !== lastSavedDataString && !isSaving) {
-                saveToServer(true); // 如果有變更，背景悄悄觸發存檔
+            if (currentDataStr !== lastSavedDataString) {
+                saveToServer(true); // true 代表靜默背景儲存，不干擾使用者
             }
         }
+    }, 15000); // 15秒檢查一次，既能捕捉忘記存檔的狀況，又完全不拖慢打字效能
+}
+startAutoSave();
 
+// ================= 🔔 雙軌並行：多裝置即時新個案偵測系統 (5秒) =================
+function startBackgroundPolling() {
+    setInterval(() => {
         if (!GAS_URL || GAS_URL.includes("請在此貼上")) return;
 
         fetch(GAS_URL, {
@@ -2172,7 +2178,7 @@ function startBackgroundPolling() {
             }
         })
         .catch(err => console.error("[背景輪詢] 連線異常: ", err));
-    }, 10000); // 10000 毫秒 = 10 秒
+    }, 5000); // 恢復為 5 秒，確保黃金時間即時警報
 }
 
 startBackgroundPolling();
