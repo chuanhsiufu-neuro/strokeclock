@@ -1446,6 +1446,7 @@ ${tpaBlock}`;
             if (d.tpaBolusDose || d.tpaCifDose) tpaYesNoteStr = `Bolus: ${d.tpaBolusDose}, cIF: ${d.tpaCifDose}`;
 
             const referralData = {
+                reqHospOut: d.hospOut, // 🌟 新增此行：將主畫面的轉出醫院打包傳送
                 age: d.age, gender: d.gender, mrs: d.mrs, onset: d.onset, door: d.door,
                 occlusion: d.ctaDesc, nihssRaw: d.nihssRaw, nihssScore: d.nihssScore,
                 symptoms: d.symptoms, // ✨ 這裡已經把原本會加上 neText 的邏輯移除了
