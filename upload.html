@@ -1827,8 +1827,14 @@ ${tpaBlock}`;
                 document.getElementById('active-sync-id').value = id;
                 document.getElementById('sync-id').value = id;
                 document.getElementById('lbl-current-id').innerText = id;
+                
+                // 🌟 只有在確實取得雲端編號時，才喚醒自動儲存計時器
+                startAutoSave(); 
             } else {
                 document.getElementById('lbl-current-id').innerText = "本機模式";
+                
+                // 🌟 如果是本機模式，強制關閉計時器，達到零消耗
+                if (autoSaveTimer) clearInterval(autoSaveTimer);
             }
 
             document.getElementById('door-clock-title').style.display = 'block'; 
@@ -2070,17 +2076,22 @@ function triggerSystemNotification(caseId, minutesAgoStr) {
     }
 }
 
-// ================= 🔔 雙軌並行：獨立自動儲存系統 (15秒) =================
+// ================= 🔔 獨立自動儲存系統 (只在有雲端個案時才喚醒) =================
+let autoSaveTimer = null; // 宣告全域計時器變數
+
 function startAutoSave() {
-    setInterval(() => {
-        // 只有在已配發雲端編號、且非單機模式、且目前沒在儲存時，才進行資料比對
+    // 每次啟動前先清除舊的計時器，避免多重開啟
+    if (autoSaveTimer) clearInterval(autoSaveTimer);
+    
+    // 啟動 15 秒輪詢
+    autoSaveTimer = setInterval(() => {
         if (currentRecordId && currentRecordId !== "本機模式" && !isSaving) {
             const currentDataStr = JSON.stringify(collectDataArray());
             if (currentDataStr !== lastSavedDataString) {
-                saveToServer(true); // true 代表靜默背景儲存，不干擾使用者
+                saveToServer(true); // 靜默儲存
             }
         }
-    }, 15000); // 15秒檢查一次，既能捕捉忘記存檔的狀況，又完全不拖慢打字效能
+    }, 10000); 
 }
 startAutoSave();
 
