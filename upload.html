@@ -824,17 +824,17 @@
         </div>        
     </div>
 
-    <!-- 🌟 右側開關群組 -->
+    <!-- 🌟 右側開關群組 (按鈕順序已對調) -->
     <div id="right-btn-group">
-        <button id="time-toggle-btn">時間調整 ⏰</button>
         <button id="right-toggle-btn">雲端與班表 ◀</button>
+        <button id="time-toggle-btn">時間調整 ⏰</button>
     </div>
     
     <!-- 🌟 右側主面板 -->
     <div id="right-sidebar">
         
-        <!-- 獨立的時間調整區塊 -->
-        <div id="right-time-section">
+        <!-- 獨立的時間調整區塊 (加上 display: none 預設隱藏) -->
+        <div id="right-time-section" style="display: none;">
             <h3 class="sidebar-header" style="margin-top: 10px; font-size: 20px;">時間微調 / 補登</h3>
             
             <div class="sidebar-item"><label class="sidebar-item-header">最後正常/發作 (LNT)</label><input type="datetime-local" id="side-onset-time" step="1"></div>
@@ -847,18 +847,14 @@
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-cta">CTA time</label><input type="datetime-local" id="time-cta" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-puncture">同意轉院/Puncture</label><input type="datetime-local" id="time-puncture" step="1"></div>
             <div class="sidebar-item"><label class="sidebar-item-header"><input type="checkbox" id="cb-amb-dep">救護車出發</label><input type="datetime-local" id="time-amb-dep" step="1"></div>
-            
             <div class="sidebar-item" style="display:none;"><label class="sidebar-item-header"><input type="checkbox" id="cb-ed-leave">急診離部(保留)</label><input type="datetime-local" id="time-ed-leave" step="1"></div>
         </div>
         
-        <hr style="border: 0; border-top: 1px solid #34495e; margin: 25px 20px;">
-
-        <!-- 獨立的雲端與班表區塊 -->
-        <div id="right-cloud-section">
-            <h3 class="sidebar-header" style="font-size: 20px;">系統狀態與排班</h3>
+        <!-- 獨立的雲端與班表區塊 (加上 display: none 預設隱藏) -->
+        <div id="right-cloud-section" style="display: none;">
+            <h3 class="sidebar-header" style="font-size: 20px; margin-top: 10px;">系統狀態與排班</h3>
 
             <div id="sync-status" style="font-size: 14px; font-weight: bold; color: #bdc3c7; margin-bottom: 15px; text-align: center;">歡迎使用雲端系統</div>
-
             <div id="latest-cloud-board" style="width: 100%; background-color: #1a252f; border: 1px solid #f1c40f; border-radius: 8px; padding: 12px; box-sizing: border-box; text-align: left; margin-bottom: 15px;">
                 <div style="font-weight: bold; color: #f1c40f; font-size: 14px; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
                     <span>🔔</span> 雲端最新個案狀態 (10秒即時同步)
@@ -1000,32 +996,62 @@
             });
         });
 
-        // --- 🌟 右側面板開關邏輯 (支援手機動態寬度與兩顆按鈕) ---
+        // --- 🌟 右側面板開關邏輯 (支援獨立分頁切換) ---
         const rightBtnGroup = document.getElementById('right-btn-group');
         const rightSidebar = document.getElementById('right-sidebar');
         const rightToggleBtn = document.getElementById('right-toggle-btn');
         const timeToggleBtn = document.getElementById('time-toggle-btn');
+        
+        const timeSection = document.getElementById('right-time-section');
+        const cloudSection = document.getElementById('right-cloud-section');
 
-        function handleRightSidebarToggle(targetId) {
-            if (rightSidebar.classList.contains('open')) {
-                rightSidebar.classList.remove('open');
-                rightBtnGroup.style.right = '0';
-                rightToggleBtn.innerText = '雲端與班表 ◀';
-                timeToggleBtn.innerText = '時間調整 ⏰';
-            } else {
-                rightSidebar.classList.add('open');
-                rightBtnGroup.style.right = rightSidebar.offsetWidth + 'px'; 
+        function openRightPanel(mode) {
+            rightSidebar.classList.add('open');
+            rightBtnGroup.style.right = rightSidebar.offsetWidth + 'px'; 
+            
+            if (mode === 'cloud') {
+                cloudSection.style.display = 'block';
+                timeSection.style.display = 'none';
                 rightToggleBtn.innerText = '收起 ▶';
+                timeToggleBtn.innerText = '時間調整 ⏰';
+            } else if (mode === 'time') {
+                timeSection.style.display = 'block';
+                cloudSection.style.display = 'none';
                 timeToggleBtn.innerText = '收起 ▶';
-                // 等待面板滑出後，平滑捲動到對應區域
-                setTimeout(() => {
-                    document.getElementById(targetId).scrollIntoView({ behavior: 'smooth' });
-                }, 100);
+                rightToggleBtn.innerText = '雲端與班表 ◀';
             }
         }
 
-        timeToggleBtn.addEventListener('click', () => handleRightSidebarToggle('right-time-section'));
-        rightToggleBtn.addEventListener('click', () => handleRightSidebarToggle('right-cloud-section'));
+        function closeRightPanel() {
+            rightSidebar.classList.remove('open');
+            rightBtnGroup.style.right = '0';
+            rightToggleBtn.innerText = '雲端與班表 ◀';
+            timeToggleBtn.innerText = '時間調整 ⏰';
+            
+            // 延遲隱藏內容，讓收合動畫平滑
+            setTimeout(() => {
+                cloudSection.style.display = 'none';
+                timeSection.style.display = 'none';
+            }, 300);
+        }
+
+        // 點擊「雲端與班表」按鈕
+        rightToggleBtn.addEventListener('click', () => {
+            if (rightSidebar.classList.contains('open') && cloudSection.style.display === 'block') {
+                closeRightPanel(); // 如果已經打開且是目前畫面，則收起
+            } else {
+                openRightPanel('cloud'); // 否則打開或切換至該畫面
+            }
+        });
+
+        // 點擊「時間調整」按鈕
+        timeToggleBtn.addEventListener('click', () => {
+            if (rightSidebar.classList.contains('open') && timeSection.style.display === 'block') {
+                closeRightPanel();
+            } else {
+                openRightPanel('time');
+            }
+        });
 
         window.addEventListener('resize', () => {
             if (rightSidebar.classList.contains('open')) {
@@ -1909,16 +1935,9 @@ ${tpaBlock}`;
                     syncStatus.style.color = "#2ecc71"; 
                     activateClockUI(idVal); 
                     
-                    // 載入成功後自動收合面板
-                    const rightSidebar = document.getElementById('right-sidebar');
-                    const rightBtnGroup = document.getElementById('right-btn-group');
-                    const rightToggleBtn = document.getElementById('right-toggle-btn');
-                    const timeToggleBtn = document.getElementById('time-toggle-btn');
-                    if (rightSidebar && rightSidebar.classList.contains('open')) {
-                        rightSidebar.classList.remove('open');
-                        rightBtnGroup.style.right = '0';
-                        rightToggleBtn.innerText = '雲端與班表 ◀';
-                        timeToggleBtn.innerText = '時間調整 ⏰';
+                    // 🌟 載入成功後自動收合面板 (已簡化為獨立函數)
+                    if (typeof closeRightPanel === 'function' && document.getElementById('right-sidebar').classList.contains('open')) {
+                        closeRightPanel();
                     }
                 } 
                 else { 
